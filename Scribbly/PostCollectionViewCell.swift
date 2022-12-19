@@ -46,21 +46,39 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     private let like_btn: UIButton = {
         let btn = UIButton()
-        
+        var config = UIButton.Configuration.bordered()
+        config.buttonSize = .medium
+        config.image = UIImage(systemName: "heart")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .systemBackground
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
     
     private let comment_btn: UIButton = {
         let btn = UIButton()
-        
+        var config = UIButton.Configuration.bordered()
+        config.buttonSize = .medium
+        config.image = UIImage(systemName: "bubble.left")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .systemBackground
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
     
     private let share_btn: UIButton = {
         let btn = UIButton()
-        
+        var config = UIButton.Configuration.bordered()
+        config.buttonSize = .medium
+        config.image = UIImage(systemName: "paperplane")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .systemBackground
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
@@ -111,7 +129,16 @@ class PostCollectionViewCell: UICollectionViewCell {
             drawing.topAnchor.constraint(equalTo: user_pfp.bottomAnchor, constant: Constants.post_cell_drawing_top),
             drawing.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.post_cell_side_padding),
             drawing.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.post_cell_side_padding),
-            drawing.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.post_cell_drawing_bot)
+            drawing.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.post_cell_drawing_bot),
+            
+            like_btn.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_cell_btn_top),
+            like_btn.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.post_cell_side_padding),
+            
+            comment_btn.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_cell_btn_top),
+            comment_btn.leadingAnchor.constraint(equalTo: like_btn.trailingAnchor, constant: Constants.post_cell_btn_side),
+            
+            share_btn.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_cell_btn_top),
+            share_btn.leadingAnchor.constraint(equalTo: comment_btn.trailingAnchor, constant: Constants.post_cell_btn_side),
         ])
     }
     

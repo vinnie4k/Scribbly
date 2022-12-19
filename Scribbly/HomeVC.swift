@@ -31,9 +31,9 @@ class HomeVC: UIViewController {
     private let prompt: UILabel = {
         let lbl = UILabel()
         // TODO: Create a function that changes the text
-        lbl.text = "A dog at a park"
+        lbl.text = "Bird"
         lbl.textColor = .none
-        lbl.font = UIFont.systemFont(ofSize: 24, weight: .regular)
+        lbl.font = UIFont.systemFont(ofSize: 30, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -70,9 +70,12 @@ class HomeVC: UIViewController {
     // TODO: START REMOVE
     private func createPosts() {
         let drawing1 = UIImage(named: "caitlyn_drawing")
-        let post1 = Post(user: user, drawing: drawing1!, caption: "bro your drawing is so bad", likes: 5, time: Date())
+        let drawing2 = UIImage(named: "piano")
+        let post1 = Post(user: user, drawing: drawing1!, caption: "i drew this in middle school guys", likes: 5, time: Date())
+        let post2 = Post(user: user, drawing: drawing2!, caption: "my piano is just in the corner now", likes: 5, time: Date())
         posts.append(post1)
         posts.append(post1)
+        posts.append(post2)
     }
     // TODO: END REMOVE
     
@@ -153,5 +156,9 @@ extension HomeVC: UICollectionViewDataSource {
 extension HomeVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: Constants.post_container_width, height: Constants.post_container_height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return Constants.post_container_spacing
     }
 }
