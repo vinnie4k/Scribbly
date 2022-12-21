@@ -8,22 +8,50 @@
 import UIKit
 
 class HomeVC: UIViewController {
-    
     // ------------ Fields (view) ------------
+    private lazy var user_post: UIImageView = {
+        let img = UIImageView()
+        if (user.getPosts().count != 0) {
+            img.image = user.getLatestPost().getDrawing()
+        } else {
+            img.image = UIImage(systemName: "plus.app")
+        }
+        img.tintColor = .label
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.user_post_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+    
+    private lazy var friends_btn: UIButton = {
+        let btn = UIButton()
+        btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.image = UIImage(systemName: "person.2.fill")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .systemBackground
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     private let logo: UILabel = {
         let lbl = UILabel()
-        lbl.text = "Scribbly"
-        lbl.textColor = .none
-        lbl.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        lbl.text = "scribbly"
+        lbl.textColor = .label
+        lbl.font = Constants.logo_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
-    
+
     private let prompt_heading: UILabel = {
         let lbl = UILabel()
-        lbl.text = "Today's prompt"
-        lbl.textColor = .none
-        lbl.font = UIFont.systemFont(ofSize: 12, weight: .light)
+        lbl.text = "today's prompt"
+        lbl.textColor = .label
+        lbl.font = Constants.prompt_heading_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -31,16 +59,16 @@ class HomeVC: UIViewController {
     private let prompt: UILabel = {
         let lbl = UILabel()
         // TODO: Create a function that changes the text
-        lbl.text = "Bird"
-        lbl.textColor = .none
-        lbl.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        lbl.text = "bird"
+        lbl.textColor = .label
+        lbl.font = Constants.prompt_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
     
-    // Made lazy since property initializers run before 'self' is available
     private lazy var profile_btn: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         btn.setImage(user.getPFP(), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.profile_button_radius
@@ -58,8 +86,6 @@ class HomeVC: UIViewController {
         return cv
     }()
     
-    // ------------ Fields (data) ------------
-    
     // TODO: START REMOVE
     let vinnie_img = UIImage(named: "vinnie_pfp")
     // TODO: END REMOVE
@@ -69,11 +95,14 @@ class HomeVC: UIViewController {
     
     // TODO: START REMOVE
     private func createPosts() {
-        let drawing1 = UIImage(named: "caitlyn_drawing")
-        let drawing2 = UIImage(named: "piano")
+        let user2_pfp = UIImage(named: "cakey_pfp")
+        let drawing1 = UIImage(named: "bird_drawing1")
+        let drawing2 = UIImage(named: "bird_drawing2")
+        let user2 = User(pfp: user2_pfp!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing")
         let post1 = Post(user: user, drawing: drawing1!, caption: "i drew this in middle school guys", likes: 5, time: Date())
-        let post2 = Post(user: user, drawing: drawing2!, caption: "my piano is just in the corner now", likes: 5, time: Date())
-        posts.append(post1)
+        let post2 = Post(user: user2, drawing: drawing2!, caption: "better than vin's", likes: 5, time: Date())
+        user.addPost(post: post1)
+        user2.addPost(post: post2)
         posts.append(post1)
         posts.append(post2)
     }
@@ -82,24 +111,45 @@ class HomeVC: UIViewController {
     private var posts: [Post] = []
     
     // ------------ Functions ------------
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
         // Add to view
-        view.addSubview(logo)
         view.addSubview(prompt_heading)
         view.addSubview(prompt)
-        view.addSubview(profile_btn)
         view.addSubview(post_cv)
+        view.addSubview(user_post)
         
         // Function Calls
+        setupNavBar()
         setupCollectionView()
         setupConstraints()
         // TODO: START REMOVE
         createPosts()
         // TODO: END REMOVE
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // TODO: PUT BELOW IN A HELPER
+        if (user.getPosts().count != 0) {
+            user_post.image = user.getLatestPost().getDrawing()
+        } else {
+            user_post.image = UIImage(systemName: "plus.app")
+        }
+    }
+    
+    @objc private func pushProfileVC() {
+        let profile_vc = ProfileVC()
+        self.navigationController?.pushViewController(profile_vc, animated: true)
+    }
+    
+    private func setupNavBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friends_btn)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profile_btn)
+        navigationItem.titleView = logo
     }
     
     private func setupCollectionView() {
@@ -110,24 +160,27 @@ class HomeVC: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            logo.centerYAnchor.constraint(equalTo: view.topAnchor, constant: Constants.border_top_padding),
-            logo.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.border_side_padding),
-            
-            prompt_heading.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: Constants.prompt_heading_top_padding),
-            prompt_heading.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            prompt.topAnchor.constraint(equalTo: prompt_heading.bottomAnchor, constant: Constants.prompt_top_padding),
-            prompt.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            profile_btn.centerYAnchor.constraint(equalTo: view.topAnchor, constant: Constants.border_top_padding),
-            profile_btn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.border_side_padding),
             profile_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             profile_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             
+            friends_btn.widthAnchor.constraint(equalToConstant: Constants.friends_button_width),
+            friends_btn.heightAnchor.constraint(equalToConstant: Constants.friends_button_height),
+            
+            prompt_heading.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prompt_heading_top_padding),
+            prompt_heading.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.prompt_side_padding),
+
+            prompt.topAnchor.constraint(equalTo: prompt_heading.bottomAnchor, constant: Constants.prompt_top_padding),
+            prompt.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.prompt_side_padding),
+            
+            user_post.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.user_post_top_padding),
+            user_post.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.user_post_side_padding),
+            user_post.widthAnchor.constraint(equalToConstant: Constants.user_post_width),
+            user_post.heightAnchor.constraint(equalToConstant: Constants.user_post_height),
+                                             
             post_cv.topAnchor.constraint(equalTo: prompt.bottomAnchor, constant: Constants.post_cv_top_padding),
             post_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
             post_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
-            post_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            post_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
 }
@@ -145,7 +198,7 @@ extension HomeVC: UICollectionViewDataSource {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuse, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
-            cell.configure(user: post.getUser(), drawing: post.getDrawing(), caption: post.getCaption())
+            cell.configure(user: post.getUser(), drawing: post.getDrawing(), caption: post.getCaption(), parent_vc: self, mode: traitCollection.userInterfaceStyle)
             return cell
         } else {
             return UICollectionViewCell()

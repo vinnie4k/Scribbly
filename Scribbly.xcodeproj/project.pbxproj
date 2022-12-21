@@ -14,6 +14,7 @@
 		2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C0899294F16C90021C2D9 /* HomeVC.swift */; };
 		2E0C089D294F17A10021C2D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089C294F17A10021C2D9 /* User.swift */; };
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
+		2E5360C72950596F00C7A8CA /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5360C62950596F00C7A8CA /* ProfileVC.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 		2E0C0899294F16C90021C2D9 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		2E0C089C294F17A10021C2D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		2E5360C62950596F00C7A8CA /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -67,11 +69,12 @@
 				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
 				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
 				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
-				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
-				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
-				2E0C0893294F152A0021C2D9 /* Info.plist */,
+				2E5360C62950596F00C7A8CA /* ProfileVC.swift */,
 				2E77F7DE294FAC2100D6E8D0 /* Constants.swift */,
 				2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */,
+				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
+				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
+				2E0C0893294F152A0021C2D9 /* Info.plist */,
 			);
 			path = Scribbly;
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 				2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */,
 				2E0C0886294F15290021C2D9 /* AppDelegate.swift in Sources */,
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
+				2E5360C72950596F00C7A8CA /* ProfileVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,
 				2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */,

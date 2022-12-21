@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "caitlyn_drawing.heic",
+      "filename" : "bird_drawing1.heic",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "caitlyn_drawing 1.heic",
+      "filename" : "bird_drawing1 1.heic",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "caitlyn_drawing 2.heic",
+      "filename" : "bird_drawing1 2.heic",
       "idiom" : "universal",
       "scale" : "3x"
     }

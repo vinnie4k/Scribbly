@@ -13,15 +13,28 @@ class User {
     private var full_name: String
     private var user_name: String
     private var bio: String
-    // TODO: add a field for memories (array of Post objects)
+    private var posts: [Post]
     
     // ------------ Getters/Setters ------------
     func getPFP() -> UIImage {
         return pfp
     }
     
-    func getFullName() -> String {
-        return full_name
+    func getUserName() -> String {
+        return user_name
+    }
+    
+    func getPosts() -> [Post] {
+        return posts
+    }
+    
+    func getLatestPost() -> Post {
+        // TODO: maybe only return if it matches today's date?
+        return posts[posts.count - 1]
+    }
+    
+    func addPost(post: Post) {
+        posts.append(post)
     }
 
     
@@ -31,5 +44,6 @@ class User {
         self.full_name = full_name
         self.user_name = user_name
         self.bio = bio
+        self.posts = []
     }
 }
