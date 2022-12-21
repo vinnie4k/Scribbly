@@ -92,9 +92,9 @@ class PostCollectionViewCell: UICollectionViewCell {
         return view
     }()
 
-    private var parent_vc: UIViewController? = nil
-    
     // ------------ Fields (Data) ------------
+    private var parent_vc: UIViewController? = nil
+
     private var mode: UIUserInterfaceStyle? = nil
     
     // ------------ Functions ------------
@@ -116,13 +116,8 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func pushProfileVC() {
-        let profile_vc = ProfileVC()
-        parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
-    }
-    
     func configure(user: User, drawing: UIImage, caption: String, parent_vc: UIViewController, mode: UIUserInterfaceStyle) {
-        self.caption_view.configure(caption: caption, user: user)
+        self.caption_view.configure(caption: caption, user: user, vc: parent_vc)
         self.drawing.image = drawing
         self.parent_vc = parent_vc
         self.mode = mode
@@ -162,9 +157,10 @@ class PostCollectionViewCell: UICollectionViewCell {
 }
 
 class CaptionView: UIView {
+    
+    // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {
         let btn = UIButton()
-//        btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
         btn.layer.masksToBounds = true
@@ -188,6 +184,10 @@ class CaptionView: UIView {
         return lbl
     }()
     
+    // ------------ Fields (Data) ------------
+    private var parent_vc: UIViewController? = nil
+
+    // ------------ Functions ------------
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(caption)
@@ -200,10 +200,17 @@ class CaptionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(caption: String, user: User) {
+    @objc private func pushProfileVC() {
+        let profile_vc = ProfileVC()
+        parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
+    }
+    
+    func configure(caption: String, user: User, vc: UIViewController) {
         self.caption.text = caption
         display_name.text = user.getUserName()
         user_pfp.setImage(user.getPFP(), for: .normal)
+        user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
+        parent_vc = vc
     }
     
     private func setupConstraints() {
