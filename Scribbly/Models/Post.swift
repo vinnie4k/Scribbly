@@ -15,9 +15,18 @@ class Post {
     private var caption: String
     private var likes: Int
     private var time: Date
-    // TODO: add a field for an array of Comment objects
+    private var comments: [Comment]
     
     // ------------ Getters/Setters ------------
+    func addComment(comment_user: User, text: String) {
+        let cmt = Comment(post: self, text: text, user: comment_user)
+        comments.append(cmt)
+    }
+    
+    func getComments() -> [Comment] {
+        return comments
+    }
+    
     func getUser() -> User {
         return user
     }
@@ -36,5 +45,6 @@ class Post {
         self.caption = caption
         self.likes = likes
         self.time = time
+        self.comments = []
     }
 }

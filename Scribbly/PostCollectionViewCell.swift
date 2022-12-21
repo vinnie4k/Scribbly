@@ -94,8 +94,9 @@ class PostCollectionViewCell: UICollectionViewCell {
 
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
-
     private var mode: UIUserInterfaceStyle? = nil
+    private var post: Post? = nil
+    private var main_user: User? = nil
     
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -103,10 +104,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(drawing)
         contentView.addSubview(stack)
         contentView.addSubview(caption_view)
-
-        // Design
-        self.backgroundColor = Constants.post_cell_bg_color
-        self.layer.cornerRadius = Constants.post_cell_corner
         
         // Function Calls
         setupConstraints()
@@ -116,12 +113,23 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(user: User, drawing: UIImage, caption: String, parent_vc: UIViewController, mode: UIUserInterfaceStyle) {
-        self.caption_view.configure(caption: caption, user: user, vc: parent_vc)
-        self.drawing.image = drawing
+    @objc private func pushCommentVC() {
+        if let post = post {
+            let comment_vc = CommentVC(post: post, main_user: main_user!)
+            parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
+        }
+    }
+    
+    func configure(main_user: User, post: Post, parent_vc: UIViewController, mode: UIUserInterfaceStyle) {
+        self.caption_view.configure(caption: post.getCaption(), post_user: post.getUser(), vc: parent_vc)
+        self.drawing.image = post.getDrawing()
         self.parent_vc = parent_vc
         self.mode = mode
+        self.post = post
+        self.main_user = main_user
         setMode(mode: mode)
+        
+        comment_btn.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
     }
     
     func setMode(mode: UIUserInterfaceStyle) {
@@ -180,6 +188,8 @@ class CaptionView: UIView {
         let lbl = UILabel()
         lbl.textColor = .label
         lbl.font = Constants.post_cell_caption_font
+        lbl.numberOfLines = 0
+        lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -205,10 +215,10 @@ class CaptionView: UIView {
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
-    func configure(caption: String, user: User, vc: UIViewController) {
+    func configure(caption: String, post_user: User, vc: UIViewController) {
         self.caption.text = caption
-        display_name.text = user.getUserName()
-        user_pfp.setImage(user.getPFP(), for: .normal)
+        display_name.text = post_user.getUserName()
+        user_pfp.setImage(post_user.getPFP(), for: .normal)
         user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         parent_vc = vc
     }

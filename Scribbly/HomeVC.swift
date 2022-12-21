@@ -105,16 +105,22 @@ class HomeVC: UIViewController {
         user2.addPost(post: post2)
         posts.append(post1)
         posts.append(post2)
+        
+        post1.addComment(comment_user: user2, text: "This sucks")
+        post1.addComment(comment_user: user2, text: "This sucks")
+        post1.addComment(comment_user: user, text: "This does not suck")
+        post1.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     }
     // TODO: END REMOVE
     
+    // ------------ Fields (data) ------------
     private var posts: [Post] = []
     
     // ------------ Functions ------------
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+
         // Add to view
         view.addSubview(prompt_heading)
         view.addSubview(prompt)
@@ -198,7 +204,8 @@ extension HomeVC: UICollectionViewDataSource {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuse, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
-            cell.configure(user: post.getUser(), drawing: post.getDrawing(), caption: post.getCaption(), parent_vc: self, mode: traitCollection.userInterfaceStyle)
+            cell.configure(main_user: user, post: post, parent_vc: self, mode: traitCollection.userInterfaceStyle)
+            cell.layer.cornerRadius = Constants.post_cell_corner
             return cell
         } else {
             return UICollectionViewCell()
