@@ -1,5 +1,5 @@
 //
-//  CommentTableViewCell.swift
+//  CommentCells.swift
 //  Scribbly
 //
 //  Created by Vin Bui on 12/21/22.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentHeaderView: UIView {
+class CommentHeaderView: UICollectionReusableView {
     // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {
         let btn = UIButton()
@@ -51,10 +51,12 @@ class CommentHeaderView: UIView {
     // ------------ Functions ------------
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         addSubview(text)
         addSubview(display_name)
         addSubview(user_pfp)
         addSubview(reply_btn)
+        
         setupConstraints()
     }
     
@@ -84,10 +86,10 @@ class CommentHeaderView: UIView {
                         
             display_name.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.comment_cell_top),
             display_name.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.comment_cell_name_side),
-            
+
             text.topAnchor.constraint(equalTo: display_name.bottomAnchor, constant: Constants.comment_cell_text_top),
             text.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.comment_cell_name_side),
-            text.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.comment_cell_name_side),
+            text.widthAnchor.constraint(equalToConstant: Constants.comment_cell_text_width),
             
             reply_btn.topAnchor.constraint(equalTo: text.bottomAnchor, constant: Constants.comment_cell_reply_top),
             reply_btn.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.comment_cell_reply_bot),
@@ -96,7 +98,7 @@ class CommentHeaderView: UIView {
     }
 }
 
-class CommentTableViewCell: UITableViewCell {
+class CommentCollectionViewCell: UICollectionViewCell {
     
     // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {
@@ -119,7 +121,6 @@ class CommentTableViewCell: UITableViewCell {
     private let text: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.comment_cell_text_font
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -139,12 +140,14 @@ class CommentTableViewCell: UITableViewCell {
     private var parent_vc: UIViewController? = nil
     
     // ------------ Functions ------------
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
         addSubview(text)
         addSubview(display_name)
         addSubview(user_pfp)
         addSubview(reply_btn)
+        
         setupConstraints()
     }
     
@@ -157,8 +160,8 @@ class CommentTableViewCell: UITableViewCell {
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
-    func configure(text: String, user: User, vc: UIViewController) {
-        self.text.text = text
+    func configure(text: NSAttributedString, user: User, vc: UIViewController) {
+        self.text.attributedText = text
         display_name.text = user.getUserName()
         user_pfp.setImage(user.getPFP(), for: .normal)
         user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
@@ -174,11 +177,13 @@ class CommentTableViewCell: UITableViewCell {
                         
             display_name.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.comment_cell_top),
             display_name.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.comment_cell_name_side),
-            
+
             text.topAnchor.constraint(equalTo: display_name.bottomAnchor, constant: Constants.comment_cell_text_top),
             text.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.comment_cell_name_side),
+            text.widthAnchor.constraint(equalToConstant: Constants.comment_cell_reply_text_width),
             
             reply_btn.topAnchor.constraint(equalTo: text.bottomAnchor, constant: Constants.comment_cell_reply_top),
+            reply_btn.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.comment_cell_reply_bot),
             reply_btn.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.comment_cell_name_side),
         ])
     }

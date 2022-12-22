@@ -107,9 +107,12 @@ class HomeVC: UIViewController {
         posts.append(post2)
         
         post1.addComment(comment_user: user2, text: "This sucks")
-        post1.addComment(comment_user: user2, text: "This sucks")
         post1.addComment(comment_user: user, text: "This does not suck")
         post1.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        
+        post1.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, reply_user: user)
+        
+        post1.getComments()[0].addReply(text: "Are you okay...", prev: post1.getComments()[0].getReplies()[0], reply_user: user2)
     }
     // TODO: END REMOVE
     

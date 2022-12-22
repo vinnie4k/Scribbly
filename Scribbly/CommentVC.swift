@@ -46,10 +46,14 @@ class CommentVC: UIViewController {
         return img
     }()
     
-    private lazy var comments_tv: UITableView = {
-        let tv = UITableView(frame: .zero, style: .grouped)
-        tv.translatesAutoresizingMaskIntoConstraints = false
-        return tv
+    private lazy var reply_cv: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+         
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        return cv
     }()
     
     // ------------ Fields (data) ------------
@@ -68,9 +72,9 @@ class CommentVC: UIViewController {
         title = "comments"
         
         view.addSubview(drawing)
-        view.addSubview(comments_tv)
+        view.addSubview(reply_cv)
         
-        setupTableView()
+        setupCollectionView()
         setupNavBar()
         setupConstraints()
     }
@@ -86,12 +90,15 @@ class CommentVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupTableView() {
-        comments_tv.dataSource = self
-        comments_tv.delegate = self
-        comments_tv.register(CommentTableViewCell.self, forCellReuseIdentifier: Constants.comment_reuse)
-        comments_tv.estimatedRowHeight = UITableView.automaticDimension
-        comments_tv.estimatedSectionHeaderHeight = UITableView.automaticDimension
+    private func setupCollectionView() {
+        reply_cv.delegate = self
+        reply_cv.dataSource = self
+        reply_cv.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
+        reply_cv.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
+        
+        if let collectionViewLayout = reply_cv.collectionViewLayout as? UICollectionViewFlowLayout {
+            collectionViewLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        }
     }
     
     @objc private func popVC() {
@@ -111,55 +118,93 @@ class CommentVC: UIViewController {
             drawing.widthAnchor.constraint(equalToConstant: Constants.comment_drawing_width),
             drawing.heightAnchor.constraint(equalToConstant: Constants.comment_drawing_height),
             
-            comments_tv.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.comment_tv_top_padding),
-            comments_tv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_tv_side_padding),
-            comments_tv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_tv_side_padding),
-            comments_tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            reply_cv.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.comment_cv_top_padding),
+            reply_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
+            reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
+            reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+    }
+    
+    private func estimateFrameForText(text: String) -> CGRect {
+        // PLEASE DO NOT TOUCH THIS
+        let height: CGFloat = 99999
+        let size = CGSize(width: Constants.comment_cell_text_width, height: height)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let attributes = [NSAttributedString.Key.font: Constants.comment_cell_text_font]
+
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
     }
 }
 
-extension CommentVC: UITableViewDelegate {
+extension CommentVC: UICollectionViewDelegate {
     // TODO: didSelectItemAt
 }
 
-extension CommentVC: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return comments.count
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = CommentHeaderView()
-        if (traitCollection.userInterfaceStyle == .light) {
-            view.backgroundColor = Constants.comment_cell_light
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            view.backgroundColor = Constants.comment_cell_dark
-        }
-        view.layer.cornerRadius = Constants.comment_cell_corner
-        let comment = comments[section]
-        view.configure(text: comment.getText(), user: comment.getUser(), vc: self)
-//        view.configure(text: comment.getText(), user: main_user, vc: self)
-        return view
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension CommentVC: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return comments[section].getReplies().count
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return comments.count
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: Constants.comment_reuse, for: indexPath) as? CommentTableViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
+            let rep = comments[indexPath.section].getReplies()[indexPath.row]
+            if (traitCollection.userInterfaceStyle == .light) {
+                cell.backgroundColor = Constants.comment_cell_light
+            } else if (traitCollection.userInterfaceStyle == .dark) {
+                cell.backgroundColor = Constants.comment_cell_dark
+            }
+            cell.layer.cornerRadius = Constants.comment_cell_corner
+            cell.configure(text: rep.getText(), user: rep.getReplyUser(), vc: self)
             return cell
         } else {
-            return UITableViewCell()
+            return UICollectionViewCell()
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.comment_reuse, for: indexPath) as? CommentHeaderView {
+                if (traitCollection.userInterfaceStyle == .light) {
+                    header.backgroundColor = Constants.comment_cell_light
+                } else if (traitCollection.userInterfaceStyle == .dark) {
+                    header.backgroundColor = Constants.comment_cell_dark
+                }
+                header.layer.cornerRadius = Constants.comment_cell_corner
+                let comment = comments[indexPath.section]
+                header.configure(text: comment.getText(), user: comment.getUser(), vc: self)
+                return header
+            }
+        }
+        return UICollectionReusableView()
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: Constants.comment_cv_spacing, left: Constants.comment_cell_reply_side, bottom: Constants.comment_cv_spacing, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        // PLEASE DO NOT TOUCH THIS
+        var height: CGFloat = 999
+        let padding: CGFloat = 65
+        let text = comments[section].getText()
+        height = estimateFrameForText(text: text).height + padding
+        return CGSize(width: Constants.comment_cell_text_width, height: height)
+    }
+    
+}
+
+extension CommentVC: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // PLEASE DO NOT TOUCH THIS
+        var height: CGFloat = 999
+        let padding: CGFloat = 65
+        let rep = comments[indexPath.section].getReplies()[indexPath.row].getText()
+        height = estimateFrameForText(text: rep.string).height + padding
+        return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
     }
     
 }

@@ -13,6 +13,7 @@ struct Constants {
     // ------------ Other ------------
     static let reuse = "Reuse"
     static let comment_reuse = "CommentReuse"
+    static let reply_reuse = "ReplyReuse"
     
     // ------------ Home Page ------------
     static let border_top_padding = CGFloat(0)
@@ -76,17 +77,21 @@ struct Constants {
     static let comment_drawing_corner = 0.1 * comment_drawing_width
     static let comment_drawing_top_padding = CGFloat(20)
     
-    // ------------ CommentTableView ------------
-    static let comment_tv_top_padding = CGFloat(15)
-    static let comment_tv_side_padding = CGFloat(15)
-    static let comment_container_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
-    static let comment_container_height = CGFloat(325)
-    static let comment_container_spacing = CGFloat(15)
+    // ------------ CommentCollectionView ------------
+    static let comment_cv_top_padding = CGFloat(15)
+    static let comment_cv_side_padding = CGFloat(15)
+    static let comment_cv_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
+    static let comment_cv_spacing = CGFloat(10)
     
     // ------------ CommentHeaderView & CommentTableViewCell ------------
     static let comment_cell_pfp_radius = CGFloat(15)
     static let comment_cell_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .bold).fontDescriptor.withDesign(.rounded)!, size: 14)
     static let comment_cell_text_font = UIFont(descriptor: UIFont.systemFont(ofSize: 16, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 16)
+    static let comment_cell_text_width = UIScreen.main.bounds.width - 90
+    static let comment_cell_reply_box_width = UIScreen.main.bounds.width - 60
+    static let comment_cell_reply_text_width = UIScreen.main.bounds.width - 120
+    static let comment_cell_reply_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 16, weight: .bold).fontDescriptor.withDesign(.rounded)!, size: 16)
+    static let comment_cell_reply_side = CGFloat(30)
     static let comment_cell_top = CGFloat(10)
     static let comment_cell_side = CGFloat(10)
     static let comment_cell_name_side = CGFloat(10)
@@ -100,5 +105,5 @@ struct Constants {
     static let comment_cell_dark = UIColor(red: 0.071, green: 0.071, blue: 0.071, alpha: 1)
     static let comment_light_bg = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     static let comment_dark_bg = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
-    
+    static let reply_side_padding = CGFloat(50)
 }

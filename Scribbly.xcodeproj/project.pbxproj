@@ -18,7 +18,7 @@
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
 		2ED4F1152953669B00E66E5F /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment.swift */; };
-		2ED4F1172953711A00E66E5F /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentTableViewCell.swift */; };
+		2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentCells.swift */; };
 		2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EED0C852952D09F009BA4CE /* CommentVC.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +36,7 @@
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ED4F1142953669B00E66E5F /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
-		2ED4F1162953711A00E66E5F /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		2ED4F1162953711A00E66E5F /* CommentCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCells.swift; sourceTree = "<group>"; };
 		2EED0C852952D09F009BA4CE /* CommentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,7 +78,7 @@
 				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
 				2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */,
 				2EED0C852952D09F009BA4CE /* CommentVC.swift */,
-				2ED4F1162953711A00E66E5F /* CommentTableViewCell.swift */,
+				2ED4F1162953711A00E66E5F /* CommentCells.swift */,
 				2E5360C62950596F00C7A8CA /* ProfileVC.swift */,
 				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
 				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
@@ -179,7 +179,7 @@
 				2E0C0886294F15290021C2D9 /* AppDelegate.swift in Sources */,
 				2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */,
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
-				2ED4F1172953711A00E66E5F /* CommentTableViewCell.swift in Sources */,
+				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment.swift in Sources */,
 				2E5360C72950596F00C7A8CA /* ProfileVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
