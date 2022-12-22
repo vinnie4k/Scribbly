@@ -90,10 +90,6 @@ class CommentVC: UIViewController {
         reply_cv.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
         reply_cv.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
         reply_cv.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.drawing_reuse)
-        
-        if let collectionViewLayout = reply_cv.collectionViewLayout as? UICollectionViewFlowLayout {
-            collectionViewLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        }
     }
     
     @objc private func popVC() {
@@ -104,7 +100,15 @@ class CommentVC: UIViewController {
         navigationItem.titleView = title_lbl
         back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
-        navigationController?.navigationBar.isTranslucent = false
+        
+        let appearance = UINavigationBarAppearance()
+        if (traitCollection.userInterfaceStyle == .light) {
+            appearance.backgroundColor = Constants.comment_light_bg
+        } else if (traitCollection.userInterfaceStyle == .dark) {
+            appearance.backgroundColor = Constants.comment_dark_bg
+        }
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     private func setupConstraints() {
