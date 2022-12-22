@@ -52,6 +52,11 @@ class CommentVC: UIViewController {
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
          
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        if (traitCollection.userInterfaceStyle == .light) {
+            cv.backgroundColor = Constants.comment_light_bg
+        } else if (traitCollection.userInterfaceStyle == .dark) {
+            cv.backgroundColor = Constants.comment_dark_bg
+        }
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
