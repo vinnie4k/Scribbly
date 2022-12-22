@@ -14,6 +14,7 @@ struct Constants {
     static let reuse = "Reuse"
     static let comment_reuse = "CommentReuse"
     static let reply_reuse = "ReplyReuse"
+    static let drawing_reuse = "DrawingReuse"
     
     // ------------ Home Page ------------
     static let border_top_padding = CGFloat(0)

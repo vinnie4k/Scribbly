@@ -7,6 +7,43 @@
 
 import UIKit
 
+class DrawingHeaderView: UICollectionReusableView {
+    // ------------ Fields (view) ------------
+    private lazy var drawing: UIImageView = {
+        let img = UIImageView()
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.comment_drawing_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+
+    // ------------ Functions ------------
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(drawing)
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(drawing: UIImage) {
+        self.drawing.image = drawing
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            drawing.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            drawing.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.comment_drawing_top_padding),
+            drawing.widthAnchor.constraint(equalToConstant: Constants.comment_drawing_width),
+            drawing.heightAnchor.constraint(equalToConstant: Constants.comment_drawing_height),
+        ])
+    }
+}
+
 class CommentHeaderView: UICollectionReusableView {
     // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {

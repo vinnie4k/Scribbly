@@ -36,16 +36,6 @@ class CommentVC: UIViewController {
         return btn
     }()
     
-    private lazy var drawing: UIImageView = {
-        let img = UIImageView()
-        img.image = post.getDrawing()
-        img.contentMode = .scaleAspectFill
-        img.clipsToBounds = true
-        img.layer.cornerRadius = Constants.comment_drawing_corner
-        img.translatesAutoresizingMaskIntoConstraints = false
-        return img
-    }()
-    
     private lazy var reply_cv: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -76,7 +66,6 @@ class CommentVC: UIViewController {
         }
         title = "comments"
         
-        view.addSubview(drawing)
         view.addSubview(reply_cv)
         
         setupCollectionView()
@@ -100,6 +89,7 @@ class CommentVC: UIViewController {
         reply_cv.dataSource = self
         reply_cv.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
         reply_cv.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
+        reply_cv.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.drawing_reuse)
         
         if let collectionViewLayout = reply_cv.collectionViewLayout as? UICollectionViewFlowLayout {
             collectionViewLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -114,16 +104,12 @@ class CommentVC: UIViewController {
         navigationItem.titleView = title_lbl
         back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
+        navigationController?.navigationBar.isTranslucent = false
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            drawing.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            drawing.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.comment_drawing_top_padding),
-            drawing.widthAnchor.constraint(equalToConstant: Constants.comment_drawing_width),
-            drawing.heightAnchor.constraint(equalToConstant: Constants.comment_drawing_height),
-            
-            reply_cv.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.comment_cv_top_padding),
+            reply_cv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.comment_cv_top_padding),
             reply_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
             reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
             reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -147,30 +133,42 @@ extension CommentVC: UICollectionViewDelegate {
 
 extension CommentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return comments[section].getReplies().count
+        if (section == 0) {
+            return 0
+        }
+        return comments[section - 1].getReplies().count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return comments.count
+        return comments.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
-            let rep = comments[indexPath.section].getReplies()[indexPath.row]
-            if (traitCollection.userInterfaceStyle == .light) {
-                cell.backgroundColor = Constants.comment_cell_light
-            } else if (traitCollection.userInterfaceStyle == .dark) {
-                cell.backgroundColor = Constants.comment_cell_dark
+        if indexPath.section != 0 {
+            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
+                let rep = comments[indexPath.section - 1].getReplies()[indexPath.row]
+                if (traitCollection.userInterfaceStyle == .light) {
+                    cell.backgroundColor = Constants.comment_cell_light
+                } else if (traitCollection.userInterfaceStyle == .dark) {
+                    cell.backgroundColor = Constants.comment_cell_dark
+                }
+                cell.layer.cornerRadius = Constants.comment_cell_corner
+                cell.configure(text: rep.getText(), user: rep.getReplyUser(), vc: self)
+                return cell
             }
-            cell.layer.cornerRadius = Constants.comment_cell_corner
-            cell.configure(text: rep.getText(), user: rep.getReplyUser(), vc: self)
-            return cell
-        } else {
-            return UICollectionViewCell()
         }
+        return UICollectionViewCell()
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader && indexPath.section == 0 {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.drawing_reuse, for: indexPath) as? DrawingHeaderView {
+                header.configure(drawing: post.getDrawing())
+                return header
+            }
+        }
+        
         if kind == UICollectionView.elementKindSectionHeader {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.comment_reuse, for: indexPath) as? CommentHeaderView {
                 if (traitCollection.userInterfaceStyle == .light) {
@@ -179,7 +177,7 @@ extension CommentVC: UICollectionViewDataSource {
                     header.backgroundColor = Constants.comment_cell_dark
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
-                let comment = comments[indexPath.section]
+                let comment = comments[indexPath.section - 1]
                 header.configure(text: comment.getText(), user: comment.getUser(), vc: self)
                 return header
             }
@@ -188,28 +186,42 @@ extension CommentVC: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if (section == 0) {
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
         return UIEdgeInsets(top: Constants.comment_cv_spacing, left: Constants.comment_cell_reply_side, bottom: Constants.comment_cv_spacing, right: 0)
     }
-    
+        
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         // PLEASE DO NOT TOUCH THIS
+        if (section == 0) {
+            return CGSize(width: Constants.comment_drawing_width, height: Constants.comment_drawing_height + 2 * Constants.comment_drawing_top_padding)
+        }
         var height: CGFloat = 999
         let padding: CGFloat = 65
-        let text = comments[section].getText()
+        let text = comments[section - 1].getText()
         height = estimateFrameForText(text: text).height + padding
         return CGSize(width: Constants.comment_cell_text_width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return Constants.comment_cv_spacing
     }
     
 }
 
 extension CommentVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // PLEASE DO NOT TOUCH THIS
-        var height: CGFloat = 999
-        let padding: CGFloat = 65
-        let rep = comments[indexPath.section].getReplies()[indexPath.row].getText()
-        height = estimateFrameForText(text: rep.string).height + padding
-        return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
+        if indexPath.section == 0 {
+            return CGSize(width: Constants.post_cell_drawing_width, height: Constants.post_cell_drawing_height)
+        } else {
+            // PLEASE DO NOT TOUCH THIS
+            var height: CGFloat = 999
+            let padding: CGFloat = 65
+            let rep = comments[indexPath.section - 1].getReplies()[indexPath.row].getText()
+            height = estimateFrameForText(text: rep.string).height + padding
+            return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
+        }
     }
     
 }
