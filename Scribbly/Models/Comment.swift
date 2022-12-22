@@ -22,7 +22,8 @@ class Comment {
             let attrs = [NSAttributedString.Key.font : Constants.comment_cell_reply_username_font]
             let bold_text = NSMutableAttributedString(string: bold, attributes: attrs)
             
-            let normal_text = NSMutableAttributedString(string: " " + text)
+            let normal_attrs = [NSAttributedString.Key.font : Constants.comment_cell_text_font]
+            let normal_text = NSMutableAttributedString(string: " " + text, attributes: normal_attrs)
             bold_text.append(normal_text)
             
             let rep = Reply(text: bold_text, prev: prev, reply_user: reply_user)
