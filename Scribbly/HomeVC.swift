@@ -142,6 +142,7 @@ class HomeVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        setupNavBar()
         // TODO: PUT BELOW IN A HELPER
         if (user.getPosts().count != 0) {
             user_post.image = user.getLatestPost().getDrawing()
@@ -159,6 +160,12 @@ class HomeVC: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friends_btn)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profile_btn)
         navigationItem.titleView = logo
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .systemBackground
+        appearance.shadowColor = .clear
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     private func setupCollectionView() {

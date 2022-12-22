@@ -107,6 +107,7 @@ class CommentVC: UIViewController {
         } else if (traitCollection.userInterfaceStyle == .dark) {
             appearance.backgroundColor = Constants.comment_dark_bg
         }
+        appearance.shadowColor = .clear
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
