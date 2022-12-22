@@ -84,6 +84,12 @@ struct Constants {
     static let comment_cv_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
     static let comment_cv_spacing = CGFloat(10)
     
+    // ------------ Comment Input ------------
+    static let comment_input_height = CGFloat(70)
+    static let comment_input_pfp_side = CGFloat(15)
+    static let comment_input_pfp_top = CGFloat(25)
+    static let comment_input_txt_side = CGFloat(10)
+    
     // ------------ CommentHeaderView & CommentTableViewCell ------------
     static let comment_cell_pfp_radius = CGFloat(15)
     static let comment_cell_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .bold).fontDescriptor.withDesign(.rounded)!, size: 14)
@@ -107,4 +113,41 @@ struct Constants {
     static let comment_light_bg = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     static let comment_dark_bg = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     static let reply_side_padding = CGFloat(50)
+}
+
+class GradientView: UIView {
+    /**
+     // Simple usage. From clear to black.
+     let gradientView1 = GradientView(colors: [.clear, .black])
+
+     // Tweak locations. Here the gradient from red to green will take 30% of the view.
+     let gradientView2 = GradientView(colors: [.red, .green, .blue], locations: [0, 0.3, 1])
+
+     // Create your own gradient.
+     let gradient = CAGradientLayer()
+     gradient.colors = [UIColor.red.cgColor, UIColor.blue.cgColor]
+     let gradientView3 = GradientView(gradient: gradient)
+     */
+    let gradient : CAGradientLayer
+
+    init(gradient: CAGradientLayer) {
+        self.gradient = gradient
+        super.init(frame: .zero)
+        self.gradient.frame = self.bounds
+        self.layer.insertSublayer(self.gradient, at: 0)
+    }
+
+    convenience init(colors: [UIColor], locations:[Float] = [0.0, 1.0]) {
+        let gradient = CAGradientLayer()
+        gradient.colors = colors.map { $0.cgColor }
+        gradient.locations = locations.map { NSNumber(value: $0) }
+        self.init(gradient: gradient)
+    }
+
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
+        self.gradient.frame = self.bounds
+    }
+
+    required init?(coder: NSCoder) { fatalError("no init(coder:)") }
 }

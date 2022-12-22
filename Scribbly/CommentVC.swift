@@ -25,11 +25,7 @@ class CommentVC: UIViewController {
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
-        if (traitCollection.userInterfaceStyle == .light) {
-            config.baseBackgroundColor = Constants.comment_light_bg
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            config.baseBackgroundColor = Constants.comment_dark_bg
-        }
+        config.baseBackgroundColor = bg_color
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -42,31 +38,79 @@ class CommentVC: UIViewController {
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
          
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        if (traitCollection.userInterfaceStyle == .light) {
-            cv.backgroundColor = Constants.comment_light_bg
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            cv.backgroundColor = Constants.comment_dark_bg
-        }
+        cv.backgroundColor = bg_color
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
+    }()
+    
+    private lazy var input_view: UIView = {
+        let view = UIView()
+        
+        let img = UIImageView(image: main_user.getPFP())
+        img.contentMode = .scaleAspectFill
+        img.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
+        img.layer.masksToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        
+        let txt_field = UITextField()
+        txt_field.placeholder = "add a comment as @" + main_user.getUserName()
+        txt_field.textColor = .label
+        txt_field.font = Constants.comment_cell_text_font
+        txt_field.translatesAutoresizingMaskIntoConstraints = false
+        
+        var gradient: GradientView = GradientView(colors: [
+            .clear,
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.4),
+            UIColor(red: 0, green: 0, blue: 0, alpha: 0.9),
+            .black], locations: [0,0.2,0.5,1])
+        if (traitCollection.userInterfaceStyle == . light) {
+            gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.comment_light_bg], locations: [0,0.3,1])
+        }
+        gradient.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(gradient)
+        view.addSubview(img)
+        view.addSubview(txt_field)
+        
+        NSLayoutConstraint.activate([
+            gradient.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gradient.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            gradient.topAnchor.constraint(equalTo: view.topAnchor),
+            gradient.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            img.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_input_pfp_side),
+            img.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.comment_input_pfp_top),
+            img.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            img.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            
+            txt_field.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.comment_input_txt_side),
+            txt_field.centerYAnchor.constraint(equalTo: img.centerYAnchor),
+            txt_field.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side)
+        ])
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     // ------------ Fields (data) ------------
     private let post: Post
     private var comments: [Comment]
     private let main_user: User
+    private var bg_color: UIColor?
     
     // ------------ Functions ------------
     override func viewDidLoad() {
         super.viewDidLoad()
         if (traitCollection.userInterfaceStyle == .light) {
-            view.backgroundColor = Constants.comment_light_bg
+            bg_color = Constants.comment_light_bg
         } else if (traitCollection.userInterfaceStyle == .dark) {
-            view.backgroundColor = Constants.comment_dark_bg
+            bg_color = Constants.comment_dark_bg
         }
+        view.backgroundColor = bg_color
         title = "comments"
         
         view.addSubview(reply_cv)
+        view.addSubview(input_view)
         
         setupCollectionView()
         setupNavBar()
@@ -77,6 +121,7 @@ class CommentVC: UIViewController {
         self.post = post
         self.main_user = main_user
         self.comments = post.getComments()
+        self.bg_color = nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -102,11 +147,7 @@ class CommentVC: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
         
         let appearance = UINavigationBarAppearance()
-        if (traitCollection.userInterfaceStyle == .light) {
-            appearance.backgroundColor = Constants.comment_light_bg
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            appearance.backgroundColor = Constants.comment_dark_bg
-        }
+        appearance.backgroundColor = bg_color
         appearance.shadowColor = .clear
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
@@ -118,6 +159,11 @@ class CommentVC: UIViewController {
             reply_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
             reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
             reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            input_view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height),
         ])
     }
     
