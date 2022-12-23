@@ -15,6 +15,7 @@
 		2E0C089D294F17A10021C2D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089C294F17A10021C2D9 /* User.swift */; };
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
 		2E5360C72950596F00C7A8CA /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5360C62950596F00C7A8CA /* ProfileVC.swift */; };
+		2E553EB4295595A300A40575 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
 		2ED4F1152953669B00E66E5F /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment.swift */; };
@@ -33,6 +34,7 @@
 		2E0C089C294F17A10021C2D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		2E5360C62950596F00C7A8CA /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
+		2E553EB3295595A300A40575 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ED4F1142953669B00E66E5F /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -70,19 +72,17 @@
 		2E0C0884294F15290021C2D9 /* Scribbly */ = {
 			isa = PBXGroup;
 			children = (
+				2E553EB62955960600A40575 /* Views */,
+				2E553EB5295595DD00A40575 /* VCs */,
 				2E0C08A0294F28470021C2D9 /* Images */,
 				2E0C089B294F17800021C2D9 /* Models */,
-				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
-				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
 				2E77F7DE294FAC2100D6E8D0 /* Constants.swift */,
-				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
-				2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */,
-				2EED0C852952D09F009BA4CE /* CommentVC.swift */,
-				2ED4F1162953711A00E66E5F /* CommentCells.swift */,
-				2E5360C62950596F00C7A8CA /* ProfileVC.swift */,
+				2E553EB3295595A300A40575 /* Extensions.swift */,
 				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
 				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
 				2E0C0893294F152A0021C2D9 /* Info.plist */,
+				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
+				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
 			);
 			path = Scribbly;
 			sourceTree = "<group>";
@@ -102,6 +102,25 @@
 			children = (
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		2E553EB5295595DD00A40575 /* VCs */ = {
+			isa = PBXGroup;
+			children = (
+				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
+				2EED0C852952D09F009BA4CE /* CommentVC.swift */,
+				2E5360C62950596F00C7A8CA /* ProfileVC.swift */,
+			);
+			path = VCs;
+			sourceTree = "<group>";
+		};
+		2E553EB62955960600A40575 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */,
+				2ED4F1162953711A00E66E5F /* CommentCells.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,6 +200,7 @@
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment.swift in Sources */,
+				2E553EB4295595A300A40575 /* Extensions.swift in Sources */,
 				2E5360C72950596F00C7A8CA /* ProfileVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,

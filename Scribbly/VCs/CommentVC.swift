@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentVC: UIViewController {
+class CommentVC: UIViewController, UITextFieldDelegate {
 
     // ------------ Fields (view) ------------
     private let title_lbl: UILabel = {
@@ -45,6 +45,7 @@ class CommentVC: UIViewController {
     
     private lazy var input_view: UIView = {
         let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         
         let img = UIImageView(image: main_user.getPFP())
         img.contentMode = .scaleAspectFill
@@ -56,6 +57,8 @@ class CommentVC: UIViewController {
         txt_field.placeholder = "add a comment as @" + main_user.getUserName()
         txt_field.textColor = .label
         txt_field.font = Constants.comment_cell_text_font
+        txt_field.tintColor = .label
+        txt_field.delegate = self
         txt_field.translatesAutoresizingMaskIntoConstraints = false
         
         var gradient: GradientView = GradientView(colors: [
@@ -87,8 +90,6 @@ class CommentVC: UIViewController {
             txt_field.centerYAnchor.constraint(equalTo: img.centerYAnchor),
             txt_field.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side)
         ])
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -109,12 +110,22 @@ class CommentVC: UIViewController {
         view.backgroundColor = bg_color
         title = "comments"
         
+        hideKeyboardWhenTappedAround()  // For dismissing keyboard
+        
+        
         view.addSubview(reply_cv)
         view.addSubview(input_view)
         
         setupCollectionView()
         setupNavBar()
         setupConstraints()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     init(post: Post, main_user: User) {
@@ -128,7 +139,7 @@ class CommentVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+       
     private func setupCollectionView() {
         reply_cv.delegate = self
         reply_cv.dataSource = self
@@ -160,7 +171,7 @@ class CommentVC: UIViewController {
             reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
             reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            input_view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height),
