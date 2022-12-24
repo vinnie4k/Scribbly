@@ -18,7 +18,7 @@ extension UIViewController {
     }
 
     @objc func hideKeyboard() {
-        view.endEditing(true)
+        self.view.endEditing(true)
     }
     
     @objc func textFieldShouldReturn(_ textField: UITextField) -> Bool {

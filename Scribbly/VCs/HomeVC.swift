@@ -201,10 +201,6 @@ class HomeVC: UIViewController {
     }
 }
 
-extension HomeVC: UICollectionViewDelegate {
-    // TODO: didSelectItemAt
-}
-
 extension HomeVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count

@@ -80,6 +80,7 @@ struct Constants {
     
     // ------------ CommentCollectionView ------------
     static let comment_cv_top_padding = CGFloat(15)
+    static let comment_cv_bot_padding = CGFloat(40)
     static let comment_cv_side_padding = CGFloat(15)
     static let comment_cv_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
     static let comment_cv_spacing = CGFloat(10)

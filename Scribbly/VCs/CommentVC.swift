@@ -73,6 +73,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         config.baseBackgroundColor = Constants.comment_input_dark
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.isUserInteractionEnabled = false
         btn.isHidden = true
         return btn
     }()
@@ -124,7 +125,6 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     
     // ------------ Fields (data) ------------
     private let post: Post
-    private var comments: [Comment]
     private let main_user: User
     private var bg_color: UIColor?
     private var change: [NSLayoutConstraint]
@@ -162,7 +162,6 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     init(post: Post, main_user: User) {
         self.post = post
         self.main_user = main_user
-        self.comments = post.getComments()
         self.bg_color = nil
         self.change = []
         super.init(nibName: nil, bundle: nil)
@@ -173,10 +172,11 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func sendComment() {
-        if let text = txt_field.text {
-            if text.count != 0 {
-                post.addComment(comment_user: main_user, text: text)
-            }
+        if let text = txt_field.text, !text.isEmpty {
+            post.addComment(comment_user: main_user, text: text)
+            hideKeyboard()
+            txt_field.text = ""
+            reply_cv.reloadData()
         }
     }
     
@@ -250,7 +250,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
             reply_cv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.comment_cv_top_padding),
             reply_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
             reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
-            reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.comment_cv_bot_padding),
             
             input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -281,17 +281,17 @@ extension CommentVC: UICollectionViewDataSource {
         if (section == 0) {
             return 0
         }
-        return comments[section - 1].getReplies().count
+        return post.getComments()[section - 1].getReplies().count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return comments.count + 1
+        return post.getComments().count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section != 0 {
             if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
-                let rep = comments[indexPath.section - 1].getReplies()[indexPath.row]
+                let rep = post.getComments()[indexPath.section - 1].getReplies()[indexPath.row]
                 if (traitCollection.userInterfaceStyle == .light) {
                     cell.backgroundColor = Constants.comment_cell_light
                 } else if (traitCollection.userInterfaceStyle == .dark) {
@@ -322,7 +322,7 @@ extension CommentVC: UICollectionViewDataSource {
                     header.backgroundColor = Constants.comment_cell_dark
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
-                let comment = comments[indexPath.section - 1]
+                let comment = post.getComments()[indexPath.section - 1]
                 header.configure(text: comment.getText(), user: comment.getUser(), vc: self)
                 return header
             }
@@ -344,7 +344,7 @@ extension CommentVC: UICollectionViewDataSource {
         }
         var height: CGFloat = 999
         let padding: CGFloat = 65
-        let text = comments[section - 1].getText()
+        let text = post.getComments()[section - 1].getText()
         height = estimateFrameForText(text: text).height + padding
         return CGSize(width: Constants.comment_cell_text_width, height: height)
     }
@@ -363,7 +363,7 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
             // PLEASE DO NOT TOUCH THIS
             var height: CGFloat = 999
             let padding: CGFloat = 65
-            let rep = comments[indexPath.section - 1].getReplies()[indexPath.row].getText()
+            let rep = post.getComments()[indexPath.section - 1].getReplies()[indexPath.row].getText()
             height = estimateFrameForText(text: rep.string).height + padding
             return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
         }
