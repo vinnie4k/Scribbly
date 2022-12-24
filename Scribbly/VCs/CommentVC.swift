@@ -50,6 +50,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         txt_field.font = Constants.comment_cell_text_font
         txt_field.tintColor = .label
         txt_field.delegate = self
+        txt_field.addTarget(self, action: #selector(changeSendButtonColor), for: UIControl.Event.editingChanged)
         txt_field.translatesAutoresizingMaskIntoConstraints = false
         return txt_field
     }()
@@ -65,10 +66,10 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     
     private lazy var comment_btn: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(sendComment), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
-        config.image = UIImage(named: "comment_send")
-        config.baseForegroundColor = .label
+        config.image = UIImage(named: "comment_send_gray")
         config.baseBackgroundColor = Constants.comment_input_dark
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -151,10 +152,6 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         setupConstraints()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -173,6 +170,24 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func sendComment() {
+        if let text = txt_field.text {
+            if text.count != 0 {
+                post.addComment(comment_user: main_user, text: text)
+            }
+        }
+    }
+    
+    @objc private func changeSendButtonColor(sender: UITextField) {
+        if let text = sender.text, !text.isEmpty {
+            comment_btn.isUserInteractionEnabled = true
+            comment_btn.configuration?.image = UIImage(named: "comment_send_white")
+        } else {
+            comment_btn.isUserInteractionEnabled = false
+            comment_btn.configuration?.image = UIImage(named: "comment_send_gray")
+        }
     }
     
     private func changeCommentView(pop: Bool) {
