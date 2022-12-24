@@ -38,6 +38,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
          
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         cv.backgroundColor = bg_color
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
