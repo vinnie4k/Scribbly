@@ -51,6 +51,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         txt_field.tintColor = .label
         txt_field.delegate = self
         txt_field.addTarget(self, action: #selector(changeSendButtonColor), for: UIControl.Event.editingChanged)
+        txt_field.keyboardType = UIKeyboardType.twitter
         txt_field.translatesAutoresizingMaskIntoConstraints = false
         return txt_field
     }()
