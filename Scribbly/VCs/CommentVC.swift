@@ -185,11 +185,16 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     @objc private func sendComment() {
         if let text = txt_field.text, !text.isEmpty {
             if is_reply {
-                let length = (prev_comment?.getUser().getUserName().count)! + 2
-                let index = text.index(text.startIndex, offsetBy: length)
-                let rep = text[index...]
-                prev_comment?.addReply(text: String(rep), prev: nil, reply_user: main_user)
-                // Add reply here
+                let username = "@" + (prev_comment?.getUser().getUserName())! + " "
+                
+                if text.contains(username) {
+                    let length = (prev_comment?.getUser().getUserName().count)! + 2
+                    let index = text.index(text.startIndex, offsetBy: length)
+                    let rep = text[index...]
+                    prev_comment?.addReply(text: String(rep), prev: nil, reply_user: main_user)
+                } else {
+                    prev_comment?.addReply(text: text, prev: nil, reply_user: main_user)
+                }
                 is_reply = false    // Set back to false
                 prev_comment = nil  // Set back to nil
             } else {
