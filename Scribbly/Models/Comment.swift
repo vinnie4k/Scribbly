@@ -16,6 +16,12 @@ class Comment {
     private var replies: [Reply]
     
     // ------------ Getters/Setters ------------
+    func removeReply(reply: Reply) {
+        if let index = replies.firstIndex(where: {$0 === reply}) {
+            replies.remove(at: index)
+        }
+    }
+    
     func addReply(text: String, prev: Reply?, reply_user: User) {
         if let prev = prev {
             let bold = "@" + prev.getReplyUser().getUserName()

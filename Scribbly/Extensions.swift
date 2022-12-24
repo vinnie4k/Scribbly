@@ -10,9 +10,11 @@ import UIKit
 /**
  Delegation
  */
-protocol SendReplyDelegate {
+
+protocol CommentDelegate {
     func sendReplyComment(comment: Comment)
     func sendReplyReply(comment: Comment, reply: Reply)
+    func deleteComment(comment: Comment)
 }
 
 extension UIViewController {

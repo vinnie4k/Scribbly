@@ -18,6 +18,12 @@ class Post {
     private var comments: [Comment]
     
     // ------------ Getters/Setters ------------
+    func removeComment(comment: Comment) {
+        if let index = comments.firstIndex(where: {$0 === comment}) {
+            comments.remove(at: index)
+        }
+    }
+    
     func addComment(comment_user: User, text: String) {
         let cmt = Comment(post: self, text: text, user: comment_user)
         comments.append(cmt)

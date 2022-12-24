@@ -44,7 +44,7 @@ class DrawingHeaderView: UICollectionReusableView {
     }
 }
 
-class CommentHeaderView: UICollectionReusableView {
+class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDelegate {
     // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {
         let btn = UIButton()
@@ -85,7 +85,8 @@ class CommentHeaderView: UICollectionReusableView {
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
     private var comment: Comment? = nil
-    var delegate: SendReplyDelegate?
+    private var main_user: User? = nil
+    var delegate: CommentDelegate?
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -96,11 +97,36 @@ class CommentHeaderView: UICollectionReusableView {
         addSubview(user_pfp)
         addSubview(reply_btn)
         
+        let interaction = UIContextMenuInteraction(delegate: self)
+        addInteraction(interaction)
+        
         setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            
+            let copyAction =
+                UIAction(title: NSLocalizedString("Copy", comment: "")) { action in
+                    UIPasteboard.general.string = self.comment?.getText()
+                }
+                
+            if (self.comment?.getUser() === self.main_user) {
+                let deleteAction =
+                    UIAction(title: NSLocalizedString("Delete", comment: ""),
+                             image: UIImage(systemName: "trash"),
+                             attributes: .destructive) { action in
+                        self.delegate?.deleteComment(comment: self.comment!)
+                    }
+                return UIMenu(title: "", children: [copyAction, deleteAction])
+            }
+            return UIMenu(title: "", children: [copyAction])
+        })
     }
     
     @objc private func sendReply() {
@@ -113,7 +139,7 @@ class CommentHeaderView: UICollectionReusableView {
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
-    func configure(vc: UIViewController, comment: Comment) {
+    func configure(vc: UIViewController, comment: Comment, main_user: User) {
         self.text.text = comment.getText()
         display_name.text = comment.getUser().getUserName()
         user_pfp.setImage(comment.getUser().getPFP(), for: .normal)
@@ -122,6 +148,7 @@ class CommentHeaderView: UICollectionReusableView {
         
         self.parent_vc = vc
         self.comment = comment
+        self.main_user = main_user
     }
     
     private func setupConstraints() {
@@ -187,7 +214,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     private var parent_vc: UIViewController? = nil
     private var comment: Comment? = nil
     private var reply: Reply? = nil
-    var delegate: SendReplyDelegate?
+    var reply_delegate: CommentDelegate?
     
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -207,7 +234,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     
     @objc private func sendReply() {
         // For delegation
-        delegate?.sendReplyReply(comment: comment!, reply: reply!)
+        reply_delegate?.sendReplyReply(comment: comment!, reply: reply!)
     }
     
     @objc private func pushProfileVC() {

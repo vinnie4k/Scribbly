@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
+class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
 
     // ------------ Fields (view) ------------
     private let title_lbl: UILabel = {
@@ -33,10 +33,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     }()
     
     private lazy var reply_cv: UICollectionView = {
-        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
          
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
@@ -179,6 +177,16 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+                                                  
+    @objc private func removeCell() {
+        print("hi")
+    }
+    
+    func deleteComment(comment: Comment) {
+        // For delegation
+        post.removeComment(comment: comment)
+        reply_cv.reloadData()
     }
     
     func sendReplyReply(comment: Comment, reply: Reply) {
@@ -375,12 +383,11 @@ extension CommentVC: UICollectionViewDataSource {
                 }
                 cell.layer.cornerRadius = Constants.comment_cell_corner
                 cell.configure(vc: self, comment: comment, reply: rep)
-                cell.delegate = self
+                cell.reply_delegate = self
                 return cell
             }
         }
-        return UICollectionViewCell()
-        
+        return UICollectionViewListCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -400,10 +407,8 @@ extension CommentVC: UICollectionViewDataSource {
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = post.getComments()[indexPath.section - 1]
-                header.configure(vc: self, comment: comment)
-                
+                header.configure(vc: self, comment: comment, main_user: main_user)
                 header.delegate = self
-                
                 return header
             }
         }
@@ -432,7 +437,6 @@ extension CommentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return Constants.comment_cv_spacing
     }
-    
 }
 
 extension CommentVC: UICollectionViewDelegateFlowLayout {
@@ -450,8 +454,36 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension CommentVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView,
+                                 contextMenuConfigurationForItemAt indexPath: IndexPath,
+                                 point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
+            let comment = self.post.getComments()[indexPath.section - 1]
+            let rep = comment.getReplies()[indexPath.row]
+            
+            let copyAction =
+                UIAction(title: NSLocalizedString("Copy", comment: "")) { action in
+                    UIPasteboard.general.string = rep.getText().string
+                }
+            
+            if (rep.getReplyUser() === self.main_user) {
+                let deleteAction =
+                    UIAction(title: NSLocalizedString("Delete", comment: ""),
+                             image: UIImage(systemName: "trash"),
+                             attributes: .destructive) { action in
+
+                        comment.removeReply(reply: rep)
+                        self.reply_cv.reloadData()
+                    }
+                return UIMenu(title: "", children: [copyAction, deleteAction])
+            }
+            return UIMenu(title: "", children: [copyAction])
+        }
+    }
+}
+
 extension CommentVC {
-    
     private func addConstr(lst: [NSLayoutConstraint]) {
         // Deactivates all the old constraints in the list
         // Activate the new constraints and add to the list
