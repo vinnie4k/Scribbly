@@ -228,6 +228,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
         } else {
             is_reply = false
             prev_comment = nil
+            txt_field.text = ""
             
             input_view.backgroundColor = .none
             comment_btn.isHidden = true
