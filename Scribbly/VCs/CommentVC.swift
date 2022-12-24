@@ -33,6 +33,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     }()
     
     private lazy var reply_cv: UICollectionView = {
+        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -155,7 +156,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
         
         view.addSubview(reply_cv)
         view.addSubview(input_view)
-        
+    
         setupCollectionView()
         setupNavBar()
         setupConstraints()
@@ -447,7 +448,6 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
             return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
         }
     }
-    
 }
 
 extension CommentVC {
