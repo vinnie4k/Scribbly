@@ -85,10 +85,16 @@ struct Constants {
     static let comment_cv_spacing = CGFloat(10)
     
     // ------------ Comment Input ------------
-    static let comment_input_height = CGFloat(70)
+    static let comment_input_height_gradient = CGFloat(70)
     static let comment_input_pfp_side = CGFloat(15)
     static let comment_input_pfp_top = CGFloat(25)
     static let comment_input_txt_side = CGFloat(10)
+    static let comment_input_corner = CGFloat(15)
+
+    static let comment_input_dark = UIColor(red: 0.192, green: 0.192, blue: 0.196, alpha: 1)
+    static let comment_input_height_normal = CGFloat(60)
+    static let comment_input_pfp_top2 = CGFloat(11)
+    static let comment_input_btn_radius = CGFloat(15)
     
     // ------------ CommentHeaderView & CommentTableViewCell ------------
     static let comment_cell_pfp_radius = CGFloat(15)

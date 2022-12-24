@@ -43,16 +43,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         return cv
     }()
     
-    private lazy var input_view: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        let img = UIImageView(image: main_user.getPFP())
-        img.contentMode = .scaleAspectFill
-        img.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
-        img.layer.masksToBounds = true
-        img.translatesAutoresizingMaskIntoConstraints = false
-        
+    private lazy var txt_field: UITextField = {
         let txt_field = UITextField()
         txt_field.placeholder = "add a comment as @" + main_user.getUserName()
         txt_field.textColor = .label
@@ -60,8 +51,33 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         txt_field.tintColor = .label
         txt_field.delegate = self
         txt_field.translatesAutoresizingMaskIntoConstraints = false
-        
-        var gradient: GradientView = GradientView(colors: [
+        return txt_field
+    }()
+    
+    private lazy var profile_img: UIImageView = {
+        let img = UIImageView(image: main_user.getPFP())
+        img.contentMode = .scaleAspectFill
+        img.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
+        img.layer.masksToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+    
+    private lazy var comment_btn: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.image = UIImage(named: "comment_send")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = Constants.comment_input_dark
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.isHidden = true
+        return btn
+    }()
+    
+    private lazy var gradient: GradientView = {
+        var gradient = GradientView(colors: [
             .clear,
             UIColor(red: 0, green: 0, blue: 0, alpha: 0.4),
             UIColor(red: 0, green: 0, blue: 0, alpha: 0.9),
@@ -70,26 +86,38 @@ class CommentVC: UIViewController, UITextFieldDelegate {
             gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.comment_light_bg], locations: [0,0.3,1])
         }
         gradient.translatesAutoresizingMaskIntoConstraints = false
+        return gradient
+    }()
+    
+    private lazy var input_view: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = Constants.comment_input_corner
 
         view.addSubview(gradient)
-        view.addSubview(img)
         view.addSubview(txt_field)
-        
+        view.addSubview(profile_img)
+        view.addSubview(comment_btn)
+
         NSLayoutConstraint.activate([
             gradient.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradient.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gradient.topAnchor.constraint(equalTo: view.topAnchor),
             gradient.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            img.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_input_pfp_side),
-            img.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.comment_input_pfp_top),
-            img.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
-            img.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
-            
-            txt_field.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.comment_input_txt_side),
-            txt_field.centerYAnchor.constraint(equalTo: img.centerYAnchor),
-            txt_field.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side)
+
+            profile_img.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_input_pfp_side),
+            profile_img.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            profile_img.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+
+            txt_field.centerYAnchor.constraint(equalTo: profile_img.centerYAnchor),
+            txt_field.leadingAnchor.constraint(equalTo: profile_img.trailingAnchor, constant: Constants.comment_input_txt_side),
+
+            comment_btn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
+            comment_btn.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.comment_input_pfp_top2),
+            comment_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
+            comment_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
         ])
+        
         return view
     }()
     
@@ -98,6 +126,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     private var comments: [Comment]
     private let main_user: User
     private var bg_color: UIColor?
+    private var change: [NSLayoutConstraint]
     
     // ------------ Functions ------------
     override func viewDidLoad() {
@@ -111,7 +140,8 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         title = "comments"
         
         hideKeyboardWhenTappedAround()  // For dismissing keyboard
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         view.addSubview(reply_cv)
         view.addSubview(input_view)
@@ -119,6 +149,10 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         setupCollectionView()
         setupNavBar()
         setupConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -133,13 +167,45 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         self.main_user = main_user
         self.comments = post.getComments()
         self.bg_color = nil
+        self.change = []
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-       
+    
+    private func changeCommentView(pop: Bool) {
+        if (pop) { // Keyboard pops up
+            input_view.backgroundColor = Constants.comment_input_dark
+            gradient.isHidden = true
+            comment_btn.isHidden = false
+
+            addConstr(lst: [
+                input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: Constants.comment_input_pfp_top2),
+                input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_normal),
+                
+                profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top2),
+                                
+                txt_field.trailingAnchor.constraint(equalTo: comment_btn.leadingAnchor, constant: -Constants.comment_input_pfp_side)
+            ])
+        } else {
+            input_view.backgroundColor = .none
+            comment_btn.isHidden = true
+            gradient.isHidden = false
+
+            addConstr(lst: [
+                input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+                input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
+                
+                profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top),
+                
+                txt_field.trailingAnchor.constraint(equalTo: input_view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
+            ])
+        }
+        
+    }
+    
     private func setupCollectionView() {
         reply_cv.delegate = self
         reply_cv.dataSource = self
@@ -171,10 +237,16 @@ class CommentVC: UIViewController, UITextFieldDelegate {
             reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
             reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height),
+        ])
+        
+        addConstr(lst: [
+            input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
+            
+            profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top),
+            txt_field.trailingAnchor.constraint(equalTo: input_view.trailingAnchor, constant: -Constants.comment_input_pfp_side)
         ])
     }
     
@@ -187,10 +259,6 @@ class CommentVC: UIViewController, UITextFieldDelegate {
 
         return NSString(string: text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
     }
-}
-
-extension CommentVC: UICollectionViewDelegate {
-    // TODO: didSelectItemAt
 }
 
 extension CommentVC: UICollectionViewDataSource {
@@ -286,4 +354,27 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
         }
     }
     
+}
+
+extension CommentVC {
+    
+    private func addConstr(lst: [NSLayoutConstraint]) {
+        // Deactivates all the old constraints in the list
+        // Activate the new constraints and add to the list
+        for constr in change {
+            constr.isActive = false
+        }
+        for i in lst {
+            i.isActive = true
+            change.append(i)
+        }
+    }
+    
+    @objc func keyboardWillShow(notification: Notification) {
+        changeCommentView(pop: true)
+    }
+    
+    @objc func keyboardWillHide(notification: Notification) {
+        changeCommentView(pop: false)
+    }
 }
