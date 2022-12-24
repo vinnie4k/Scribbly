@@ -12,6 +12,7 @@ import UIKit
  */
 protocol SendReplyDelegate {
     func sendReplyComment(comment: Comment)
+    func sendReplyReply(comment: Comment, reply: Reply)
 }
 
 extension UIViewController {

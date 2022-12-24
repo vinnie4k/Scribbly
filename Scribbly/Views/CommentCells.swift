@@ -185,6 +185,9 @@ class CommentCollectionViewCell: UICollectionViewCell {
     
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
+    private var comment: Comment? = nil
+    private var reply: Reply? = nil
+    var delegate: SendReplyDelegate?
     
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -202,17 +205,25 @@ class CommentCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc private func sendReply() {
+        // For delegation
+        delegate?.sendReplyReply(comment: comment!, reply: reply!)
+    }
+    
     @objc private func pushProfileVC() {
         let profile_vc = ProfileVC()
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
-    func configure(text: NSAttributedString, user: User, vc: UIViewController) {
-        self.text.attributedText = text
-        display_name.text = user.getUserName()
-        user_pfp.setImage(user.getPFP(), for: .normal)
+    func configure(vc: UIViewController, comment: Comment, reply: Reply) {
+        self.text.attributedText = reply.getText()
+        display_name.text = reply.getReplyUser().getUserName()
+        user_pfp.setImage(reply.getReplyUser().getPFP(), for: .normal)
         user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
-        parent_vc = vc
+        reply_btn.addTarget(self, action: #selector(sendReply), for: .touchUpInside)
+        self.parent_vc = vc
+        self.comment = comment
+        self.reply = reply
     }
     
     private func setupConstraints() {

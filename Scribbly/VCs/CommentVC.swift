@@ -128,8 +128,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     private let main_user: User
     private var bg_color: UIColor?
     private var change: [NSLayoutConstraint]
-    private var is_reply: Bool = false
     private var prev_comment: Comment? = nil
+    private var prev_reply: Reply? = nil
     
     // ------------ Functions ------------
     override func viewDidLoad() {
@@ -173,18 +173,38 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func sendReplyReply(comment: Comment, reply: Reply) {
+        // For delegation
+        txt_field.becomeFirstResponder()
+        txt_field.text = "@" + reply.getReplyUser().getUserName() + " "
+        prev_comment = comment
+        prev_reply = reply
+    }
+        
     func sendReplyComment(comment: Comment) {
         // For delegation
-        print("hi")
         txt_field.becomeFirstResponder()
         txt_field.text = "@" + comment.getUser().getUserName() + " "
-        is_reply = true
         prev_comment = comment
+        prev_reply = nil
     }
     
     @objc private func sendComment() {
         if let text = txt_field.text, !text.isEmpty {
-            if is_reply {
+            if prev_comment != nil, prev_reply != nil {
+                let username = "@" + (prev_reply?.getReplyUser().getUserName())! + " "
+                
+                if text.contains(username) {
+                    let length = (prev_reply?.getReplyUser().getUserName().count)! + 2
+                    let index = text.index(text.startIndex, offsetBy: length)
+                    let rep = text[index...]
+                    prev_comment?.addReply(text: String(rep), prev: prev_reply, reply_user: main_user)
+                } else {
+                    prev_comment?.addReply(text: text, prev: prev_reply, reply_user: main_user)
+                }
+                prev_comment = nil  // Set back to nil
+                prev_reply = nil    // Set back to nil
+            } else if prev_comment != nil {
                 let username = "@" + (prev_comment?.getUser().getUserName())! + " "
                 
                 if text.contains(username) {
@@ -195,7 +215,6 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
                 } else {
                     prev_comment?.addReply(text: text, prev: nil, reply_user: main_user)
                 }
-                is_reply = false    // Set back to false
                 prev_comment = nil  // Set back to nil
             } else {
                 post.addComment(comment_user: main_user, text: text)
@@ -231,9 +250,11 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
                 txt_field.trailingAnchor.constraint(equalTo: comment_btn.leadingAnchor, constant: -Constants.comment_input_pfp_side)
             ])
         } else {
-            is_reply = false
             prev_comment = nil
+            prev_reply =  nil
             txt_field.text = ""
+            comment_btn.isUserInteractionEnabled = false
+            comment_btn.configuration?.image = UIImage(named: "comment_send_gray")
             
             input_view.backgroundColor = .none
             comment_btn.isHidden = true
@@ -321,14 +342,16 @@ extension CommentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section != 0 {
             if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
-                let rep = post.getComments()[indexPath.section - 1].getReplies()[indexPath.row]
+                let comment = post.getComments()[indexPath.section - 1]
+                let rep = comment.getReplies()[indexPath.row]
                 if (traitCollection.userInterfaceStyle == .light) {
                     cell.backgroundColor = Constants.comment_cell_light
                 } else if (traitCollection.userInterfaceStyle == .dark) {
                     cell.backgroundColor = Constants.comment_cell_dark
                 }
                 cell.layer.cornerRadius = Constants.comment_cell_corner
-                cell.configure(text: rep.getText(), user: rep.getReplyUser(), vc: self)
+                cell.configure(vc: self, comment: comment, reply: rep)
+                cell.delegate = self
                 return cell
             }
         }
