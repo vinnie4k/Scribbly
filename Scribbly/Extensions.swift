@@ -7,6 +7,13 @@
 
 import UIKit
 
+/**
+ Delegation
+ */
+protocol SendReplyDelegate {
+    func sendReplyComment(comment: Comment)
+}
+
 extension UIViewController {
     /**
      For dimissing the keyboard

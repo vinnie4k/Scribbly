@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentVC: UIViewController, UITextFieldDelegate {
+class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
 
     // ------------ Fields (view) ------------
     private let title_lbl: UILabel = {
@@ -128,6 +128,8 @@ class CommentVC: UIViewController, UITextFieldDelegate {
     private let main_user: User
     private var bg_color: UIColor?
     private var change: [NSLayoutConstraint]
+    private var is_reply: Bool = false
+    private var prev_comment: Comment? = nil
     
     // ------------ Functions ------------
     override func viewDidLoad() {
@@ -139,7 +141,7 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         }
         view.backgroundColor = bg_color
         title = "comments"
-        
+               
         hideKeyboardWhenTappedAround()  // For dismissing keyboard
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -171,9 +173,28 @@ class CommentVC: UIViewController, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func sendReplyComment(comment: Comment) {
+        // For delegation
+        print("hi")
+        txt_field.becomeFirstResponder()
+        txt_field.text = "@" + comment.getUser().getUserName() + " "
+        is_reply = true
+        prev_comment = comment
+    }
+    
     @objc private func sendComment() {
         if let text = txt_field.text, !text.isEmpty {
-            post.addComment(comment_user: main_user, text: text)
+            if is_reply {
+                let length = (prev_comment?.getUser().getUserName().count)! + 2
+                let index = text.index(text.startIndex, offsetBy: length)
+                let rep = text[index...]
+                prev_comment?.addReply(text: String(rep), prev: nil, reply_user: main_user)
+                // Add reply here
+                is_reply = false    // Set back to false
+                prev_comment = nil  // Set back to nil
+            } else {
+                post.addComment(comment_user: main_user, text: text)
+            }
             hideKeyboard()
             txt_field.text = ""
             reply_cv.reloadData()
@@ -205,6 +226,9 @@ class CommentVC: UIViewController, UITextFieldDelegate {
                 txt_field.trailingAnchor.constraint(equalTo: comment_btn.leadingAnchor, constant: -Constants.comment_input_pfp_side)
             ])
         } else {
+            is_reply = false
+            prev_comment = nil
+            
             input_view.backgroundColor = .none
             comment_btn.isHidden = true
             gradient.isHidden = false
@@ -323,7 +347,10 @@ extension CommentVC: UICollectionViewDataSource {
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = post.getComments()[indexPath.section - 1]
-                header.configure(text: comment.getText(), user: comment.getUser(), vc: self)
+                header.configure(vc: self, comment: comment)
+                
+                header.delegate = self
+                
                 return header
             }
         }

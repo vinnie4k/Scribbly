@@ -84,6 +84,8 @@ class CommentHeaderView: UICollectionReusableView {
     
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
+    private var comment: Comment? = nil
+    var delegate: SendReplyDelegate?
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -101,17 +103,25 @@ class CommentHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc private func sendReply() {
+        // For delegation
+        delegate?.sendReplyComment(comment: comment!)
+    }
+    
     @objc private func pushProfileVC() {
         let profile_vc = ProfileVC()
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
-    func configure(text: String, user: User, vc: UIViewController) {
-        self.text.text = text
-        display_name.text = user.getUserName()
-        user_pfp.setImage(user.getPFP(), for: .normal)
+    func configure(vc: UIViewController, comment: Comment) {
+        self.text.text = comment.getText()
+        display_name.text = comment.getUser().getUserName()
+        user_pfp.setImage(comment.getUser().getPFP(), for: .normal)
         user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
-        parent_vc = vc
+        reply_btn.addTarget(self, action: #selector(sendReply), for: .touchUpInside)
+        
+        self.parent_vc = vc
+        self.comment = comment
     }
     
     private func setupConstraints() {
