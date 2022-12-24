@@ -70,7 +70,13 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.image = UIImage(named: "comment_send_gray")
-        config.baseBackgroundColor = Constants.comment_input_dark
+        if (traitCollection.userInterfaceStyle == .dark) {
+            config.image = UIImage(named: "comment_send_gray_dark")
+            config.baseBackgroundColor = Constants.comment_input_dark
+        } else if (traitCollection.userInterfaceStyle == .light) {
+            config.image = UIImage(named: "comment_send_gray_light")
+            config.baseBackgroundColor = Constants.comment_input_light
+        }
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.isUserInteractionEnabled = false
@@ -228,16 +234,28 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
     @objc private func changeSendButtonColor(sender: UITextField) {
         if let text = sender.text, !text.isEmpty {
             comment_btn.isUserInteractionEnabled = true
-            comment_btn.configuration?.image = UIImage(named: "comment_send_white")
+            if (traitCollection.userInterfaceStyle == .dark) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_white")
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_black")
+            }
         } else {
             comment_btn.isUserInteractionEnabled = false
-            comment_btn.configuration?.image = UIImage(named: "comment_send_gray")
+            if (traitCollection.userInterfaceStyle == .dark) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_dark")
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_light")
+            }
         }
     }
     
     private func changeCommentView(pop: Bool) {
         if (pop) { // Keyboard pops up
-            input_view.backgroundColor = Constants.comment_input_dark
+            if (traitCollection.userInterfaceStyle == .dark) {
+                input_view.backgroundColor = Constants.comment_input_dark
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                input_view.backgroundColor = Constants.comment_input_light
+            }
             gradient.isHidden = true
             comment_btn.isHidden = false
 
@@ -254,7 +272,11 @@ class CommentVC: UIViewController, UITextFieldDelegate, SendReplyDelegate {
             prev_reply =  nil
             txt_field.text = ""
             comment_btn.isUserInteractionEnabled = false
-            comment_btn.configuration?.image = UIImage(named: "comment_send_gray")
+            if (traitCollection.userInterfaceStyle == .dark) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_dark")
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_light")
+            }
             
             input_view.backgroundColor = .none
             comment_btn.isHidden = true

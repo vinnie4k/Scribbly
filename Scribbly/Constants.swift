@@ -93,6 +93,7 @@ struct Constants {
     static let comment_input_corner = CGFloat(15)
 
     static let comment_input_dark = UIColor(red: 0.192, green: 0.192, blue: 0.196, alpha: 1)
+    static let comment_input_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     static let comment_input_height_normal = CGFloat(60)
     static let comment_input_pfp_top2 = CGFloat(11)
     static let comment_input_btn_radius = CGFloat(15)
