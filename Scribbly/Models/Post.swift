@@ -18,6 +18,15 @@ class Post {
     private var bookmarked_users: [User]
     
     // ------------ Getters/Setters ------------
+    func getCommentReplyCount() -> Int {
+        var count: Int = 0
+        for comment in comments {
+            count += comment.getReplies().count
+            count += 1
+        }
+        return count
+    }
+    
     func getBookmarkCount() -> Int {
         return bookmarked_users.count
     }

@@ -137,9 +137,9 @@ class PostInfoStatsView: UIView {
         }
         
         createLikesView(like_count: post.getLikeCount(), mode: mode)
-        createCommentView(comment_count: post.getComments().count, mode: mode)
+        createCommentView(comment_count: post.getCommentReplyCount(), mode: mode)
         createBookmarkView(bookmark_count: post.getBookmarkCount(), mode: mode)
-
+        
         createStackView()
     }
     
@@ -224,7 +224,8 @@ class PostInfoStatsView: UIView {
         stack.addArrangedSubview(bookmark_view)
 
         stack.axis = .horizontal
-        stack.distribution = .equalSpacing
+        stack.distribution = .fillEqually
+        stack.spacing = Constants.post_info_stack_spacing
 
         stack.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -243,8 +244,7 @@ class PostInfoStatsView: UIView {
             caption.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.post_info_name_left),
 
             stack.topAnchor.constraint(equalTo: caption.bottomAnchor, constant: Constants.post_info_stack_top),
-//            stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_info_stack_left),
+            stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             stack.widthAnchor.constraint(equalToConstant: Constants.post_info_stack_width),
             stack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_pfp_top),
         ])
