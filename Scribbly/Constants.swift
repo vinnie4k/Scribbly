@@ -15,6 +15,7 @@ struct Constants {
     static let comment_reuse = "CommentReuse"
     static let reply_reuse = "ReplyReuse"
     static let drawing_reuse = "DrawingReuse"
+    static let prompt_reuse = "PromptReuse"
     
     // ------------ Home Page ------------
     static let border_top_padding = CGFloat(0)
@@ -22,6 +23,8 @@ struct Constants {
     static let prompt_heading_top_padding = CGFloat(20)
     static let prompt_top_padding = CGFloat(1)
     static let prompt_side_padding = CGFloat(20)
+    static let prompt_height = CGFloat(100)
+    static let prompt_width = UIScreen.main.bounds.width    
     static let profile_button_radius = CGFloat(20)
     static let search_button_width = CGFloat(40)
     static let search_button_height = CGFloat(30)

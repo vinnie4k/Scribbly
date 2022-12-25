@@ -8,22 +8,7 @@
 import UIKit
 
 class HomeVC: UIViewController {
-    // ------------ Fields (view) ------------
-    private lazy var user_post: UIImageView = {
-        let img = UIImageView()
-        if (user.getPosts().count != 0) {
-            img.image = user.getLatestPost().getDrawing()
-        } else {
-            img.image = UIImage(systemName: "plus.app")
-        }
-        img.tintColor = .label
-        img.contentMode = .scaleAspectFill
-        img.clipsToBounds = true
-        img.layer.cornerRadius = Constants.user_post_corner
-        img.translatesAutoresizingMaskIntoConstraints = false
-        return img
-    }()
-    
+    // ------------ Fields (view) ------------    
     private lazy var search_btn: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
@@ -34,7 +19,7 @@ class HomeVC: UIViewController {
         } else if (traitCollection.userInterfaceStyle == .dark) {
             config.image = UIImage(named: "search_dark")
         }
-        config.baseBackgroundColor = .systemBackground
+        config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -46,25 +31,6 @@ class HomeVC: UIViewController {
         lbl.text = "scribbly"
         lbl.textColor = .label
         lbl.font = Constants.logo_font
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-
-    private let prompt_heading: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "today's prompt"
-        lbl.textColor = .label
-        lbl.font = Constants.prompt_heading_font
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    
-    private let prompt: UILabel = {
-        let lbl = UILabel()
-        // TODO: Create a function that changes the text
-        lbl.text = "bird"
-        lbl.textColor = .label
-        lbl.font = Constants.prompt_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -85,6 +51,7 @@ class HomeVC: UIViewController {
         layout.scrollDirection = .vertical
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.contentInset = UIEdgeInsets(top: Constants.post_cv_top_padding, left: 0, bottom: 0, right: 0)
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
@@ -150,11 +117,7 @@ class HomeVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
-        // Add to view
-        view.addSubview(prompt_heading)
-        view.addSubview(prompt)
         view.addSubview(post_cv)
-        view.addSubview(user_post)
         view.addSubview(draw_view_large)
         
         // Function Calls
@@ -164,19 +127,6 @@ class HomeVC: UIViewController {
         // TODO: START REMOVE
         createPosts()
         // TODO: END REMOVE
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        setupNavBar()
-        
-        // TODO: PUT BELOW IN A HELPER
-        if (user.getPosts().count != 0) {
-            user_post.image = user.getLatestPost().getDrawing()
-        } else {
-            user_post.image = UIImage(systemName: "plus.app")
-        }
     }
     
     @objc private func reduceImage() {
@@ -198,8 +148,7 @@ class HomeVC: UIViewController {
         navigationItem.titleView = logo
         
         let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .systemBackground
-        appearance.shadowColor = .clear
+        appearance.configureWithTransparentBackground()
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
@@ -208,6 +157,7 @@ class HomeVC: UIViewController {
         post_cv.delegate = self
         post_cv.dataSource = self
         post_cv.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reuse)
+        post_cv.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prompt_reuse)
     }
     
     private func setupConstraints() {
@@ -218,18 +168,7 @@ class HomeVC: UIViewController {
             search_btn.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
             search_btn.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
             
-            prompt_heading.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prompt_heading_top_padding),
-            prompt_heading.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.prompt_side_padding),
-
-            prompt.topAnchor.constraint(equalTo: prompt_heading.bottomAnchor, constant: Constants.prompt_top_padding),
-            prompt.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.prompt_side_padding),
-            
-            user_post.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.user_post_top_padding),
-            user_post.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.user_post_side_padding),
-            user_post.widthAnchor.constraint(equalToConstant: Constants.user_post_width),
-            user_post.heightAnchor.constraint(equalToConstant: Constants.user_post_height),
-                                             
-            post_cv.topAnchor.constraint(equalTo: prompt.bottomAnchor, constant: Constants.post_cv_top_padding),
+            post_cv.topAnchor.constraint(equalTo: view.topAnchor),
             post_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
             post_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
             post_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -243,6 +182,10 @@ class HomeVC: UIViewController {
 }
 
 extension HomeVC: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
     }
@@ -258,6 +201,25 @@ extension HomeVC: UICollectionViewDataSource {
         } else {
             return UICollectionViewCell()
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
+                header.backgroundColor = .systemBackground
+                var drawing = UIImage(systemName: "plus.app")
+                if (user.getPosts().count != 0) {
+                    drawing = user.getLatestPost().getDrawing()
+                }
+                header.configure(prompt: "bird", drawing: drawing!)
+                return header
+            }
+        }
+        return UICollectionReusableView()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: Constants.prompt_width, height: Constants.prompt_height)
     }
 }
 

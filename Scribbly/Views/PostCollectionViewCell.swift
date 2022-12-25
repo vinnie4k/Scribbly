@@ -7,6 +7,75 @@
 
 import UIKit
 
+class PromptHeaderView: UICollectionReusableView {
+    // ------------ Fields (view) ------------
+    private lazy var user_post: UIImageView = {
+        let img = UIImageView()
+        img.tintColor = .label
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.user_post_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+    
+    private let prompt_heading: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "today's prompt"
+        lbl.textColor = .label
+        lbl.font = Constants.prompt_heading_font
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private let prompt: UILabel = {
+        let lbl = UILabel()
+        // TODO: Create a function that changes the text
+        lbl.textColor = .label
+        lbl.font = Constants.prompt_font
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    // ------------ Fields (data) ------------
+
+    // ------------ Functions ------------
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(prompt_heading)
+        addSubview(prompt)
+        addSubview(user_post)
+        
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(prompt: String, drawing: UIImage) {
+        self.prompt.text = prompt
+        self.user_post.image = drawing
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            prompt_heading.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.prompt_heading_top_padding),
+            prompt_heading.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prompt_side_padding),
+
+            prompt.topAnchor.constraint(equalTo: prompt_heading.bottomAnchor, constant: Constants.prompt_top_padding),
+            prompt.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prompt_side_padding),
+            
+            user_post.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.user_post_top_padding),
+            user_post.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.user_post_side_padding),
+            user_post.widthAnchor.constraint(equalToConstant: Constants.user_post_width),
+            user_post.heightAnchor.constraint(equalToConstant: Constants.user_post_height),
+        ])
+    }
+}
+
+
 class PostCollectionViewCell: UICollectionViewCell {
     
     // ------------ Fields (view) ------------

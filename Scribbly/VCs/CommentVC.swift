@@ -350,8 +350,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
         
         let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = bg_color
-        appearance.shadowColor = .clear
+        appearance.configureWithTransparentBackground()
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
