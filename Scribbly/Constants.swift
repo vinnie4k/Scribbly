@@ -57,6 +57,7 @@ struct Constants {
     static let post_cell_stack_spacing = CGFloat(15)
     static let post_cell_stack_top = CGFloat(20)
     static let post_cell_stack_side = CGFloat(-3)
+    static let post_cell_stack_width = CGFloat(40)
     static let post_cell_stack_corner = CGFloat(17)
     static let post_cell_pfp_side = CGFloat(10)
     static let post_cell_pfp_radius = CGFloat(15)

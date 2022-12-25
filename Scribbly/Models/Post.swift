@@ -8,16 +8,38 @@
 import UIKit
 
 class Post {
-    
     // ------------ Fields ------------
     private var user: User
     private var drawing: UIImage
     private var caption: String
-    private var likes: Int
     private var time: Date
     private var comments: [Comment]
+    private var liked_users: [User]
     
     // ------------ Getters/Setters ------------
+    func containsLikedUser(user: User) -> Bool {
+        for i in liked_users {
+            if i === user {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func removedLikedUsers(user: User) {
+        if let index = liked_users.firstIndex(where: {$0 === user}) {
+            liked_users.remove(at: index)
+        }
+    }
+    
+    func addLikedUsers(user: User) {
+        liked_users.append(user)
+    }
+    
+    func getLikedUsers() -> [User] {
+        return liked_users
+    }
+    
     func removeComment(comment: Comment) {
         if let index = comments.firstIndex(where: {$0 === comment}) {
             comments.remove(at: index)
@@ -45,12 +67,12 @@ class Post {
         return caption
     }
     
-    init(user: User, drawing: UIImage, caption: String, likes: Int, time: Date) {
+    init(user: User, drawing: UIImage, caption: String, time: Date) {
         self.user = user
         self.drawing = drawing
         self.caption = caption
-        self.likes = likes
         self.time = time
         self.comments = []
+        self.liked_users = []
     }
 }

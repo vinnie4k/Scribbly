@@ -25,12 +25,11 @@ class PostCollectionViewCell: UICollectionViewCell {
         return img
     }()
     
-    private let like_btn: UIButton = {
+    private lazy var like_btn: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(likePost), for: .touchUpInside)
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
-        config.image = UIImage(systemName: "heart")
-        config.baseForegroundColor = .label
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -42,8 +41,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         let btn = UIButton()
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
-        config.image = UIImage(systemName: "text.bubble")
-        config.baseForegroundColor = .label
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -55,8 +52,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         let btn = UIButton()
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
-        config.image = UIImage(systemName: "paperplane")
-        config.baseForegroundColor = .label
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -68,8 +63,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         let btn = UIButton()
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
-        config.image = UIImage(systemName: "text.book.closed")
-        config.baseForegroundColor = .label
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -119,6 +112,29 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func likePost() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.like_btn.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        }, completion: {(_ finished: Bool) -> Void in
+            UIView.animate(withDuration: 0, animations: {() -> Void in
+                self.like_btn.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            })
+        })
+        
+        if (post!.containsLikedUser(user: main_user!)) {
+            post?.removedLikedUsers(user: main_user!)
+            
+            if (mode == .light) {
+                like_btn.configuration?.image = UIImage(named: "heart_light_empty")
+            } else if (mode == .dark) {
+                like_btn.configuration?.image = UIImage(named: "heart_dark_empty")
+            }
+        } else {
+            post?.addLikedUsers(user: main_user!)
+            like_btn.configuration?.image = UIImage(named: "heart_filled")
+        }
+    }
+    
     @objc func enlargeImage() {
         if let drawing = drawing.image {
             enlarge_delegate?.enlargeDrawing(drawing: drawing)
@@ -149,10 +165,18 @@ class PostCollectionViewCell: UICollectionViewCell {
             self.drawing.layer.borderColor = Constants.post_cell_drawing_border_light.cgColor
             self.stack.backgroundColor = Constants.post_cell_drawing_border_light
             self.caption_view.backgroundColor = Constants.post_cell_cap_view_light
+            self.like_btn.configuration?.image = UIImage(named: "heart_light_empty")
+            self.comment_btn.configuration?.image = UIImage(named: "comment_light")
+            self.share_btn.configuration?.image = UIImage(named: "share_light")
+            self.bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_empty")
         } else if (self.mode == .dark) {
             self.drawing.layer.borderColor = Constants.post_cell_drawing_border_dark.cgColor
             self.stack.backgroundColor = Constants.post_cell_drawing_border_dark
             self.caption_view.backgroundColor = Constants.post_cell_cap_view_dark
+            self.like_btn.configuration?.image = UIImage(named: "heart_dark_empty")
+            self.comment_btn.configuration?.image = UIImage(named: "comment_dark")
+            self.share_btn.configuration?.image = UIImage(named: "share_dark")
+            self.bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_empty")
         }
     }
     
@@ -165,6 +189,7 @@ class PostCollectionViewCell: UICollectionViewCell {
             
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
             stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            stack.widthAnchor.constraint(equalToConstant: Constants.post_cell_stack_width),
             
             caption_view.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
             caption_view.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
