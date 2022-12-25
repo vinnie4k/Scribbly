@@ -14,8 +14,28 @@ class User {
     private var user_name: String
     private var bio: String
     private var posts: [Post]
+    private var bookmarked_posts: [Post]
     
     // ------------ Getters/Setters ------------
+    func isBookmarked(post: Post) -> Bool {
+        for i in bookmarked_posts {
+            if i === post {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func removeBookmarkPost(post: Post) {
+        if let index = bookmarked_posts.firstIndex(where: {$0 === post}) {
+            bookmarked_posts.remove(at: index)
+        }
+    }
+    
+    func addBookmarkPost(post: Post) {
+        bookmarked_posts.append(post)
+    }
+    
     func getPFP() -> UIImage {
         return pfp
     }
@@ -45,5 +65,6 @@ class User {
         self.user_name = user_name
         self.bio = bio
         self.posts = []
+        self.bookmarked_posts = []
     }
 }

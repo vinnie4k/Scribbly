@@ -59,8 +59,9 @@ class PostCollectionViewCell: UICollectionViewCell {
         return btn
     }()
     
-    private let bookmark_btn: UIButton = {
+    private lazy var bookmark_btn: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(bookmarkPost), for: .touchUpInside)
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
@@ -112,6 +113,34 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func bookmarkPost() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.bookmark_btn.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        }, completion: {(_ finished: Bool) -> Void in
+            UIView.animate(withDuration: 0, animations: {() -> Void in
+                self.bookmark_btn.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            })
+        })
+        
+        if (main_user!.isBookmarked(post: post!)) {
+            main_user?.removeBookmarkPost(post: post!)
+            post?.removeBookmarkUser(user: main_user!)
+            if (mode == .light) {
+                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_empty")
+            } else if (mode == .dark) {
+                bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_empty")
+            }
+        } else {
+            main_user?.addBookmarkPost(post: post!)
+            post?.addBookmarkUser(user: main_user!)
+            if (mode == .light) {
+                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_filled")
+            } else if (mode == .dark) {
+                bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_filled")
+            }
+        }
+    }
+    
     @objc func likePost() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.like_btn.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
@@ -123,7 +152,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         
         if (post!.containsLikedUser(user: main_user!)) {
             post?.removedLikedUsers(user: main_user!)
-            
             if (mode == .light) {
                 like_btn.configuration?.image = UIImage(named: "heart_light_empty")
             } else if (mode == .dark) {

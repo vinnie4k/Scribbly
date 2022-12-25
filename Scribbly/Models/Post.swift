@@ -15,8 +15,19 @@ class Post {
     private var time: Date
     private var comments: [Comment]
     private var liked_users: [User]
+    private var bookmarked_users: [User]
     
     // ------------ Getters/Setters ------------
+    func removeBookmarkUser(user: User) {
+        if let index = bookmarked_users.firstIndex(where: {$0 === user}) {
+            bookmarked_users.remove(at: index)
+        }
+    }
+    
+    func addBookmarkUser(user: User) {
+        bookmarked_users.append(user)
+    }
+    
     func containsLikedUser(user: User) -> Bool {
         for i in liked_users {
             if i === user {
@@ -34,10 +45,6 @@ class Post {
     
     func addLikedUsers(user: User) {
         liked_users.append(user)
-    }
-    
-    func getLikedUsers() -> [User] {
-        return liked_users
     }
     
     func removeComment(comment: Comment) {
@@ -74,5 +81,6 @@ class Post {
         self.time = time
         self.comments = []
         self.liked_users = []
+        self.bookmarked_users = []
     }
 }
