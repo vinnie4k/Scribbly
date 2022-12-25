@@ -11,6 +11,10 @@ import UIKit
  Delegation
  */
 
+protocol EnlargeDrawingDelegate {
+    func enlargeDrawing(drawing: UIImage)
+}
+
 protocol CommentDelegate {
     func sendReplyComment(comment: Comment)
     func sendReplyReply(comment: Comment, reply: Reply)

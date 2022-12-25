@@ -10,13 +10,18 @@ import UIKit
 class PostCollectionViewCell: UICollectionViewCell {
     
     // ------------ Fields (view) ------------
-    private var drawing: UIImageView = {
+    private lazy var drawing: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.post_cell_drawing_corner
         img.layer.borderWidth = Constants.post_cell_drawing_border_width
         img.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(enlargeImage))
+        img.addGestureRecognizer(tap_gesture)
+        img.isUserInteractionEnabled = true
+        
         return img
     }()
     
@@ -97,6 +102,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     private var mode: UIUserInterfaceStyle? = nil
     private var post: Post? = nil
     private var main_user: User? = nil
+    var enlarge_delegate: EnlargeDrawingDelegate?
     
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -111,6 +117,12 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func enlargeImage() {
+        if let drawing = drawing.image {
+            enlarge_delegate?.enlargeDrawing(drawing: drawing)
+        }
     }
     
     @objc private func pushCommentVC() {
@@ -128,7 +140,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         self.post = post
         self.main_user = main_user
         setMode(mode: mode)
-        
         comment_btn.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
     }
     
@@ -165,7 +176,6 @@ class PostCollectionViewCell: UICollectionViewCell {
 }
 
 class CaptionView: UIView {
-    
     // ------------ Fields (View) ------------
     private let user_pfp: UIButton = {
         let btn = UIButton()

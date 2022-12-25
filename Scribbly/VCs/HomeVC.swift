@@ -86,6 +86,29 @@ class HomeVC: UIViewController {
         return cv
     }()
     
+    private lazy var draw_view_large: UIView = {
+        let view = UIView()
+        
+        var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        if (traitCollection.userInterfaceStyle == .light) {
+            blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        }
+        
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
+        view.addGestureRecognizer(tap_gesture)
+        view.isUserInteractionEnabled = true
+        
+        view.addSubview(blurEffectView)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
+        return view
+    }()
+    
     // TODO: START REMOVE
     let vinnie_img = UIImage(named: "vinnie_pfp")
     // TODO: END REMOVE
@@ -129,6 +152,7 @@ class HomeVC: UIViewController {
         view.addSubview(prompt)
         view.addSubview(post_cv)
         view.addSubview(user_post)
+        view.addSubview(draw_view_large)
         
         // Function Calls
         setupNavBar()
@@ -138,17 +162,26 @@ class HomeVC: UIViewController {
         createPosts()
         // TODO: END REMOVE
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         setupNavBar()
+        
         // TODO: PUT BELOW IN A HELPER
         if (user.getPosts().count != 0) {
             user_post.image = user.getLatestPost().getDrawing()
         } else {
             user_post.image = UIImage(systemName: "plus.app")
         }
+    }
+    
+    @objc private func reduceImage() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 0.0
+        }, completion: nil)
+        draw_view_large.subviews[1].removeFromSuperview()
+        self.navigationController?.navigationBar.layer.zPosition = 0
     }
     
     @objc private func pushProfileVC() {
@@ -197,6 +230,11 @@ class HomeVC: UIViewController {
             post_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
             post_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
             post_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
+            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
 }
@@ -212,6 +250,7 @@ extension HomeVC: UICollectionViewDataSource {
             let post = posts[indexPath.row]
             cell.configure(main_user: user, post: post, parent_vc: self, mode: traitCollection.userInterfaceStyle)
             cell.layer.cornerRadius = Constants.post_cell_corner
+            cell.enlarge_delegate = self
             return cell
         } else {
             return UICollectionViewCell()
@@ -226,5 +265,28 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return Constants.post_container_spacing
+    }
+}
+
+extension HomeVC: EnlargeDrawingDelegate {
+    func enlargeDrawing(drawing: UIImage) {
+        let img = UIImageView(image: drawing)
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.post_cell_drawing_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        
+        draw_view_large.addSubview(img)
+        
+        NSLayoutConstraint.activate([
+            img.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+        ])
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 1.0
+        }, completion: nil)
+        self.navigationController?.navigationBar.layer.zPosition = -1
     }
 }
