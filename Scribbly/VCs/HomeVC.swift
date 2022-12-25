@@ -64,16 +64,16 @@ class HomeVC: UIViewController {
             blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
         }
         
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
+        customBlurEffectView.frame = view.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
         let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
         view.addGestureRecognizer(tap_gesture)
         view.isUserInteractionEnabled = true
         
-        view.addSubview(blurEffectView)
+        view.addSubview(customBlurEffectView)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.alpha = 0
         return view
@@ -207,11 +207,10 @@ extension HomeVC: UICollectionViewDataSource {
         if kind == UICollectionView.elementKindSectionHeader {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
                 header.backgroundColor = .systemBackground
-                var drawing = UIImage(systemName: "plus.app")
                 if (user.getPosts().count != 0) {
-                    drawing = user.getLatestPost().getDrawing()
+                    header.configure(prompt: "bird", post: user.getLatestPost())
+                    header.post_info_delegate = self
                 }
-                header.configure(prompt: "bird", drawing: drawing!)
                 return header
             }
         }
@@ -245,8 +244,31 @@ extension HomeVC: EnlargeDrawingDelegate {
         
         NSLayoutConstraint.activate([
             img.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+            img.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
+            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding)
+        ])
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 1.0
+        }, completion: nil)
+        self.navigationController?.navigationBar.layer.zPosition = -1
+    }
+}
+
+extension HomeVC: PostInfoDelegate {
+    func showPostInfo(post: Post) {
+        let view = PostInfoView()
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        draw_view_large.addSubview(view)
+
+        NSLayoutConstraint.activate([
+            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {

@@ -11,6 +11,10 @@ import UIKit
  Delegation
  */
 
+protocol PostInfoDelegate {
+    func showPostInfo(post: Post)
+}
+
 protocol EnlargeDrawingDelegate {
     func enlargeDrawing(drawing: UIImage)
 }
@@ -40,4 +44,77 @@ extension UIViewController {
         return false
     }
     
+}
+
+final class GradientView: UIView {
+    /**
+     // Simple usage. From clear to black.
+     let gradientView1 = GradientView(colors: [.clear, .black])
+
+     // Tweak locations. Here the gradient from red to green will take 30% of the view.
+     let gradientView2 = GradientView(colors: [.red, .green, .blue], locations: [0, 0.3, 1])
+
+     // Create your own gradient.
+     let gradient = CAGradientLayer()
+     gradient.colors = [UIColor.red.cgColor, UIColor.blue.cgColor]
+     let gradientView3 = GradientView(gradient: gradient)
+     */
+    let gradient : CAGradientLayer
+
+    init(gradient: CAGradientLayer) {
+        self.gradient = gradient
+        super.init(frame: .zero)
+        self.gradient.frame = self.bounds
+        self.layer.insertSublayer(self.gradient, at: 0)
+    }
+
+    convenience init(colors: [UIColor], locations:[Float] = [0.0, 1.0]) {
+        let gradient = CAGradientLayer()
+        gradient.colors = colors.map { $0.cgColor }
+        gradient.locations = locations.map { NSNumber(value: $0) }
+        self.init(gradient: gradient)
+    }
+
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
+        self.gradient.frame = self.bounds
+    }
+
+    required init?(coder: NSCoder) { fatalError("no init(coder:)") }
+}
+
+
+final class CustomVisualEffectView: UIVisualEffectView {
+    /**
+     Create visual effect view with given effect and its intensity
+        Parameters:
+         - effect: visual effect, eg UIBlurEffect(style: .dark)
+         - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
+     */
+    
+    init(effect: UIVisualEffect, intensity: CGFloat) {
+        theEffect = effect
+        customIntensity = intensity
+        super.init(effect: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) { nil }
+    
+    deinit {
+        animator?.stopAnimation(true)
+    }
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        effect = nil
+        animator?.stopAnimation(true)
+        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [unowned self] in
+            self.effect = theEffect
+        }
+        animator?.fractionComplete = customIntensity
+    }
+    
+    private let theEffect: UIVisualEffect
+    private let customIntensity: CGFloat
+    private var animator: UIViewPropertyAnimator?
 }

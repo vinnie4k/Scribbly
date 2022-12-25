@@ -550,8 +550,9 @@ extension CommentVC: EnlargeDrawingDelegate {
         
         NSLayoutConstraint.activate([
             img.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+            img.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
+            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding)
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {

@@ -18,6 +18,14 @@ class Post {
     private var bookmarked_users: [User]
     
     // ------------ Getters/Setters ------------
+    func getBookmarkCount() -> Int {
+        return bookmarked_users.count
+    }
+    
+    func getLikeCount() -> Int {
+        return liked_users.count
+    }
+    
     func removeBookmarkUser(user: User) {
         if let index = bookmarked_users.firstIndex(where: {$0 === user}) {
             bookmarked_users.remove(at: index)

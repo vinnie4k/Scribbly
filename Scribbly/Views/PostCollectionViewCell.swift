@@ -16,6 +16,11 @@ class PromptHeaderView: UICollectionReusableView {
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.user_post_corner
         img.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(showStats))
+        img.addGestureRecognizer(tap_gesture)
+        img.isUserInteractionEnabled = true
+        
         return img
     }()
     
@@ -30,7 +35,6 @@ class PromptHeaderView: UICollectionReusableView {
     
     private let prompt: UILabel = {
         let lbl = UILabel()
-        // TODO: Create a function that changes the text
         lbl.textColor = .label
         lbl.font = Constants.prompt_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +42,8 @@ class PromptHeaderView: UICollectionReusableView {
     }()
     
     // ------------ Fields (data) ------------
+    var post_info_delegate: PostInfoDelegate?
+    private var post: Post? = nil
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -54,9 +60,14 @@ class PromptHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(prompt: String, drawing: UIImage) {
+    @objc private func showStats() {
+        post_info_delegate?.showPostInfo(post: post!)
+    }
+    
+    func configure(prompt: String, post: Post) {
         self.prompt.text = prompt
-        self.user_post.image = drawing
+        self.user_post.image = post.getDrawing()
+        self.post = post
     }
     
     private func setupConstraints() {
@@ -155,7 +166,6 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     private let caption_view: CaptionView = {
         let view = CaptionView()
-        view.layer.cornerRadius = Constants.post_cell_cap_view_corner
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -279,7 +289,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            drawing.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constants.post_cell_side_padding),
+            drawing.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.post_cell_side_padding),
             drawing.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             drawing.heightAnchor.constraint(equalToConstant: Constants.post_cell_drawing_height),
             drawing.widthAnchor.constraint(equalToConstant: Constants.post_cell_drawing_width),
@@ -290,7 +300,7 @@ class PostCollectionViewCell: UICollectionViewCell {
             
             caption_view.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
             caption_view.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
-            caption_view.widthAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_width),
+            caption_view.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_cell_cap_view_side),
             caption_view.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height),
         ])
     }
@@ -325,13 +335,25 @@ class CaptionView: UIView {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
-    
+        
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
+        customBlurEffectView.frame = self.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.layer.cornerRadius = Constants.post_cell_cap_view_corner
+        customBlurEffectView.clipsToBounds = true
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.layer.cornerRadius = Constants.post_cell_cap_view_corner
+        
+        addSubview(customBlurEffectView)
         addSubview(caption)
         addSubview(display_name)
         addSubview(user_pfp)

@@ -43,14 +43,14 @@ struct Constants {
     static let post_cv_side_padding = CGFloat(15)
     static let post_container_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
     static let post_container_height = CGFloat(325)
-    static let post_container_spacing = CGFloat(15)
+    static let post_container_spacing = CGFloat(5)
     
     // ------------ PostCollectionViewCell ------------
-    static let post_cell_side_padding = CGFloat(10)
+    static let post_cell_side_padding = CGFloat(5)
     static let post_cell_corner = CGFloat(15)
     static let post_cell_name_side = CGFloat(10)
-    static let post_cell_drawing_height = UIScreen.main.bounds.width - 70   // KEEP THE UISCREEN.MAIN.BOUNDS STUFF
-    static let post_cell_drawing_width = UIScreen.main.bounds.width - 70    // KEEP THE UISCREEN.MAIN.BOUNDS STUFF
+    static let post_cell_drawing_height = UIScreen.main.bounds.width - 85   // KEEP THE UISCREEN.MAIN.BOUNDS STUFF
+    static let post_cell_drawing_width = UIScreen.main.bounds.width - 85    // KEEP THE UISCREEN.MAIN.BOUNDS STUFF
     static let post_cell_drawing_corner = 0.1 * post_cell_drawing_width
     static let post_cell_drawing_border_width = CGFloat(7)
     static let post_cell_drawing_border_dark = UIColor(red: 18/255.0, green: 18/255.0, blue: 18/255.0, alpha: 1)
@@ -67,7 +67,6 @@ struct Constants {
     static let post_cell_caption_top = CGFloat(2)
     static let post_cell_cap_view_bot = CGFloat(15)
     static let post_cell_cap_view_side = CGFloat(20)
-    static let post_cell_cap_view_width = UIScreen.main.bounds.width - 110  // KEEP THE UISCREEN.MAIN.BOUNDS STUFF
     static let post_cell_cap_view_height = CGFloat(45)
     static let post_cell_cap_view_corner = CGFloat(20)
     static let post_cell_cap_view_light = UIColor(white: 1, alpha: 0.6)
@@ -125,41 +124,22 @@ struct Constants {
     static let comment_light_bg = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     static let comment_dark_bg = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     static let reply_side_padding = CGFloat(50)
-}
-
-class GradientView: UIView {
-    /**
-     // Simple usage. From clear to black.
-     let gradientView1 = GradientView(colors: [.clear, .black])
-
-     // Tweak locations. Here the gradient from red to green will take 30% of the view.
-     let gradientView2 = GradientView(colors: [.red, .green, .blue], locations: [0, 0.3, 1])
-
-     // Create your own gradient.
-     let gradient = CAGradientLayer()
-     gradient.colors = [UIColor.red.cgColor, UIColor.blue.cgColor]
-     let gradientView3 = GradientView(gradient: gradient)
-     */
-    let gradient : CAGradientLayer
-
-    init(gradient: CAGradientLayer) {
-        self.gradient = gradient
-        super.init(frame: .zero)
-        self.gradient.frame = self.bounds
-        self.layer.insertSublayer(self.gradient, at: 0)
-    }
-
-    convenience init(colors: [UIColor], locations:[Float] = [0.0, 1.0]) {
-        let gradient = CAGradientLayer()
-        gradient.colors = colors.map { $0.cgColor }
-        gradient.locations = locations.map { NSNumber(value: $0) }
-        self.init(gradient: gradient)
-    }
-
-    override func layoutSublayers(of layer: CALayer) {
-        super.layoutSublayers(of: layer)
-        self.gradient.frame = self.bounds
-    }
-
-    required init?(coder: NSCoder) { fatalError("no init(coder:)") }
+    
+    // ------------ PostInfoView ------------
+    static let post_info_pfp_top = CGFloat(10)
+    static let post_info_pfp_side = CGFloat(10)
+    static let post_info_pfp_radius = CGFloat(15)
+    static let post_info_name_left = CGFloat(10)
+    static let post_info_caption_top = CGFloat(0)
+    static let post_info_stack_top = CGFloat(10)
+    static let post_info_view_height = UIScreen.main.bounds.width
+    static let post_info_view_corner = CGFloat(25)
+    static let post_info_stats_padding = CGFloat(10)
+    static let post_info_stats_height = UIScreen.main.bounds.width / 4
+    static let post_info_number_left = CGFloat(8)
+    static let post_info_number_font = UIFont(descriptor: UIFont.systemFont(ofSize: 20, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 20)
+    static let post_info_stack_width = post_cell_drawing_width - 40
+    static let post_info_stack_left = CGFloat(15)
+    
+    static let enlarge_side_padding = CGFloat(15)
 }
