@@ -245,19 +245,34 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
 
 extension HomeVC: EnlargeDrawingDelegate {
     func enlargeDrawing(drawing: UIImage) {
+        let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
+        outerView.clipsToBounds = false
+        outerView.layer.shadowColor = UIColor.black.cgColor
+        outerView.layer.shadowOpacity = 0.15
+        outerView.layer.shadowOffset = CGSize.zero
+        outerView.layer.shadowRadius = 10
+        outerView.layer.shadowPath = UIBezierPath(roundedRect: outerView.bounds, cornerRadius: Constants.post_cell_drawing_corner).cgPath
+        outerView.translatesAutoresizingMaskIntoConstraints = false
+        
         let img = UIImageView(image: drawing)
+        img.frame = outerView.bounds
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.post_cell_drawing_corner
         img.translatesAutoresizingMaskIntoConstraints = false
         
-        draw_view_large.addSubview(img)
+        outerView.addSubview(img)
+        
+        draw_view_large.addSubview(outerView)
         
         NSLayoutConstraint.activate([
-            img.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            img.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
             img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
-            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding)
+            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            
+            outerView.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            outerView.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
+            outerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            outerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
@@ -268,7 +283,7 @@ extension HomeVC: EnlargeDrawingDelegate {
 }
 
 extension HomeVC: PostInfoDelegate {
-    func showPostInfo(post: Post) {
+    func showPostInfo(post: Post) {        
         let view = PostInfoView()
         view.configure(post: post, mode: traitCollection.userInterfaceStyle)
         view.translatesAutoresizingMaskIntoConstraints = false

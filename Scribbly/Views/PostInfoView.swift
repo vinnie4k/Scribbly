@@ -40,7 +40,7 @@ class PostInfoView: UIView {
         
         stats_view.translatesAutoresizingMaskIntoConstraints = false
         redo_delete_view.translatesAutoresizingMaskIntoConstraints = false
-                
+        
         setupConstraints()
     }
     
