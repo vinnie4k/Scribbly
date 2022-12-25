@@ -126,7 +126,29 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             comment_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
             comment_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
         ])
+        return view
+    }()
+    
+    private lazy var draw_view_large: UIView = {
+        let view = UIView()
         
+        var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        if (traitCollection.userInterfaceStyle == .light) {
+            blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        }
+        
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
+        view.addGestureRecognizer(tap_gesture)
+        view.isUserInteractionEnabled = true
+        
+        view.addSubview(blurEffectView)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
         return view
     }()
     
@@ -155,6 +177,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         
         view.addSubview(reply_cv)
         view.addSubview(input_view)
+        view.addSubview(draw_view_large)
     
         setupCollectionView()
         setupNavBar()
@@ -179,9 +202,13 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-                                                  
-    @objc private func removeCell() {
-        print("hi")
+    
+    @objc private func reduceImage() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 0.0
+        }, completion: nil)
+        draw_view_large.subviews[1].removeFromSuperview()
+        self.navigationController?.navigationBar.layer.zPosition = 0
     }
     
     func deleteComment(comment: Comment) {
@@ -338,6 +365,11 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             
             input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
+            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
         
         addConstr(lst: [
@@ -395,6 +427,7 @@ extension CommentVC: UICollectionViewDataSource {
         if kind == UICollectionView.elementKindSectionHeader && indexPath.section == 0 {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.drawing_reuse, for: indexPath) as? DrawingHeaderView {
                 header.configure(drawing: post.getDrawing())
+                header.enlarge_delegate = self
                 return header
             }
         }
@@ -503,5 +536,28 @@ extension CommentVC {
     
     @objc func keyboardWillHide(notification: Notification) {
         changeCommentView(pop: false)
+    }
+}
+
+extension CommentVC: EnlargeDrawingDelegate {
+    func enlargeDrawing(drawing: UIImage) {
+        let img = UIImageView(image: drawing)
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.post_cell_drawing_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        
+        draw_view_large.addSubview(img)
+        
+        NSLayoutConstraint.activate([
+            img.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+        ])
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 1.0
+        }, completion: nil)
+        self.navigationController?.navigationBar.layer.zPosition = -1
     }
 }

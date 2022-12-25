@@ -15,8 +15,16 @@ class DrawingHeaderView: UICollectionReusableView {
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.comment_drawing_corner
         img.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(enlargeImage))
+        img.addGestureRecognizer(tap_gesture)
+        img.isUserInteractionEnabled = true
+        
         return img
     }()
+    
+    // ------------ Fields (data) ------------
+    var enlarge_delegate: EnlargeDrawingDelegate?
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -28,6 +36,12 @@ class DrawingHeaderView: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func enlargeImage() {
+        if let drawing = drawing.image {
+            enlarge_delegate?.enlargeDrawing(drawing: drawing)
+        }
     }
     
     func configure(drawing: UIImage) {

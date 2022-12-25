@@ -24,13 +24,16 @@ class HomeVC: UIViewController {
         return img
     }()
     
-    private lazy var friends_btn: UIButton = {
+    private lazy var search_btn: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
-        config.image = UIImage(systemName: "person.2.fill")
-        config.baseForegroundColor = .label
+        if (traitCollection.userInterfaceStyle == .light) {
+            config.image = UIImage(named: "search_light")
+        } else if (traitCollection.userInterfaceStyle == .dark) {
+            config.image = UIImage(named: "search_dark")
+        }
         config.baseBackgroundColor = .systemBackground
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -190,7 +193,7 @@ class HomeVC: UIViewController {
     }
     
     private func setupNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friends_btn)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: search_btn)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profile_btn)
         navigationItem.titleView = logo
         
@@ -212,8 +215,8 @@ class HomeVC: UIViewController {
             profile_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             profile_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             
-            friends_btn.widthAnchor.constraint(equalToConstant: Constants.friends_button_width),
-            friends_btn.heightAnchor.constraint(equalToConstant: Constants.friends_button_height),
+            search_btn.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
+            search_btn.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
             
             prompt_heading.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prompt_heading_top_padding),
             prompt_heading.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.prompt_side_padding),
