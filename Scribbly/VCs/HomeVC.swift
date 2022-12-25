@@ -121,12 +121,23 @@ class HomeVC: UIViewController {
         view.addSubview(draw_view_large)
         
         // Function Calls
+        setupGradient()
         setupNavBar()
         setupCollectionView()
         setupConstraints()
         // TODO: START REMOVE
         createPosts()
         // TODO: END REMOVE
+    }
+    
+    private func setupGradient() {
+        if (traitCollection.userInterfaceStyle == .dark) {
+            let gradient = CAGradientLayer()
+            gradient.frame = view.bounds
+            gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+            gradient.locations = [0, 0.1, 0.8, 1]
+            view.layer.mask = gradient
+        }
     }
     
     @objc private func reduceImage() {
