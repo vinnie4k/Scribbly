@@ -140,6 +140,10 @@ struct Constants {
     static let post_info_number_font = UIFont(descriptor: UIFont.systemFont(ofSize: 20, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 20)
     static let post_info_stack_width = post_cell_drawing_width - 40
     static let post_info_stack_spacing = CGFloat(60)
+    static let post_info_redo_spacing = CGFloat(20)
+    static let post_info_redo_top = CGFloat(10)
+    static let post_info_redo_corner = CGFloat(20)
+    static let post_info_redo_side = CGFloat(20)
     
     static let enlarge_side_padding = CGFloat(15)
 }

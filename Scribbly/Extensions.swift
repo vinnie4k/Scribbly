@@ -118,3 +118,15 @@ final class CustomVisualEffectView: UIVisualEffectView {
     private let customIntensity: CGFloat
     private var animator: UIViewPropertyAnimator?
 }
+
+extension UINavigationBar {
+    func toggle() {
+        if self.layer.zPosition == -1 {
+            self.layer.zPosition = 0
+            self.isUserInteractionEnabled = true
+        } else {
+            self.layer.zPosition = -1
+            self.isUserInteractionEnabled = false
+        }
+    }
+}

@@ -137,16 +137,16 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
         }
         
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
+        customBlurEffectView.frame = view.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
         let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
         view.addGestureRecognizer(tap_gesture)
         view.isUserInteractionEnabled = true
         
-        view.addSubview(blurEffectView)
+        view.addSubview(customBlurEffectView)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.alpha = 0
         return view
@@ -208,7 +208,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             self.draw_view_large.alpha = 0.0
         }, completion: nil)
         draw_view_large.subviews[1].removeFromSuperview()
-        self.navigationController?.navigationBar.layer.zPosition = 0
+        self.navigationController?.navigationBar.toggle()
     }
     
     func deleteComment(comment: Comment) {
@@ -558,6 +558,6 @@ extension CommentVC: EnlargeDrawingDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.layer.zPosition = -1
+        self.navigationController?.navigationBar.toggle()
     }
 }

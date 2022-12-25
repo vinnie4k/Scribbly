@@ -15,9 +15,15 @@ class PostInfoView: UIView {
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.post_cell_drawing_corner
         img.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(toggleStats))
+        img.addGestureRecognizer(tap_gesture)
+        img.isUserInteractionEnabled = true
+        
         return img
     }()
     
+    private var redo_delete_view = RedoDeleteView()
     private var stats_view = PostInfoStatsView()
     
     // ------------ Fields (Data) ------------
@@ -30,9 +36,28 @@ class PostInfoView: UIView {
         
         addSubview(drawing)
         addSubview(stats_view)
-        stats_view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(redo_delete_view)
         
+        stats_view.translatesAutoresizingMaskIntoConstraints = false
+        redo_delete_view.translatesAutoresizingMaskIntoConstraints = false
+                
         setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func toggleStats() {
+        if (self.stats_view.alpha == 1.0) {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                self.stats_view.alpha = 0.0
+            }, completion: nil)
+        } else if (self.stats_view.alpha == 0.0) {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                self.stats_view.alpha = 1.0
+            }, completion: nil)
+        }
     }
     
     func configure(post: Post, mode: UIUserInterfaceStyle) {
@@ -40,10 +65,7 @@ class PostInfoView: UIView {
         self.mode = mode
         drawing.image = post.getDrawing()
         stats_view.configure(post: post, mode: mode)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        redo_delete_view.configure(post: post, mode: mode)
     }
     
     private func setupConstraints() {
@@ -56,6 +78,9 @@ class PostInfoView: UIView {
             stats_view.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_info_stats_padding),
             stats_view.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
             stats_view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_stats_padding - 15),
+            
+            redo_delete_view.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
+            redo_delete_view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
     
@@ -115,7 +140,6 @@ class PostInfoStatsView: UIView {
         addSubview(user_pfp)
         addSubview(display_name)
         addSubview(caption)
-        
         addSubview(stack)
         
         setupConstraints()
@@ -248,5 +272,76 @@ class PostInfoStatsView: UIView {
             stack.widthAnchor.constraint(equalToConstant: Constants.post_info_stack_width),
             stack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_pfp_top),
         ])
+    }
+}
+
+class RedoDeleteView: UIStackView {
+    // ------------ Fields (View) ------------
+    private let redo_btn: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
+    private let delete_btn: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
+    // ------------ Fields (Data) ------------
+    private var post: Post? = nil
+    
+    // ------------ Functions ------------
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        axis = .horizontal
+        distribution = .fillEqually
+        spacing = Constants.post_info_redo_spacing
+        
+        self.layer.cornerRadius = Constants.post_info_redo_corner
+        self.layoutMargins = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        self.isLayoutMarginsRelativeArrangement = true
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.5)
+        customBlurEffectView.frame = self.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.layer.cornerRadius = Constants.post_info_redo_corner
+        customBlurEffectView.clipsToBounds = true
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(customBlurEffectView)
+        addArrangedSubview(redo_btn)
+        addArrangedSubview(delete_btn)
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(post: Post, mode: UIUserInterfaceStyle) {
+        self.post = post
+
+        if (mode == .dark) {
+            redo_btn.configuration?.image = UIImage(named: "redo_dark")
+            delete_btn.configuration?.image = UIImage(named: "delete_dark")
+            backgroundColor = Constants.post_cell_cap_view_dark
+        } else if (mode == .light) {
+            redo_btn.configuration?.image = UIImage(named: "redo_light")
+            delete_btn.configuration?.image = UIImage(named: "delete_light")
+            backgroundColor = Constants.post_cell_cap_view_light
+        }
     }
 }

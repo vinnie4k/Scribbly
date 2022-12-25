@@ -145,7 +145,7 @@ class HomeVC: UIViewController {
             self.draw_view_large.alpha = 0.0
         }, completion: nil)
         draw_view_large.subviews[1].removeFromSuperview()
-        self.navigationController?.navigationBar.layer.zPosition = 0
+        self.navigationController?.navigationBar.toggle()
     }
     
     @objc private func pushProfileVC() {
@@ -263,7 +263,7 @@ extension HomeVC: EnlargeDrawingDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.layer.zPosition = -1
+        self.navigationController?.navigationBar.toggle()
     }
 }
 
@@ -285,6 +285,6 @@ extension HomeVC: PostInfoDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.layer.zPosition = -1
+        self.navigationController?.navigationBar.toggle()
     }
 }
