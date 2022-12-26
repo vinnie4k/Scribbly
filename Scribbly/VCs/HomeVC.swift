@@ -149,7 +149,8 @@ class HomeVC: UIViewController {
     }
     
     @objc private func pushProfileVC() {
-        let profile_vc = ProfileVC()
+        let profile_vc = MainUserProfileVC()
+        profile_vc.main_user = user
         self.navigationController?.pushViewController(profile_vc, animated: true)
     }
     

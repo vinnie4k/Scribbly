@@ -17,6 +17,14 @@ class User {
     private var bookmarked_posts: [Post]
     
     // ------------ Getters/Setters ------------
+    func getBio() -> String {
+        return bio
+    }
+    
+    func getFullName() -> String {
+        return full_name
+    }
+    
     func isBookmarked(post: Post) -> Bool {
         for i in bookmarked_posts {
             if i === post {

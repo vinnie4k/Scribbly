@@ -365,7 +365,7 @@ class CaptionView: UIView {
     }
     
     @objc private func pushProfileVC() {
-        let profile_vc = ProfileVC()
+        let profile_vc = MainUserProfileVC()
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     

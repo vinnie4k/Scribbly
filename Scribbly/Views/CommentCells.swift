@@ -148,8 +148,8 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
         delegate?.sendReplyComment(comment: comment!)
     }
     
-    @objc private func pushProfileVC() {
-        let profile_vc = ProfileVC()
+    @objc private func pushMainUserProfileVC() {
+        let profile_vc = MainUserProfileVC()
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     
@@ -157,7 +157,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
         self.text.text = comment.getText()
         display_name.text = comment.getUser().getUserName()
         user_pfp.setImage(comment.getUser().getPFP(), for: .normal)
-        user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
+        user_pfp.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
         reply_btn.addTarget(self, action: #selector(sendReply), for: .touchUpInside)
         
         self.parent_vc = vc
@@ -252,7 +252,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func pushProfileVC() {
-        let profile_vc = ProfileVC()
+        let profile_vc = MainUserProfileVC()
         parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
     }
     

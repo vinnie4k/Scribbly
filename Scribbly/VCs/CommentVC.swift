@@ -25,7 +25,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
-        config.baseBackgroundColor = bg_color
+        config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false

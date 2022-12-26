@@ -10,12 +10,36 @@ import UIKit
  Constants for Design
  */
 struct Constants {
+    // ------------ Colors ------------
+    static let primary_light = UIColor.white
+    static let primary_dark = UIColor(red: 0.071, green: 0.071, blue: 0.071, alpha: 1)
+    static let secondary_dark = UIColor.black
+    static let secondary_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+
     // ------------ Other ------------
     static let reuse = "Reuse"
     static let comment_reuse = "CommentReuse"
     static let reply_reuse = "ReplyReuse"
     static let drawing_reuse = "DrawingReuse"
     static let prompt_reuse = "PromptReuse"
+    
+    // ------------ ProfileHeaderView ------------
+    static let prof_head_height = UIScreen.main.bounds.height / 2 - 10
+    static let prof_head_corner = CGFloat(40)
+    static let prof_pfp_radius = CGFloat(47)
+    static let prof_pfp_top = CGFloat(110)
+    static let prof_fullname_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 24)
+    static let prof_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_bio_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_fullname_top = CGFloat(10)
+    static let prof_username_top = CGFloat(10)
+    static let prof_bio_top = CGFloat(8)
+    static let prof_btn_top = CGFloat(15)
+    static let prof_btn_side = CGFloat(10)
+    static let prof_btn_color_dark = UIColor(red: 0.171, green: 0.171, blue: 0.171, alpha: 1)
+    static let prof_btn_color_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+    static let prof_btn_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_btn_width = UIScreen.main.bounds.width / 2 - 15
     
     // ------------ Home Page ------------
     static let border_top_padding = CGFloat(0)
