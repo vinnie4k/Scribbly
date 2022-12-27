@@ -51,7 +51,7 @@ class HomeVC: UIViewController {
         layout.scrollDirection = .vertical
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.contentInset = UIEdgeInsets(top: Constants.post_cv_top_padding, left: 0, bottom: 0, right: 0)
+        cv.contentInset = UIEdgeInsets(top: Constants.post_cv_top_padding, left: 0, bottom: Constants.post_cv_bot_padding, right: 0)
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
@@ -84,16 +84,20 @@ class HomeVC: UIViewController {
     
     private func createTests() {
         let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
+        let karen = User(pfp: UIImage(named: "piano")!, full_name: "Karen Sabile", user_name: "karensabile", bio: "my music taste is top tier", account_start: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
         
         let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
-        
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
+        let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
         
         user.addFriend(friend: caitlyn)
+        user.addFriend(friend: karen)
         caitlyn.addFriend(friend: user)
+        karen.addFriend(friend: user)
         
         user.addPost(post: vin_post)
         caitlyn.addPost(post: caitlyn_post)
+        karen.addPost(post: karen_post)
         
         posts = user.updateFeed()
         
@@ -131,7 +135,7 @@ class HomeVC: UIViewController {
             let gradient = CAGradientLayer()
             gradient.frame = view.bounds
             gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
-            gradient.locations = [0, 0.1, 0.8, 1]
+            gradient.locations = [0, 0.1, 0.85, 1]
             view.layer.mask = gradient
         }
     }

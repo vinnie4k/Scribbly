@@ -77,6 +77,7 @@ struct Constants {
     
     // ------------ PostCollectionView ------------
     static let post_cv_top_padding = CGFloat(15)
+    static let post_cv_bot_padding = CGFloat(40)
     static let post_cv_side_padding = CGFloat(15)
     static let post_container_width = UIScreen.main.bounds.width - 30 // DO NOT CHANGE THIS PLEASE
     static let post_container_height = CGFloat(325)
