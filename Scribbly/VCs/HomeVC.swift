@@ -81,17 +81,24 @@ class HomeVC: UIViewController {
     
     // TODO: START REMOVE
     let vinnie_img = UIImage(named: "vinnie_pfp")
-    // TODO: END REMOVE
-    // TODO: Don't force unwrap image. Make a placeholder.
-    // Made lazy since property initializers run before 'self' is available
-    private lazy var user: User = User(pfp: vinnie_img!, full_name: "Vin Bui", user_name: "vinnie", bio: "I hate school")
     
-    // TODO: START REMOVE
+    private lazy var start_date: Date = {
+        var dc = DateComponents()
+        dc.year = 2022
+        dc.month = 7
+        dc.day = 11
+        
+        let userCalendar = Calendar(identifier: .gregorian)
+        return userCalendar.date(from: dc)!
+    }()
+    
+    private lazy var user: User = User(pfp: vinnie_img!, full_name: "Vin Bui", user_name: "vinnie", bio: "I hate school", account_start: start_date)
+    
     private func createPosts() {
         let user2_pfp = UIImage(named: "cakey_pfp")
         let drawing1 = UIImage(named: "bird_drawing1")
         let drawing2 = UIImage(named: "bird_drawing2")
-        let user2 = User(pfp: user2_pfp!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing")
+        let user2 = User(pfp: user2_pfp!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: Date())
         let post1 = Post(user: user, drawing: drawing1!, caption: "i drew this in middle school guys", time: Date())
         let post2 = Post(user: user2, drawing: drawing2!, caption: "better than vin's", time: Date())
         user.addPost(post: post1)

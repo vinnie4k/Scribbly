@@ -329,7 +329,6 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
                 txt_field.trailingAnchor.constraint(equalTo: input_view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
             ])
         }
-        
     }
     
     private func setupCollectionView() {

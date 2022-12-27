@@ -18,6 +18,10 @@ class Post {
     private var bookmarked_users: [User]
     
     // ------------ Getters/Setters ------------
+    func getTime() -> Date {
+        return time
+    }
+    
     func getCommentReplyCount() -> Int {
         var count: Int = 0
         for comment in comments {

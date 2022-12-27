@@ -1,5 +1,5 @@
 //
-//  ProfileHeaderView.swift
+//  ProfileHeaders.swift
 //  Scribbly
 //
 //  Created by Vin Bui on 12/25/22.
@@ -7,7 +7,58 @@
 
 import UIKit
 
-class ProfileHeaderView: UIView {
+class MonthHeaderView: UICollectionReusableView {
+    // ------------ Fields (view) ------------
+    private let month_lbl: UILabel = {
+        let lbl = UILabel()
+        lbl.font = Constants.mems_date_font
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private let stack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.tintColor = .label
+        stack.distribution = .equalCentering
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        let day_of_week = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+        for day in day_of_week {
+            let lbl = UILabel()
+            lbl.text = day
+            lbl.font = Constants.mems_date_font
+            lbl.translatesAutoresizingMaskIntoConstraints = false
+            stack.addArrangedSubview(lbl)
+        }
+        return stack
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(month_lbl)
+        addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            month_lbl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+//            stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.mems_day_of_week_side),
+            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side),
+            stack.topAnchor.constraint(equalTo: month_lbl.bottomAnchor, constant: 5)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(text: String) {
+        month_lbl.text = text.lowercased()
+    }
+}
+
+class ProfileHeaderView: UICollectionReusableView {
     // ------------ Fields (view) ------------    
     private let profile_img: UIImageView = {
         let img = UIImageView()

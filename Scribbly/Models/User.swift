@@ -9,6 +9,8 @@ import UIKit
 class User {
     
     // ------------ Fields ------------
+    private let account_start: Date
+    
     private var pfp: UIImage
     private var full_name: String
     private var user_name: String
@@ -16,13 +18,37 @@ class User {
     private var posts: [Post]
     private var bookmarked_posts: [Post]
     
-    // ------------ Getters/Setters ------------
-    func getBio() -> String {
-        return bio
+    // ------------ Helpers ------------
+    /**
+     Returns a list of the months from the start date to today's date in reverse order
+     For example, if today is December 2022 and the start date is October 2022, monthsFromStart()
+     returns ["December 2022", "November 2022", "October 2022"]
+     */
+    func monthsFromStart() -> [String] {
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents(Set([.month]), from: account_start, to: Date())
+
+        var allDates: [String] = []
+        let dateRangeFormatter = DateFormatter()
+        dateRangeFormatter.dateFormat = "MMMM yyyy"
+
+        for i in 0 ... components.month! {
+            guard let date = calendar.date(byAdding: .month, value: i, to: account_start) else {
+            continue
+            }
+
+            let formattedDate = dateRangeFormatter.string(from: date)
+            allDates += [formattedDate]
+        }
+        allDates.reverse()
+        return allDates
     }
     
-    func getFullName() -> String {
-        return full_name
+    func formatDate(date: Date) -> String {
+        // Example: 26 December 2022 04:20:00
+        let date_formatter = DateFormatter()
+        date_formatter.dateFormat = "dd MMMM yyyy HH:mm:ss"
+        return date_formatter.string(from: date)
     }
     
     func isBookmarked(post: Post) -> Bool {
@@ -32,6 +58,15 @@ class User {
             }
         }
         return false
+    }
+    
+    // ------------ Getters/Setters ------------    
+    func getBio() -> String {
+        return bio
+    }
+    
+    func getFullName() -> String {
+        return full_name
     }
     
     func removeBookmarkPost(post: Post) {
@@ -64,15 +99,15 @@ class User {
     func addPost(post: Post) {
         posts.append(post)
     }
-
     
     // ------------ Initializer ------------
-    init(pfp: UIImage, full_name: String, user_name: String, bio: String) {
+    init(pfp: UIImage, full_name: String, user_name: String, bio: String, account_start: Date) {
         self.pfp = pfp
         self.full_name = full_name
         self.user_name = user_name
         self.bio = bio
         self.posts = []
         self.bookmarked_posts = []
+        self.account_start = account_start
     }
 }

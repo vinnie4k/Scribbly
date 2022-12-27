@@ -22,15 +22,28 @@ struct Constants {
     static let reply_reuse = "ReplyReuse"
     static let drawing_reuse = "DrawingReuse"
     static let prompt_reuse = "PromptReuse"
+    static let mems_reuse = "MemsReuse"
+    static let prof_head_reuse = "ProfHeadReuse"
+    static let mems_month_reuse = "MemsMonthReuse"
+    
+    // ------------ Memories ------------
+    static let mems_cv_side_padding = CGFloat(10)
+    static let mems_cell_width = UIScreen.main.bounds.width / 9
+    static let mems_cell_corner = CGFloat(7)
+    static let mems_date_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let mems_month_head_height = CGFloat(40)
+    static let mems_day_of_week_side = CGFloat(20)
+    static let mems_section_top = CGFloat(10)
+    static let mems_section_bot = CGFloat(30)
     
     // ------------ ProfileHeaderView ------------
     static let prof_head_height = UIScreen.main.bounds.height / 2 - 10
-    static let prof_head_corner = CGFloat(40)
+    static let prof_head_corner = CGFloat(25)
     static let prof_pfp_radius = CGFloat(47)
     static let prof_pfp_top = CGFloat(110)
     static let prof_fullname_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 24)
-    static let prof_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
-    static let prof_bio_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_bio_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 14)
     static let prof_fullname_top = CGFloat(10)
     static let prof_username_top = CGFloat(10)
     static let prof_bio_top = CGFloat(8)
@@ -38,7 +51,7 @@ struct Constants {
     static let prof_btn_side = CGFloat(10)
     static let prof_btn_color_dark = UIColor(red: 0.171, green: 0.171, blue: 0.171, alpha: 1)
     static let prof_btn_color_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
-    static let prof_btn_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let prof_btn_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
     static let prof_btn_width = UIScreen.main.bounds.width / 2 - 15
     
     // ------------ Home Page ------------
