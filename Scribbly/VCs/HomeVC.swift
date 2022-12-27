@@ -80,39 +80,28 @@ class HomeVC: UIViewController {
     }()
     
     // TODO: START REMOVE
-    let vinnie_img = UIImage(named: "vinnie_pfp")
+    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, full_name: "Vin Bui", user_name: "vinnie", bio: "I hate school", account_start: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
     
-    private lazy var start_date: Date = {
-        var dc = DateComponents()
-        dc.year = 2021
-        dc.month = 12
-        dc.day = 11
+    private func createTests() {
+        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
         
-        let userCalendar = Calendar(identifier: .gregorian)
-        return userCalendar.date(from: dc)!
-    }()
-    
-    private lazy var user: User = User(pfp: vinnie_img!, full_name: "Vin Bui", user_name: "vinnie", bio: "I hate school", account_start: start_date)
-    
-    private func createPosts() {
-        let user2_pfp = UIImage(named: "cakey_pfp")
-        let drawing1 = UIImage(named: "bird_drawing1")
-        let drawing2 = UIImage(named: "bird_drawing2")
-        let user2 = User(pfp: user2_pfp!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: Date())
-        let post1 = Post(user: user, drawing: drawing1!, caption: "i drew this in middle school guys", time: Date())
-        let post2 = Post(user: user2, drawing: drawing2!, caption: "better than vin's", time: Date())
-        user.addPost(post: post1)
-        user2.addPost(post: post2)
-        posts.append(post1)
-        posts.append(post2)
+        let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
         
-        post1.addComment(comment_user: user2, text: "This sucks")
-        post1.addComment(comment_user: user, text: "This does not suck")
-        post1.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
         
-        post1.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, reply_user: user)
+        user.addFriend(friend: caitlyn)
+        caitlyn.addFriend(friend: user)
         
-        post1.getComments()[0].addReply(text: "Are you okay...", prev: post1.getComments()[0].getReplies()[0], reply_user: user2)
+        user.addPost(post: vin_post)
+        caitlyn.addPost(post: caitlyn_post)
+        
+        posts = user.updateFeed()
+        
+        vin_post.addComment(comment_user: caitlyn, text: "This sucks")
+        vin_post.addComment(comment_user: user, text: "This does not suck")
+        vin_post.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, reply_user: user)
+        vin_post.getComments()[0].addReply(text: "Are you okay...", prev: vin_post.getComments()[0].getReplies()[0], reply_user: caitlyn)
     }
     // TODO: END REMOVE
     
@@ -133,7 +122,7 @@ class HomeVC: UIViewController {
         setupCollectionView()
         setupConstraints()
         // TODO: START REMOVE
-        createPosts()
+        createTests()
         // TODO: END REMOVE
     }
     
@@ -293,7 +282,7 @@ extension HomeVC: EnlargeDrawingDelegate {
 extension HomeVC: PostInfoDelegate {
     func showPostInfo(post: Post) {        
         let view = PostInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle)
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parent_vc: self)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         draw_view_large.addSubview(view)

@@ -10,6 +10,7 @@ class User {
     
     // ------------ Fields ------------
     private let account_start: Date
+    private var friends: [User]
     
     private var pfp: UIImage
     private var full_name: String
@@ -19,6 +20,14 @@ class User {
     private var bookmarked_posts: [Post]
     
     // ------------ Helpers ------------
+    func updateFeed() -> [Post] {
+        var result = [Post]()
+        for i in friends {
+            result.append(i.getLatestPost())
+        }
+        return result
+    }
+    
     func getPostFromDate(selected_date: Date) -> Post? {
         for i in posts {
             if (Calendar.current.isDate(i.getTime(), inSameDayAs: selected_date)) {
@@ -62,7 +71,15 @@ class User {
         return false
     }
     
-    // ------------ Getters/Setters ------------    
+    // ------------ Getters/Setters ------------
+    func addFriend(friend: User) {
+        friends.append(friend)
+    }
+    
+    func getFriends() -> [User] {
+        return friends
+    }
+    
     func getBio() -> String {
         return bio
     }
@@ -111,5 +128,6 @@ class User {
         self.posts = []
         self.bookmarked_posts = []
         self.account_start = account_start
+        self.friends = []
     }
 }

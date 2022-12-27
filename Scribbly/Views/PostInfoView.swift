@@ -24,11 +24,19 @@ class PostInfoView: UIView {
     }()
     
     private var redo_delete_view = RedoDeleteView()
-    private var stats_view = PostInfoStatsView()
+    
+    private lazy var stats_view: PostInfoStatsView = {
+        let stats = PostInfoStatsView()
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(pushCommentVC))
+        stats.addGestureRecognizer(tap_gesture)
+        stats.isUserInteractionEnabled = true
+        return stats
+    }()
     
     // ------------ Fields (Data) ------------
     private var post: Post? = nil
     private var mode: UIUserInterfaceStyle? = nil
+    private var parent_vc: UIViewController? = nil
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -48,6 +56,13 @@ class PostInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc private func pushCommentVC() {
+        if let post = post {
+            let comment_vc = CommentVC(post: post, main_user: post.getUser())
+            parent_vc?.navigationController?.present(comment_vc, animated: true)
+        }
+    }
+    
     @objc func toggleStats() {
         if (self.stats_view.alpha == 1.0) {
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
@@ -60,9 +75,10 @@ class PostInfoView: UIView {
         }
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle) {
+    func configure(post: Post, mode: UIUserInterfaceStyle, parent_vc: UIViewController) {
         self.post = post
         self.mode = mode
+        self.parent_vc = parent_vc
         drawing.image = post.getDrawing()
         stats_view.configure(post: post, mode: mode)
         redo_delete_view.configure(post: post, mode: mode)
@@ -299,6 +315,17 @@ class RedoDeleteView: UIStackView {
         return btn
     }()
     
+    private let share_btn: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     // ------------ Fields (Data) ------------
     private var post: Post? = nil
     
@@ -325,6 +352,7 @@ class RedoDeleteView: UIStackView {
         addSubview(customBlurEffectView)
         addArrangedSubview(redo_btn)
         addArrangedSubview(delete_btn)
+        addArrangedSubview(share_btn)
     }
     
     required init(coder: NSCoder) {
@@ -337,10 +365,12 @@ class RedoDeleteView: UIStackView {
         if (mode == .dark) {
             redo_btn.configuration?.image = UIImage(named: "redo_dark")
             delete_btn.configuration?.image = UIImage(named: "delete_dark")
+            share_btn.configuration?.image = UIImage(named: "share_dark")
             backgroundColor = Constants.post_cell_cap_view_dark
         } else if (mode == .light) {
             redo_btn.configuration?.image = UIImage(named: "redo_light")
             delete_btn.configuration?.image = UIImage(named: "delete_light")
+            share_btn.configuration?.image = UIImage(named: "share_light")
             backgroundColor = Constants.post_cell_cap_view_light
         }
     }
