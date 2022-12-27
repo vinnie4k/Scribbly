@@ -84,8 +84,8 @@ class HomeVC: UIViewController {
     
     private lazy var start_date: Date = {
         var dc = DateComponents()
-        dc.year = 2022
-        dc.month = 7
+        dc.year = 2021
+        dc.month = 12
         dc.day = 11
         
         let userCalendar = Calendar(identifier: .gregorian)

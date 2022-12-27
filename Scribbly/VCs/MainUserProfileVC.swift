@@ -58,9 +58,7 @@ class MainUserProfileVC: UIViewController {
     
     // ------------ Fields (data) ------------
     var main_user: User? = nil
-    
-    private var selected_date = Date()
-    private var total_cells = [String]()
+    private var mems_data = [[String]]() // 43 elements, first element is the month and year
     
     // ------------ Functions ------------
     override func viewDidLoad() {
@@ -75,14 +73,39 @@ class MainUserProfileVC: UIViewController {
         
         view.addSubview(mems_cv)
         
-        setupMonthView()
+        setupMemsData()
         setupMemsCV()
         setupNavBar()
         setupConstraints()
     }
+    /**
+     Returns a list of Strings representing a day given a selected date. An empty string is used as a placeholder.
+     The first element is a String representing the month and year (such as "December 2022")
+     For example, if the date is December 2022, the function returns
+     ["","","","","1","2",...]
+     */
+    private func setupMemsData() {
+        let months = main_user!.monthsFromStart()
+        for month in months {
+            var accum = [String]()
+            accum.append(month)
+            
+            let date = CalendarHelper().getDateFromDayMonthYear(str: "1 " + month)
+            let days = getDaysAsString(selected_date: date)
+            for day in days {
+                accum.append(day)
+            }
+            mems_data.append(accum)
+        }
+    }
     
-    private func setupMonthView() {
-        total_cells.removeAll()
+    /**
+     Returns a list of Strings representing a day given a selected date. An empty string is used as a placeholder.
+     For example, if the date is December 2022, the function returns
+     ["","","","","1","2",...]
+     */
+    private func getDaysAsString(selected_date: Date) -> [String] {
+        var result = [String]()
         
         let days_in_month = CalendarHelper().daysInMonth(date: selected_date)
         let first_day_of_month = CalendarHelper().firstOfMonth(date: selected_date)
@@ -91,30 +114,28 @@ class MainUserProfileVC: UIViewController {
         var count: Int = 1
         while (count <= 42) {
             if (count <= starting_spaces || count - starting_spaces > days_in_month) {
-                total_cells.append("")
+                result.append("")
             } else {
-                total_cells.append(String(count - starting_spaces))
+                result.append(String(count - starting_spaces))
             }
             count += 1
         }
         
-        deleteLastRow()
-    }
-    
-    private func deleteLastRow() {
+        // Delete last row
         var delete_last_row: Bool = true
         for i in 35...41 {
-            if (total_cells[i] != "") {
+            if (result[i] != "") {
                 delete_last_row = false
             }
         }
         if (delete_last_row) {
             for _ in 35...41 {
-                total_cells.removeLast()
+                result.removeLast()
             }
         }
+        return result
     }
-
+    
     private func setupMemsCV() {
         mems_cv.dataSource = self
         mems_cv.delegate = self
@@ -160,35 +181,38 @@ extension MainUserProfileVC: UICollectionViewDataSource {
             }
         } else {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.mems_month_reuse, for: indexPath) as? MonthHeaderView {
-                print(main_user!.monthsFromStart())
-                print(indexPath.section - 1)
-                header.configure(text: main_user!.monthsFromStart()[indexPath.section - 1])
+                header.configure(text: mems_data[indexPath.section - 1][0])
                 return header
             }
         }
-
         return UICollectionReusableView()
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return main_user!.monthsFromStart().count + 1
+        return mems_data.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if (section == 0) {
             return 0
         }
-        return total_cells.count
+        return mems_data[section - 1].count - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = mems_cv.dequeueReusableCell(withReuseIdentifier: Constants.mems_reuse, for: indexPath) as? MemsCollectionViewCell {
-            let text = total_cells[indexPath.item]
-            cell.configure(text: text)
+            let text = mems_data[indexPath.section - 1][indexPath.row + 1]
+            if (text != "") {
+                let month_str = mems_data[indexPath.section - 1][0]
+                let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + month_str)
+                let post = main_user!.getPostFromDate(selected_date: date)
+                cell.configure(post: post, text: text)
+            } else {
+                cell.configure(post: nil, text: "")
+            }
             return cell
-        } else {
-            return UICollectionViewCell()
         }
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

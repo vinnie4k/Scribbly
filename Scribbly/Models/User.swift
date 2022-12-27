@@ -19,6 +19,15 @@ class User {
     private var bookmarked_posts: [Post]
     
     // ------------ Helpers ------------
+    func getPostFromDate(selected_date: Date) -> Post? {
+        for i in posts {
+            if (Calendar.current.isDate(i.getTime(), inSameDayAs: selected_date)) {
+                return i
+            }
+        }
+        return nil
+    }
+    
     /**
      Returns a list of the months from the start date to today's date in reverse order
      For example, if today is December 2022 and the start date is October 2022, monthsFromStart()
@@ -42,13 +51,6 @@ class User {
         }
         allDates.reverse()
         return allDates
-    }
-    
-    func formatDate(date: Date) -> String {
-        // Example: 26 December 2022 04:20:00
-        let date_formatter = DateFormatter()
-        date_formatter.dateFormat = "dd MMMM yyyy HH:mm:ss"
-        return date_formatter.string(from: date)
     }
     
     func isBookmarked(post: Post) -> Bool {

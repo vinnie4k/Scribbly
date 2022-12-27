@@ -175,9 +175,22 @@ extension Date {
 class CalendarHelper {
     let calendar = Calendar.current
     
+    func formatDate(date: Date) -> String {
+        // Example: 26 December 2022 04:20:00
+        let date_formatter = DateFormatter()
+        date_formatter.dateFormat = "d MMMM yyyy HH:mm:ss"
+        return date_formatter.string(from: date)
+    }
+    
+    func getDateFromDayMonthYear(str: String) -> Date {
+        let date_formatter = DateFormatter()
+        date_formatter.dateFormat = "d MMMM yyyy"
+        return date_formatter.date(from: str)!
+    }
+    
     func monthYearString(date: Date) -> String {
         let date_formatter = DateFormatter()
-        date_formatter.dateFormat = "LLLL yyyy"
+        date_formatter.dateFormat = "MMMM yyyy"
         return date_formatter.string(from: date)
     }
     
