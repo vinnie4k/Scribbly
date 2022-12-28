@@ -10,6 +10,11 @@ import UIKit
 /**
  Delegation
  */
+
+protocol ReloadCVDelegate {
+    func reloadCV()
+}
+
 protocol PostInfoDelegate {
     func showPostInfo(post: Post)
 }
@@ -118,17 +123,17 @@ final class CustomVisualEffectView: UIVisualEffectView {
     private var animator: UIViewPropertyAnimator?
 }
 
-extension UINavigationBar {
-    func toggle() {
-        if self.layer.zPosition == -1 {
-            self.layer.zPosition = 0
-            self.isUserInteractionEnabled = true
-        } else {
-            self.layer.zPosition = -1
-            self.isUserInteractionEnabled = false
-        }
-    }
-}
+//extension UINavigationBar {
+//    func toggle() {
+//        if self.layer.zPosition == -1 {
+//            self.layer.zPosition = 0
+//            self.isUserInteractionEnabled = true
+//        } else {
+//            self.layer.zPosition = -1
+//            self.isUserInteractionEnabled = false
+//        }
+//    }
+//}
 
 extension Date {
     /// Returns the amount of years from another date

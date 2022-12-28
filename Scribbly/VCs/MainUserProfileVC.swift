@@ -56,6 +56,29 @@ class MainUserProfileVC: UIViewController {
         return cv
     }()
     
+    private lazy var draw_view_large: UIView = {
+        let view = UIView()
+        
+        var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        if (traitCollection.userInterfaceStyle == .light) {
+            blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        }
+        
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
+        customBlurEffectView.frame = view.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
+        view.addGestureRecognizer(tap_gesture)
+        view.isUserInteractionEnabled = true
+        
+        view.addSubview(customBlurEffectView)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
+        return view
+    }()
+    
     // ------------ Fields (data) ------------
     var main_user: User? = nil
     private var mems_data = [[String]]() // 43 elements, first element is the month and year
@@ -72,12 +95,23 @@ class MainUserProfileVC: UIViewController {
         }
         
         view.addSubview(mems_cv)
+        view.addSubview(draw_view_large)
         
         setupMemsData()
         setupMemsCV()
         setupNavBar()
         setupConstraints()
     }
+    
+    @objc private func reduceImage() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 0.0
+        }, completion: nil)
+        draw_view_large.subviews[1].removeFromSuperview()
+        mems_cv.reloadData()
+//        self.navigationController?.navigationBar. toggle()
+    }
+    
     /**
      Returns a list of Strings representing a day given a selected date. An empty string is used as a placeholder.
      The first element is a String representing the month and year (such as "December 2022")
@@ -167,7 +201,12 @@ class MainUserProfileVC: UIViewController {
             mems_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mems_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mems_cv.topAnchor.constraint(equalTo: view.topAnchor),
-            mems_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            mems_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
+            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
 }
@@ -206,9 +245,10 @@ extension MainUserProfileVC: UICollectionViewDataSource {
                 let month_str = mems_data[indexPath.section - 1][0]
                 let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + month_str)
                 let post = main_user!.getPostFromDate(selected_date: date)
-                cell.configure(post: post, text: text)
+                cell.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                cell.post_info_delegate = self
             } else {
-                cell.configure(post: nil, text: "")
+                cell.configure(post: nil, text: "", mode: traitCollection.userInterfaceStyle)
             }
             return cell
         }
@@ -233,5 +273,32 @@ extension MainUserProfileVC: UICollectionViewDataSource {
 extension MainUserProfileVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: Constants.mems_cell_width, height: Constants.mems_cell_width)
+    }
+}
+
+extension MainUserProfileVC: ReloadCVDelegate, PostInfoDelegate {
+    func showPostInfo(post: Post) {
+        let view = MemsInfoView()
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parent_vc: self)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.hide_share_view.reload_cv_delegate = self
+
+        draw_view_large.addSubview(view)
+
+        NSLayoutConstraint.activate([
+            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
+        ])
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 1.0
+        }, completion: nil)
+        //        self.navigationController?.navigationBar.toggle()
+    }
+
+    func reloadCV() {
+        mems_cv.reloadData()
     }
 }

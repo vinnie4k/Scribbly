@@ -16,8 +16,17 @@ class Post {
     private var comments: [Comment]
     private var liked_users: [User]
     private var bookmarked_users: [User]
+    private var hidden: Bool
     
     // ------------ Getters/Setters ------------
+    func setHidden(bool: Bool) {
+        hidden = bool
+    }
+    
+    func isHidden() -> Bool {
+        return hidden
+    }
+    
     func getTime() -> Date {
         return time
     }
@@ -103,5 +112,6 @@ class Post {
         self.comments = []
         self.liked_users = []
         self.bookmarked_users = []
+        self.hidden = false
     }
 }

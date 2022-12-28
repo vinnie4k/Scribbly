@@ -170,7 +170,7 @@ struct Constants {
     static let post_info_name_left = CGFloat(10)
     static let post_info_caption_top = CGFloat(0)
     static let post_info_stack_top = CGFloat(10)
-    static let post_info_view_height = UIScreen.main.bounds.width
+    static let post_info_view_height = UIScreen.main.bounds.height / 1.5
     static let post_info_view_corner = CGFloat(25)
     static let post_info_stats_padding = CGFloat(10)
     static let post_info_stats_height = UIScreen.main.bounds.width / 4

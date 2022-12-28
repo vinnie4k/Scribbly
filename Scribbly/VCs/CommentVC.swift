@@ -208,7 +208,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             self.draw_view_large.alpha = 0.0
         }, completion: nil)
         draw_view_large.subviews[1].removeFromSuperview()
-        self.navigationController?.navigationBar.toggle()
+//        self.navigationController?.navigationBar.toggle()
     }
     
     func deleteComment(comment: Comment) {
@@ -340,6 +340,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     @objc private func popVC() {
+        navigationController?.navigationBar.layer.zPosition = 0
         navigationController?.popViewController(animated: true)
     }
     
@@ -572,6 +573,6 @@ extension CommentVC: EnlargeDrawingDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.toggle()
+//        self.navigationController?.navigationBar.toggle()
     }
 }

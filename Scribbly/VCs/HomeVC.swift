@@ -90,12 +90,19 @@ class HomeVC: UIViewController {
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
         let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
         
+        for i in 1...25 {
+            let date = String(i) + " December 2022"
+            let post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: date))
+            user.addPost(post: post)
+        }
+        
         user.addFriend(friend: caitlyn)
         user.addFriend(friend: karen)
         caitlyn.addFriend(friend: user)
         karen.addFriend(friend: user)
         
         user.addPost(post: vin_post)
+        vin_post.setHidden(bool: true)
         caitlyn.addPost(post: caitlyn_post)
         karen.addPost(post: karen_post)
         
@@ -145,7 +152,7 @@ class HomeVC: UIViewController {
             self.draw_view_large.alpha = 0.0
         }, completion: nil)
         draw_view_large.subviews[1].removeFromSuperview()
-        self.navigationController?.navigationBar.toggle()
+//        self.navigationController?.navigationBar.toggle()
     }
     
     @objc private func pushProfileVC() {
@@ -220,7 +227,7 @@ extension HomeVC: UICollectionViewDataSource {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
                 header.backgroundColor = .systemBackground
                 if (user.getPosts().count != 0) {
-                    header.configure(prompt: "bird", post: user.getLatestPost())
+                    header.configure(prompt: "bird", post: user.getTodaysPost())
                     header.post_info_delegate = self
                 }
                 return header
@@ -279,7 +286,7 @@ extension HomeVC: EnlargeDrawingDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.toggle()
+//        self.navigationController?.navigationBar.toggle()
     }
 }
 
@@ -301,6 +308,6 @@ extension HomeVC: PostInfoDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        self.navigationController?.navigationBar.toggle()
+//        self.navigationController?.navigationBar.toggle()
     }
 }

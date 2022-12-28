@@ -16,67 +16,121 @@ class MemsCollectionViewCell: UICollectionViewCell {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
-    
-    private let drawing: UIImageView = {
+
+    private lazy var drawing: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
         img.layer.cornerRadius = Constants.mems_cell_corner
         img.translatesAutoresizingMaskIntoConstraints = false
-        
-//        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(toggleStats))
-//        img.addGestureRecognizer(tap_gesture)
-//        img.isUserInteractionEnabled = true
-        
+
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(showStats))
+        img.addGestureRecognizer(tap_gesture)
+        img.isUserInteractionEnabled = true
+
         return img
     }()
-    
+
+    private lazy var blur: CustomVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.1)
+        customBlurEffectView.frame = self.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.layer.cornerRadius = Constants.mems_cell_corner
+        customBlurEffectView.clipsToBounds = true
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        customBlurEffectView.isHidden = true
+        customBlurEffectView.isUserInteractionEnabled = false
+        return customBlurEffectView
+    }()
+
+    private let hidden_img: UIImageView = {
+        let img = UIImageView()
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+
     // ------------ Fields (Data) ------------
     private var parent_vc: UIViewController? = nil
     private var post: Post? = nil
-    
+    private var mode: UIUserInterfaceStyle? = nil
+    var post_info_delegate: PostInfoDelegate?
+
     // ------------ Functions ------------
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         layer.cornerRadius = Constants.mems_cell_corner
-        
+
         addSubview(drawing)
+        addSubview(blur)
         addSubview(date_lbl)
+        addSubview(hidden_img)
+
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func configure(post: Post?, text: String) {
+
+    private func determineBlur() {
+        if (post != nil) {
+            if (post!.isHidden()) {
+                blur.isHidden = false
+                date_lbl.text = ""
+                if (mode == .dark) {
+                    hidden_img.image = UIImage(named: "hidden_dark")
+                } else if (mode == .light) {
+                    hidden_img.image = UIImage(named: "hidden_light")
+                }
+            } else {
+                blur.isHidden = true
+                hidden_img.image = nil
+            }
+        }
+    }
+
+    @objc private func showStats() {
+        if post != nil {
+            post_info_delegate?.showPostInfo(post: post!)
+        }
+    }
+
+    func configure(post: Post?, text: String, mode: UIUserInterfaceStyle) {
         self.post = post
-        
+        self.mode = mode
+
         if post == nil {
             backgroundColor = .systemBackground
         } else {
             drawing.image = post?.getDrawing()
         }
         date_lbl.text = text
+        determineBlur()
     }
-    
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             drawing.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             drawing.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             drawing.topAnchor.constraint(equalTo: self.topAnchor),
             drawing.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
+
             date_lbl.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            date_lbl.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            date_lbl.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+
+            hidden_img.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hidden_img.centerYAnchor.constraint(equalTo: self.centerYAnchor),
         ])
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         // Clear all content based views and their actions here
         drawing.image = nil
         date_lbl.text = ""
+        blur.isHidden = true
+        hidden_img.image = nil
     }
 }

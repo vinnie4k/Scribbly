@@ -41,7 +41,7 @@ class PostInfoView: UIView {
     // ------------ Functions ------------
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+                
         addSubview(drawing)
         addSubview(stats_view)
         addSubview(redo_delete_view)
@@ -59,7 +59,7 @@ class PostInfoView: UIView {
     @objc private func pushCommentVC() {
         if let post = post {
             let comment_vc = CommentVC(post: post, main_user: post.getUser())
-            parent_vc?.navigationController?.present(comment_vc, animated: true)
+            parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
         }
     }
     
@@ -90,10 +90,10 @@ class PostInfoView: UIView {
             drawing.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             drawing.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
 
-            stats_view.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_info_stats_padding),
-            stats_view.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_info_stats_padding),
+            stats_view.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
+            stats_view.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
             stats_view.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
-            stats_view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_stats_padding - 15),
+            stats_view.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
             
             redo_delete_view.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
             redo_delete_view.centerXAnchor.constraint(equalTo: self.centerXAnchor)

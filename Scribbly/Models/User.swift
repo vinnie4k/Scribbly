@@ -23,7 +23,7 @@ class User {
     func updateFeed() -> [Post] {
         var result = [Post]()
         for i in friends {
-            result.append(i.getLatestPost())
+            result.append(i.getTodaysPost())
         }
         return result
     }
@@ -110,7 +110,7 @@ class User {
         return posts
     }
     
-    func getLatestPost() -> Post {
+    func getTodaysPost() -> Post {
         // TODO: maybe only return if it matches today's date?
         return posts[posts.count - 1]
     }
