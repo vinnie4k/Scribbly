@@ -31,19 +31,6 @@ class MemsCollectionViewCell: UICollectionViewCell {
         return img
     }()
 
-    private lazy var blur: CustomVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
-        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.1)
-        customBlurEffectView.frame = self.bounds
-        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        customBlurEffectView.layer.cornerRadius = Constants.mems_cell_corner
-        customBlurEffectView.clipsToBounds = true
-        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
-        customBlurEffectView.isHidden = true
-        customBlurEffectView.isUserInteractionEnabled = false
-        return customBlurEffectView
-    }()
-
     private let hidden_img: UIImageView = {
         let img = UIImageView()
         img.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +50,6 @@ class MemsCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = Constants.mems_cell_corner
 
         addSubview(drawing)
-        addSubview(blur)
         addSubview(date_lbl)
         addSubview(hidden_img)
 
@@ -77,7 +63,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     private func determineBlur() {
         if (post != nil) {
             if (post!.isHidden()) {
-                blur.isHidden = false
+                drawing.applyBlurEffect()
                 date_lbl.text = ""
                 if (mode == .dark) {
                     hidden_img.image = UIImage(named: "hidden_dark")
@@ -85,7 +71,6 @@ class MemsCollectionViewCell: UICollectionViewCell {
                     hidden_img.image = UIImage(named: "hidden_light")
                 }
             } else {
-                blur.isHidden = true
                 hidden_img.image = nil
             }
         }
@@ -130,7 +115,9 @@ class MemsCollectionViewCell: UICollectionViewCell {
         // Clear all content based views and their actions here
         drawing.image = nil
         date_lbl.text = ""
-        blur.isHidden = true
         hidden_img.image = nil
+        for view in drawing.subviews {
+            view.removeFromSuperview()
+        }
     }
 }

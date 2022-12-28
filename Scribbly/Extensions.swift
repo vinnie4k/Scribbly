@@ -11,6 +11,10 @@ import UIKit
  Delegation
  */
 
+protocol ReloadStatsDelegate {
+    func reloadStats()
+}
+
 protocol ReloadCVDelegate {
     func reloadCV()
 }
@@ -217,5 +221,16 @@ class CalendarHelper {
     func weekDay(date: Date) -> Int {
         let components = calendar.dateComponents([.weekday], from: date)
         return components.weekday! - 1
+    }
+}
+
+
+extension UIImageView {
+    func applyBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.1)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(blurEffectView)
     }
 }

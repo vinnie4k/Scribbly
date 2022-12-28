@@ -50,6 +50,7 @@ class MainUserProfileVC: UIViewController {
     private let mems_cv: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        layout.sectionHeadersPinToVisibleBounds = true
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
@@ -185,11 +186,11 @@ class MainUserProfileVC: UIViewController {
         back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settings_btn)
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithTransparentBackground()
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     @objc private func popVC() {
@@ -200,7 +201,7 @@ class MainUserProfileVC: UIViewController {
         NSLayoutConstraint.activate([
             mems_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mems_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mems_cv.topAnchor.constraint(equalTo: view.topAnchor),
+            mems_cv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prof_head_top),
             mems_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),

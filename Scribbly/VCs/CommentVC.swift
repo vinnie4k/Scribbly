@@ -159,6 +159,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private var change: [NSLayoutConstraint]
     private var prev_comment: Comment? = nil
     private var prev_reply: Reply? = nil
+    var reload_stats_delegate: ReloadStatsDelegate?
     
     // ------------ Functions ------------
     override func viewDidLoad() {
@@ -215,6 +216,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         // For delegation
         post.removeComment(comment: comment)
         reply_cv.reloadData()
+        reload_stats_delegate?.reloadStats()
     }
     
     func sendReplyReply(comment: Comment, reply: Reply) {
@@ -266,6 +268,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             hideKeyboard()
             txt_field.text = ""
             reply_cv.reloadData()
+            reload_stats_delegate?.reloadStats()
         }
     }
     
@@ -504,9 +507,10 @@ extension CommentVC: UICollectionViewDelegate {
                 let deleteAction =
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),
-                             attributes: .destructive) { action in
+                             attributes: .destructive) { [self] action in
 
                         comment.removeReply(reply: rep)
+                        self.reload_stats_delegate?.reloadStats()
                         self.reply_cv.reloadData()
                     }
                 return UIMenu(title: "", children: [copyAction, deleteAction])
