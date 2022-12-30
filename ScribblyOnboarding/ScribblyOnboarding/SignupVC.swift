@@ -12,7 +12,7 @@ class SignupVC: UIViewController {
     private let logo: UILabel = {
         let lbl = UILabel()
         lbl.text = "scribbly"
-        lbl.textColor = .label
+        lbl.textColor = OnboardConstants.text_dark
         lbl.font = OnboardConstants.logo_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -23,7 +23,7 @@ class SignupVC: UIViewController {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = OnboardConstants.text_dark
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -34,7 +34,7 @@ class SignupVC: UIViewController {
     private let createacc: UILabel = {
         let lbl = UILabel()
         lbl.text = "create an account"
-        lbl.textColor = .label
+        lbl.textColor = OnboardConstants.text_dark
         lbl.font = OnboardConstants.logo_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -91,11 +91,6 @@ class SignupVC: UIViewController {
         navigationItem.titleView = logo
         back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     @objc private func popVC() {

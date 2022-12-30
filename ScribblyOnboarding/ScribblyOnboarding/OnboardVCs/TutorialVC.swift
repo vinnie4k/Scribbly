@@ -13,7 +13,7 @@ class TutorialVC: UIViewController {
     private let logo: UILabel = {
         let lbl = UILabel()
         lbl.text = "scribbly"
-        lbl.textColor = .label
+        lbl.textColor = OnboardConstants.text_dark
         lbl.font = OnboardConstants.logo_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -24,7 +24,7 @@ class TutorialVC: UIViewController {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.image = UIImage(systemName: "")
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = OnboardConstants.text_dark
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -66,10 +66,10 @@ class TutorialVC: UIViewController {
     
     private let backButton: UIButton = {
         let createButton = UIButton()
-        createButton.setTitle("next", for: .normal)
+        createButton.setTitle("back", for: .normal)
         createButton.addTarget(self, action: #selector(previousview), for: .touchUpInside)
         createButton.setTitleColor(.white, for: .normal)
-        createButton.backgroundColor = OnboardConstants.button_gray
+        createButton.backgroundColor = OnboardConstants.primary_dark
         createButton.layer.cornerRadius = 16
         createButton.translatesAutoresizingMaskIntoConstraints = false
         return createButton
@@ -162,7 +162,7 @@ class TutorialVC: UIViewController {
     }
     
     @objc func nextview(){
-        navigationController?.pushViewController(FriendrecVC(), animated: true)
+        navigationController?.pushViewController(LandingVC(), animated: true)
     }
 
 }

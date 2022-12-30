@@ -14,7 +14,7 @@ struct OnboardConstants {
     static let secondary_dark = UIColor.black
     static let secondary_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     
-    static let button_gray = UIColor(red: 0.044, green: 0.044, blue: 0.044, alpha: 1)
+    static let button_gray = UIColor(red: 0.17, green: 0.17, blue: 0.17, alpha: 1.00)
     static let secondary_text = UIColor(red: 0.66, green: 0.66, blue: 0.66, alpha: 1.00)
     
     static let text_light = UIColor(red: 0.014, green: 0.014, blue: 0.014, alpha: 1)

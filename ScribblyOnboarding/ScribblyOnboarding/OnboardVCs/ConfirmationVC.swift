@@ -13,7 +13,7 @@ class ConfirmationVC: UIViewController {
     private let logo: UILabel = {
         let lbl = UILabel()
         lbl.text = "scribbly"
-        lbl.textColor = .label
+        lbl.textColor = OnboardConstants.text_dark
         lbl.font = OnboardConstants.logo_font
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -24,7 +24,7 @@ class ConfirmationVC: UIViewController {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.image = UIImage(systemName: "")
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = OnboardConstants.text_dark
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -46,9 +46,9 @@ class ConfirmationVC: UIViewController {
     private let forms: UITextField = {
         let txt_field = UITextField()
         txt_field.placeholder = "(xxx) xxx-xxxx"
-        txt_field.textColor = .label
+        txt_field.textColor = OnboardConstants.text_dark
         txt_field.font = OnboardConstants.question_font
-        txt_field.tintColor = .label
+        txt_field.tintColor = OnboardConstants.secondary_text
         txt_field.background = UIImage(named: "textfieldunderline")
         txt_field.contentMode = .scaleAspectFit
         txt_field.keyboardType = UIKeyboardType.twitter
@@ -66,10 +66,10 @@ class ConfirmationVC: UIViewController {
     
     private let backButton: UIButton = {
         let createButton = UIButton()
-        createButton.setTitle("next", for: .normal)
+        createButton.setTitle("back", for: .normal)
         createButton.addTarget(self, action: #selector(previousview), for: .touchUpInside)
         createButton.setTitleColor(.white, for: .normal)
-        createButton.backgroundColor = OnboardConstants.button_gray
+        createButton.backgroundColor = OnboardConstants.primary_dark
         createButton.layer.cornerRadius = 16
         createButton.translatesAutoresizingMaskIntoConstraints = false
         return createButton
