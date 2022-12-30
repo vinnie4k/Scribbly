@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoginVC: UIViewController {
+class SignupVC: UIViewController {
 
     private let logo: UILabel = {
         let lbl = UILabel()
@@ -56,18 +56,32 @@ class LoginVC: UIViewController {
     
     private let eula: UILabel = {
         let eula = UILabel()
-        eula.text = "by clicking “create account,” you agree to scribbly’s End User License Agreement"
+        eula.text = "by clicking “create account,” you agree to scribbly’s"
+        eula.font = OnboardConstants.description_font
+        eula.textColor = OnboardConstants.secondary_text
+        eula.textAlignment = .center
         eula.translatesAutoresizingMaskIntoConstraints = false
         return eula
+    }()
+    
+    private let eula_clickable: UILabel = {
+        let eula_clickable = UILabel()
+        eula_clickable.text = "End User License Agreement"
+        eula_clickable.font = OnboardConstants.description_font
+        eula_clickable.textColor = OnboardConstants.text_dark
+        eula_clickable.numberOfLines = 2
+        eula_clickable.textAlignment = .center
+        eula_clickable.translatesAutoresizingMaskIntoConstraints = false
+        return eula_clickable
     }()
     
     private let createButton: UIButton = {
         let createButton = UIButton()
         createButton.setTitle("create account", for: .normal)
-        createButton.addTarget(LoginVC.self, action: #selector(numberView), for: .touchUpInside)
+        createButton.addTarget(self, action: #selector(numberView), for: .touchUpInside)
         createButton.setTitleColor(.white, for: .normal)
-        createButton.backgroundColor = .systemBlue
-        createButton.layer.cornerRadius = 15
+        createButton.backgroundColor = OnboardConstants.button_gray
+        createButton.layer.cornerRadius = 16
         createButton.translatesAutoresizingMaskIntoConstraints = false
         return createButton
     }()
@@ -108,6 +122,7 @@ class LoginVC: UIViewController {
         view.addSubview(forms)
         view.addSubview(trdParty)
         view.addSubview(eula)
+        view.addSubview(eula_clickable)
         view.addSubview(createButton)
         setupTrdparty()
         setupConfirm()
@@ -133,16 +148,24 @@ class LoginVC: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            eula.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -16),
-            eula.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            eula.bottomAnchor.constraint(equalTo: eula_clickable.topAnchor, constant: -2),
+            eula.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            eula.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            eula.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
         ])
         
         NSLayoutConstraint.activate([
-            createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                        constant: -57),
+            eula_clickable.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -16),
+            eula_clickable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            eula_clickable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            eula_clickable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+        ])
+        
+        NSLayoutConstraint.activate([
+            createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -57),
             createButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                           constant: 24),
+            createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            createButton.heightAnchor.constraint(equalToConstant: 48)
         ])
         
         
