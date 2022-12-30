@@ -37,10 +37,11 @@ struct Constants {
     static let mems_section_bot = CGFloat(30)
     
     // ------------ ProfileHeaderView ------------
-    static let prof_head_height = UIScreen.main.bounds.height / 2 - 10
+    static let prof_head_top = CGFloat(10)
+    static let prof_head_height = UIScreen.main.bounds.height / 2.5
     static let prof_head_corner = CGFloat(25)
     static let prof_pfp_radius = CGFloat(47)
-    static let prof_pfp_top = CGFloat(110)
+    static let prof_pfp_top = CGFloat(50)
     static let prof_fullname_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 24)
     static let prof_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
     static let prof_bio_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 14)

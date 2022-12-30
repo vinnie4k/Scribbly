@@ -42,7 +42,6 @@ class MonthHeaderView: UICollectionReusableView {
         
         NSLayoutConstraint.activate([
             month_lbl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-//            stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.mems_day_of_week_side),
             stack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side),
             stack.topAnchor.constraint(equalTo: month_lbl.bottomAnchor, constant: 5)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MemsInfoView: UIView {
+class MemsInfoView: UIView, ReloadStatsDelegate {
     // ------------ Fields (view) ------------
     private lazy var drawing: UIImageView = {
         let img = UIImageView()
@@ -57,10 +57,15 @@ class MemsInfoView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func reloadStats() {
+        stats_view.reloadStats()
+    }
 
     @objc private func pushCommentVC() {
         if let post = post {
             let comment_vc = CommentVC(post: post, main_user: post.getUser())
+            comment_vc.reload_stats_delegate = self
             parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
         }
     }

@@ -93,6 +93,8 @@ class HomeVC: UIViewController {
         for i in 1...25 {
             let date = String(i) + " December 2022"
             let post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: date))
+            post.addComment(comment_user: caitlyn, text: "This sucks")
+            post.addComment(comment_user: user, text: "This does not suck")
             user.addPost(post: post)
         }
         

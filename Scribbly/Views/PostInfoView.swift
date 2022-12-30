@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PostInfoView: UIView {
+class PostInfoView: UIView, ReloadStatsDelegate {
     // ------------ Fields (view) ------------
     private lazy var drawing: UIImageView = {
         let img = UIImageView()
@@ -56,9 +56,14 @@ class PostInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func reloadStats() {
+        stats_view.reloadStats()
+    }
+    
     @objc private func pushCommentVC() {
         if let post = post {
             let comment_vc = CommentVC(post: post, main_user: post.getUser())
+            comment_vc.reload_stats_delegate = self
             parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
         }
     }
@@ -132,11 +137,13 @@ class PostInfoStatsView: UIView {
     }()
     
     private let likes_view = UIView()
-    private let comment_view = UIView()
+    private var comment_view = UIView()
     private let bookmark_view = UIView()
     private let stack = UIStackView()
     
     // ------------ Fields (Data) ------------
+    private var post: Post? = nil
+    private var mode: UIUserInterfaceStyle? = nil
 
     // ------------ Functions ------------
     override init(frame: CGRect) {
@@ -165,7 +172,16 @@ class PostInfoStatsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func reloadStats() {
+        for sub in comment_view.subviews {
+            sub.removeFromSuperview()
+        }
+        createCommentView(comment_count: post!.getCommentReplyCount(), mode: mode!)
+    }
+        
     func configure(post: Post, mode: UIUserInterfaceStyle) {
+        self.post = post
+        self.mode = mode
         user_pfp.setImage(post.getUser().getPFP(), for: .normal)
         display_name.text = post.getUser().getUserName()
         caption.text = post.getCaption()
