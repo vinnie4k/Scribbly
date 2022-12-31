@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -14,7 +14,7 @@ class MemsTinyPostView: UIView {
     // MARK: - Properties (view)
     private let dateLabel: UILabel = {
         let lbl = UILabel()
-        lbl.font = Constants.mems_date_font
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
         lbl.tintColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -120,7 +120,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (view)
     private let monthLabel: UILabel = {
         let lbl = UILabel()
-        lbl.font = Constants.mems_date_font
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -136,7 +136,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
         for day in day_of_week {
             let lbl = UILabel()
             lbl.text = day
-            lbl.font = Constants.mems_date_font
+            lbl.font = Constants.getFont(size: 14, weight: .medium)
             lbl.translatesAutoresizingMaskIntoConstraints = false
             stack.addArrangedSubview(lbl)
         }

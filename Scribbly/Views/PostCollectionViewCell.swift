@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/18/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -31,7 +31,7 @@ class PromptHeaderView: UICollectionReusableView {
         let lbl = UILabel()
         lbl.text = "today's prompt"
         lbl.textColor = .label
-        lbl.font = Constants.prompt_heading_font
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -39,12 +39,13 @@ class PromptHeaderView: UICollectionReusableView {
     private let prompt: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.prompt_font
+        lbl.font = Constants.getFont(size: 40, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
     
     // MARK: - Properties (data)
+    static let reuseIdentifier = "PromptHeaderViewReuse"
     var postInfoDelegate: PostInfoDelegate!
     private var post: Post!
 
@@ -174,6 +175,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }()
 
     // MARK: - Properties (data)
+    static let reuseIdentifier = "PostCollectionViewCellReuse"
     private var parentVC: UIViewController!
     private var mode: UIUserInterfaceStyle!
     private var post: Post!
@@ -220,17 +222,17 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     func setMode(mode: UIUserInterfaceStyle) {
         if mode == .light {
-            drawing.layer.borderColor = Constants.post_cell_drawing_border_light.cgColor
-            stack.backgroundColor = Constants.post_cell_drawing_border_light
-            captionView.backgroundColor = Constants.post_cell_cap_view_light
+            drawing.layer.borderColor = Constants.secondary_light.cgColor
+            stack.backgroundColor = Constants.secondary_light
+            captionView.backgroundColor = Constants.blur_light
             likeButton.configuration?.image = UIImage(named: "heart_light_empty")
             commentButton.configuration?.image = UIImage(named: "comment_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
             bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
         } else if mode == .dark {
-            drawing.layer.borderColor = Constants.post_cell_drawing_border_dark.cgColor
-            stack.backgroundColor = Constants.post_cell_drawing_border_dark
-            captionView.backgroundColor = Constants.post_cell_cap_view_dark
+            drawing.layer.borderColor = Constants.primary_dark.cgColor
+            stack.backgroundColor = Constants.primary_dark
+            captionView.backgroundColor = Constants.blur_dark
             likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
             commentButton.configuration?.image = UIImage(named: "comment_dark")
             shareButton.configuration?.image = UIImage(named: "share_dark")
@@ -331,7 +333,7 @@ class CaptionView: UIView {
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_username_font
+        lbl.font = Constants.getFont(size: 14, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -339,7 +341,7 @@ class CaptionView: UIView {
     private let caption: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_caption_font
+        lbl.font = Constants.getFont(size: 10, weight: .regular)
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false

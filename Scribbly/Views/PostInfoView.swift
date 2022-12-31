@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -126,7 +126,7 @@ class PostInfoStatsView: UIView {
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_username_font
+        lbl.font = Constants.getFont(size: 14, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -134,7 +134,7 @@ class PostInfoStatsView: UIView {
     private let caption: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_caption_font
+        lbl.font = Constants.getFont(size: 10, weight: .regular)
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -185,9 +185,9 @@ class PostInfoStatsView: UIView {
         displayName.text = post.getUser().getUserName()
         caption.text = post.getCaption()
         
-        backgroundColor = Constants.post_cell_cap_view_dark
+        backgroundColor = Constants.blur_dark
         if mode == .light {
-            backgroundColor = Constants.post_cell_cap_view_light
+            backgroundColor = Constants.blur_light
         }
         
         createLikesView(likeCount: post.getLikeCount(), mode: mode)
@@ -234,7 +234,7 @@ class PostInfoStatsView: UIView {
         let lbl = UILabel()
         lbl.text = String(likeCount)
         lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
+        lbl.font = Constants.getFont(size: 20, weight: .regular)
         
         img.translatesAutoresizingMaskIntoConstraints = false
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -259,7 +259,7 @@ class PostInfoStatsView: UIView {
         let lbl = UILabel()
         lbl.text = String(commentCount)
         lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
+        lbl.font = Constants.getFont(size: 20, weight: .regular)
 
         img.translatesAutoresizingMaskIntoConstraints = false
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -284,7 +284,7 @@ class PostInfoStatsView: UIView {
         let lbl = UILabel()
         lbl.text = String(bookmarkCount)
         lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
+        lbl.font = Constants.getFont(size: 20, weight: .regular)
 
         img.translatesAutoresizingMaskIntoConstraints = false
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -388,13 +388,13 @@ class RedoDeleteView: UIStackView {
         redoButton.configuration?.image = UIImage(named: "redo_dark")
         deleteButton.configuration?.image = UIImage(named: "delete_dark")
         shareButton.configuration?.image = UIImage(named: "share_dark")
-        backgroundColor = Constants.post_cell_cap_view_dark
+        backgroundColor = Constants.blur_dark
         
         if mode == .light {
             redoButton.configuration?.image = UIImage(named: "redo_light")
             deleteButton.configuration?.image = UIImage(named: "delete_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
-            backgroundColor = Constants.post_cell_cap_view_light
+            backgroundColor = Constants.blur_light
         }
     }
 }

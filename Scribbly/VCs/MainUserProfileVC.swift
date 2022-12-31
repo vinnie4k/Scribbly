@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -15,7 +15,7 @@ class MainUserProfileVC: UIViewController {
         let lbl = UILabel()
         lbl.text = "profile"
         lbl.textColor = .label
-        lbl.font = Constants.comment_title_font
+        lbl.font = Constants.getFont(size: 20, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()

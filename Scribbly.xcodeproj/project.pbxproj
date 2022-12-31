@@ -16,7 +16,7 @@
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
 		2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */; };
 		2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E311221295FCCA6009D2752 /* BooksInfoView.swift */; };
-		2E553EB4295595A300A40575 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions.swift */; };
+		2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions and Protocols.swift */; };
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
@@ -24,7 +24,7 @@
 		2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */; };
 		2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */; };
 		2ECBE2A42959560E00DFA64F /* MemsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */; };
-		2ED4F1152953669B00E66E5F /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment.swift */; };
+		2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment and Reply.swift */; };
 		2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentCells.swift */; };
 		2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EED0C852952D09F009BA4CE /* CommentVC.swift */; };
 		95F9EA770B5CCB2FEEC95B2E /* Pods_Scribbly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */; };
@@ -44,7 +44,7 @@
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E311221295FCCA6009D2752 /* BooksInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksInfoView.swift; sourceTree = "<group>"; };
-		2E553EB3295595A300A40575 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		2E553EB3295595A300A40575 /* Extensions and Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions and Protocols.swift"; sourceTree = "<group>"; };
 		2E70868C295B9E97003D6E87 /* MemsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsInfoView.swift; sourceTree = "<group>"; };
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -52,7 +52,7 @@
 		2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileVC.swift; sourceTree = "<group>"; };
 		2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaders.swift; sourceTree = "<group>"; };
 		2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsCollectionViewCell.swift; sourceTree = "<group>"; };
-		2ED4F1142953669B00E66E5F /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		2ED4F1142953669B00E66E5F /* Comment and Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comment and Reply.swift"; sourceTree = "<group>"; };
 		2ED4F1162953711A00E66E5F /* CommentCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCells.swift; sourceTree = "<group>"; };
 		2EED0C852952D09F009BA4CE /* CommentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentVC.swift; sourceTree = "<group>"; };
 		7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Scribbly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,17 +99,12 @@
 		2E0C0884294F15290021C2D9 /* Scribbly */ = {
 			isa = PBXGroup;
 			children = (
+				2E3112232960E5A7009D2752 /* Default Files */,
 				2E553EB62955960600A40575 /* Views */,
 				2E553EB5295595DD00A40575 /* VCs */,
 				2E0C08A0294F28470021C2D9 /* Images */,
 				2E0C089B294F17800021C2D9 /* Models */,
-				2E77F7DE294FAC2100D6E8D0 /* Constants.swift */,
-				2E553EB3295595A300A40575 /* Extensions.swift */,
-				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
-				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
-				2E0C0893294F152A0021C2D9 /* Info.plist */,
-				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
-				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
+				2E3112242960E5C1009D2752 /* Other */,
 			);
 			path = Scribbly;
 			sourceTree = "<group>";
@@ -119,7 +114,7 @@
 			children = (
 				2E0C089C294F17A10021C2D9 /* User.swift */,
 				2E0C089E294F1AA90021C2D9 /* Post.swift */,
-				2ED4F1142953669B00E66E5F /* Comment.swift */,
+				2ED4F1142953669B00E66E5F /* Comment and Reply.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -129,6 +124,27 @@
 			children = (
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		2E3112232960E5A7009D2752 /* Default Files */ = {
+			isa = PBXGroup;
+			children = (
+				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
+				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
+				2E0C0893294F152A0021C2D9 /* Info.plist */,
+				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
+				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
+			);
+			path = "Default Files";
+			sourceTree = "<group>";
+		};
+		2E3112242960E5C1009D2752 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				2E77F7DE294FAC2100D6E8D0 /* Constants.swift */,
+				2E553EB3295595A300A40575 /* Extensions and Protocols.swift */,
+			);
+			path = Other;
 			sourceTree = "<group>";
 		};
 		2E553EB5295595DD00A40575 /* VCs */ = {
@@ -162,7 +178,6 @@
 				15497A12645BB170857FF96D /* Pods-Scribbly.debug.xcconfig */,
 				09CD26885C10DD91ED831959 /* Pods-Scribbly.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -293,8 +308,8 @@
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
-				2ED4F1152953669B00E66E5F /* Comment.swift in Sources */,
-				2E553EB4295595A300A40575 /* Extensions.swift in Sources */,
+				2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */,
+				2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,
 				2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */,

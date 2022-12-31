@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/30/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -126,7 +126,7 @@ class BooksCaptionView: UIView {
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_username_font
+        lbl.font = Constants.getFont(size: 10, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -134,7 +134,7 @@ class BooksCaptionView: UIView {
     private let caption: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.post_cell_caption_font
+        lbl.font = Constants.getFont(size: 10, weight: .regular)
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -177,11 +177,10 @@ class BooksCaptionView: UIView {
         userPFP.setImage(post.getUser().getPFP(), for: .normal)
         displayName.text = post.getUser().getUserName()
         caption.text = post.getCaption()
-
-        if (mode == .dark) {
-            backgroundColor = Constants.post_cell_cap_view_dark
-        } else if (mode == .light) {
-            backgroundColor = Constants.post_cell_cap_view_light
+        
+        backgroundColor = Constants.blur_dark
+        if mode == .light {
+            backgroundColor = Constants.blur_light
         }
     }
     
@@ -298,14 +297,14 @@ class BooksButtonView: UIStackView {
         commentButton.configuration?.image = UIImage(named: "comment_dark")
         shareButton.configuration?.image = UIImage(named: "share_dark")
         bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
-        backgroundColor = Constants.post_cell_cap_view_dark
+        backgroundColor = Constants.blur_dark
         
         if mode == .light {
             likeButton.configuration?.image = UIImage(named: "heart_light_empty")
             commentButton.configuration?.image = UIImage(named: "comment_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
             bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            backgroundColor = Constants.post_cell_cap_view_light
+            backgroundColor = Constants.blur_light
         }
         
         if post.containsLikedUser(user: mainUser) {

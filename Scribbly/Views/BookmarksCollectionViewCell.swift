@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/30/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 

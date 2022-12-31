@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/21/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -27,6 +27,7 @@ class DrawingHeaderView: UICollectionReusableView {
     }()
     
     // MARK: - Properties (data)
+    static let reuseIdentifier = "DrawingHeaderViewReuse"
     var enlargeDrawingDelegate: EnlargeDrawingDelegate!
 
     // MARK: - init, configure, and setupConstraints
@@ -77,7 +78,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.comment_cell_username_font
+        lbl.font = Constants.getFont(size: 14, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -85,7 +86,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     private let text: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.comment_cell_text_font
+        lbl.font = Constants.getFont(size: 14, weight: .bold)
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -95,13 +96,14 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     private let replyButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("reply", for: .normal)
-        btn.setTitleColor(Constants.reply_button_color, for: .normal)
-        btn.titleLabel?.font = Constants.reply_button_font
+        btn.setTitleColor(Constants.secondary_text, for: .normal)
+        btn.titleLabel?.font = Constants.getFont(size: 16, weight: .medium)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
     
     // MARK: - Properties (data)
+    static let reuseIdentifier = "CommentHeaderViewReuse"
     private var parentVC: UIViewController!
     private var comment: Comment!
     private var mainUser: User!
@@ -206,7 +208,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.comment_cell_username_font
+        lbl.font = Constants.getFont(size: 14, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -223,13 +225,14 @@ class CommentCollectionViewCell: UICollectionViewCell {
     private let replyButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("reply", for: .normal)
-        btn.setTitleColor(Constants.reply_button_color, for: .normal)
-        btn.titleLabel?.font = Constants.reply_button_font
+        btn.setTitleColor(Constants.secondary_text, for: .normal)
+        btn.titleLabel?.font = Constants.getFont(size: 16, weight: .medium)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
     
     // MARK: - Properties (data)
+    static let reuseIdentifier = "CommentCollectionViewCellReuse"
     private var parentVC: UIViewController!
     private var comment: Comment!
     private var reply: Reply!

@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/20/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -16,7 +16,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         let lbl = UILabel()
         lbl.text = "comments"
         lbl.textColor = .label
-        lbl.font = Constants.comment_title_font
+        lbl.font = Constants.getFont(size: 20, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -49,7 +49,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         let txt_field = UITextField()
         txt_field.placeholder = "add a comment as @" + mainUser.getUserName()
         txt_field.textColor = .label
-        txt_field.font = Constants.comment_cell_text_font
+        txt_field.font = Constants.getFont(size: 16, weight: .regular)
         txt_field.tintColor = .label
         txt_field.delegate = self
         txt_field.addTarget(self, action: #selector(changeSendButtonColor), for: UIControl.Event.editingChanged)
@@ -75,10 +75,10 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         config.image = UIImage(named: "comment_send_gray")
         if (traitCollection.userInterfaceStyle == .dark) {
             config.image = UIImage(named: "comment_send_gray_dark")
-            config.baseBackgroundColor = Constants.comment_input_dark
+            config.baseBackgroundColor = Constants.button_dark
         } else if (traitCollection.userInterfaceStyle == .light) {
             config.image = UIImage(named: "comment_send_gray_light")
-            config.baseBackgroundColor = Constants.comment_input_light
+            config.baseBackgroundColor = Constants.secondary_light
         }
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -94,7 +94,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             UIColor(red: 0, green: 0, blue: 0, alpha: 0.9),
             .black], locations: [0,0.2,0.5,1])
         if (traitCollection.userInterfaceStyle == . light) {
-            gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.comment_light_bg], locations: [0,0.3,1])
+            gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.secondary_light], locations: [0,0.3,1])
         }
         gradient.translatesAutoresizingMaskIntoConstraints = false
         return gradient
@@ -166,9 +166,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     // MARK: - viewDidLoad, viewWillDisappear, init, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
-        bgColor = Constants.comment_dark_bg
+        bgColor = Constants.secondary_dark
         if (traitCollection.userInterfaceStyle == .light) {
-            bgColor = Constants.comment_light_bg
+            bgColor = Constants.secondary_light
         }
         
         view.backgroundColor = bgColor
@@ -271,9 +271,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
                     let length = (prevReply?.getReplyUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prevComment?.addReply(text: String(rep), prev: prevReply, reply_user: mainUser)
+                    prevComment?.addReply(text: String(rep), prev: prevReply, replyUser: mainUser)
                 } else {
-                    prevComment?.addReply(text: text, prev: prevReply, reply_user: mainUser)
+                    prevComment?.addReply(text: text, prev: prevReply, replyUser: mainUser)
                 }
                 prevComment = nil  // Set back to nil
                 prevReply = nil    // Set back to nil
@@ -284,9 +284,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
                     let length = (prevComment?.getUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prevComment?.addReply(text: String(rep), prev: nil, reply_user: mainUser)
+                    prevComment?.addReply(text: String(rep), prev: nil, replyUser: mainUser)
                 } else {
-                    prevComment?.addReply(text: text, prev: nil, reply_user: mainUser)
+                    prevComment?.addReply(text: text, prev: nil, replyUser: mainUser)
                 }
                 prevComment = nil  // Set back to nil
             } else {
@@ -326,9 +326,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private func changeCommentView(pop: Bool) {
         if (pop) { // Keyboard pops up
             if (traitCollection.userInterfaceStyle == .dark) {
-                textInputView.backgroundColor = Constants.comment_input_dark
+                textInputView.backgroundColor = Constants.button_dark
             } else if (traitCollection.userInterfaceStyle == .light) {
-                textInputView.backgroundColor = Constants.comment_input_light
+                textInputView.backgroundColor = Constants.secondary_light
             }
             gradient.isHidden = true
             commentButton.isHidden = false
@@ -370,9 +370,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private func setupCollectionView() {
         replyCV.delegate = self
         replyCV.dataSource = self
-        replyCV.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
-        replyCV.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
-        replyCV.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.drawing_reuse)
+        replyCV.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: CommentCollectionViewCell.reuseIdentifier)
+        replyCV.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CommentHeaderView.reuseIdentifier)
+        replyCV.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: DrawingHeaderView.reuseIdentifier)
     }
     
     private func setupNavBar() {
@@ -391,7 +391,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         let height: CGFloat = 99999
         let size = CGSize(width: Constants.comment_cell_text_width, height: height)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let attributes = [NSAttributedString.Key.font: Constants.comment_cell_text_font]
+        let attributes = [NSAttributedString.Key.font: Constants.getFont(size: 16, weight: .regular)]
 
         return NSString(string: text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
     }
@@ -406,7 +406,7 @@ extension CommentVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader && indexPath.section == 0 {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.drawing_reuse, for: indexPath) as? DrawingHeaderView {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: DrawingHeaderView.reuseIdentifier, for: indexPath) as? DrawingHeaderView {
                 header.configure(drawing: post.getDrawing())
                 header.enlargeDrawingDelegate = self
                 return header
@@ -414,11 +414,11 @@ extension CommentVC: UICollectionViewDataSource {
         }
         
         if kind == UICollectionView.elementKindSectionHeader {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.comment_reuse, for: indexPath) as? CommentHeaderView {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentHeaderView.reuseIdentifier, for: indexPath) as? CommentHeaderView {
                 if (traitCollection.userInterfaceStyle == .light) {
-                    header.backgroundColor = Constants.comment_cell_light
+                    header.backgroundColor = Constants.primary_light
                 } else if (traitCollection.userInterfaceStyle == .dark) {
-                    header.backgroundColor = Constants.comment_cell_dark
+                    header.backgroundColor = Constants.primary_dark
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = post.getComments()[indexPath.section - 1]
@@ -463,13 +463,13 @@ extension CommentVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section != 0 {
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
+            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCollectionViewCell.reuseIdentifier, for: indexPath) as? CommentCollectionViewCell {
                 let comment = post.getComments()[indexPath.section - 1]
                 let rep = comment.getReplies()[indexPath.row]
                 if (traitCollection.userInterfaceStyle == .light) {
-                    cell.backgroundColor = Constants.comment_cell_light
+                    cell.backgroundColor = Constants.primary_light
                 } else if (traitCollection.userInterfaceStyle == .dark) {
-                    cell.backgroundColor = Constants.comment_cell_dark
+                    cell.backgroundColor = Constants.primary_dark
                 }
                 cell.layer.cornerRadius = Constants.comment_cell_corner
                 cell.configure(parentVC: self, comment: comment, reply: rep)

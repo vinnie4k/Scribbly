@@ -5,20 +5,23 @@
 //  Created by Vin Bui on 12/18/22.
 //
 
+// TODO: ALREADY REFACTORED
+
 import UIKit
 
+// MARK: Post Model Class
 class Post {
-    // ------------ Fields ------------
+    // MARK: - Properties
     private var user: User
     private var drawing: UIImage
     private var caption: String
     private var time: Date
     private var comments: [Comment]
-    private var liked_users: [User]
-    private var bookmarked_users: [User]
+    private var likedUsers: [User]
+    private var bookmarkedUsers: [User]
     private var hidden: Bool
     
-    // ------------ Getters/Setters ------------
+    // MARK: - Getters and Setters
     func setHidden(bool: Bool) {
         hidden = bool
     }
@@ -41,25 +44,25 @@ class Post {
     }
     
     func getBookmarkCount() -> Int {
-        return bookmarked_users.count
+        return bookmarkedUsers.count
     }
     
     func getLikeCount() -> Int {
-        return liked_users.count
+        return likedUsers.count
     }
     
     func removeBookmarkUser(user: User) {
-        if let index = bookmarked_users.firstIndex(where: {$0 === user}) {
-            bookmarked_users.remove(at: index)
+        if let index = bookmarkedUsers.firstIndex(where: {$0 === user}) {
+            bookmarkedUsers.remove(at: index)
         }
     }
     
     func addBookmarkUser(user: User) {
-        bookmarked_users.append(user)
+        bookmarkedUsers.append(user)
     }
     
     func containsLikedUser(user: User) -> Bool {
-        for i in liked_users {
+        for i in likedUsers {
             if i === user {
                 return true
             }
@@ -68,13 +71,13 @@ class Post {
     }
     
     func removedLikedUsers(user: User) {
-        if let index = liked_users.firstIndex(where: {$0 === user}) {
-            liked_users.remove(at: index)
+        if let index = likedUsers.firstIndex(where: {$0 === user}) {
+            likedUsers.remove(at: index)
         }
     }
     
     func addLikedUsers(user: User) {
-        liked_users.append(user)
+        likedUsers.append(user)
     }
     
     func removeComment(comment: Comment) {
@@ -104,14 +107,15 @@ class Post {
         return caption
     }
     
+    // MARK: - init
     init(user: User, drawing: UIImage, caption: String, time: Date) {
         self.user = user
         self.drawing = drawing
         self.caption = caption
         self.time = time
         self.comments = []
-        self.liked_users = []
-        self.bookmarked_users = []
+        self.likedUsers = []
+        self.bookmarkedUsers = []
         self.hidden = false
     }
 }

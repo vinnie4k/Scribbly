@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 import RESegmentedControl
@@ -113,7 +113,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     private let fullnameLabel: UILabel = {
         let lbl = UILabel()
-        lbl.font = Constants.prof_fullname_font
+        lbl.font = Constants.getFont(size: 24, weight: .medium)
         lbl.textColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -121,7 +121,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     private let usernameLabel: UILabel = {
         let lbl = UILabel()
-        lbl.font = Constants.prof_username_font
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
         lbl.textColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -129,7 +129,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     private let bioLabel: UILabel = {
         let lbl = UILabel()
-        lbl.font = Constants.prof_bio_font
+        lbl.font = Constants.getFont(size: 14, weight: .regular)
         lbl.textColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -139,7 +139,7 @@ class ProfileHeaderCell: UICollectionViewCell {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         var text = AttributedString("friends")
-        text.font = Constants.prof_btn_font
+        text.font = Constants.getFont(size: 14, weight: .medium)
         
         config.attributedTitle = text
         config.buttonSize = .large
@@ -154,7 +154,7 @@ class ProfileHeaderCell: UICollectionViewCell {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         var text = AttributedString("edit")
-        text.font = Constants.prof_btn_font
+        text.font = Constants.getFont(size: 14, weight: .medium)
         
         config.attributedTitle = text
         config.buttonSize = .large
@@ -194,13 +194,13 @@ class ProfileHeaderCell: UICollectionViewCell {
         self.mode = mode
         
         backgroundColor = Constants.primary_dark
-        friendsButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
-        editButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
+        friendsButton.configuration?.baseBackgroundColor = Constants.button_dark
+        editButton.configuration?.baseBackgroundColor = Constants.button_dark
             
         if mode == .light {
             backgroundColor = Constants.primary_light
-            friendsButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
-            editButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
+            friendsButton.configuration?.baseBackgroundColor = Constants.button_light
+            editButton.configuration?.baseBackgroundColor = Constants.button_light
         }
        
         profileImage.image = user.getPFP()

@@ -4,22 +4,25 @@
 //
 //  Created by Vin Bui on 12/18/22.
 //
+
+// TODO: ALREADY REFACTORED
+
 import UIKit
 
+// MARK: User Model Class
 class User {
-    
-    // ------------ Fields ------------
-    private let account_start: Date
+    // MARK: - Properties
+    private let accountStart: Date
     private var friends: [User]
     
     private var pfp: UIImage
-    private var full_name: String
-    private var user_name: String
+    private var fullName: String
+    private var userName: String
     private var bio: String
     private var posts: [Post]
-    private var bookmarked_posts: [Post]
+    private var bookmarkedPosts: [Post]
     
-    // ------------ Helpers ------------
+    // MARK: - Helper Functions
     func updateFeed() -> [Post] {
         var result = [Post]()
         for i in friends {
@@ -44,14 +47,14 @@ class User {
      */
     func monthsFromStart() -> [String] {
         let calendar = Calendar(identifier: .gregorian)
-        let components = calendar.dateComponents(Set([.month]), from: account_start, to: Date())
+        let components = calendar.dateComponents(Set([.month]), from: accountStart, to: Date())
 
         var allDates: [String] = []
         let dateRangeFormatter = DateFormatter()
         dateRangeFormatter.dateFormat = "MMMM yyyy"
 
         for i in 0 ... components.month! {
-            guard let date = calendar.date(byAdding: .month, value: i, to: account_start) else {
+            guard let date = calendar.date(byAdding: .month, value: i, to: accountStart) else {
             continue
             }
 
@@ -63,7 +66,7 @@ class User {
     }
     
     func isBookmarked(post: Post) -> Bool {
-        for i in bookmarked_posts {
+        for i in bookmarkedPosts {
             if i === post {
                 return true
             }
@@ -71,7 +74,7 @@ class User {
         return false
     }
     
-    // ------------ Getters/Setters ------------
+    // MARK: - Getters and Setters
     func addFriend(friend: User) {
         friends.append(friend)
     }
@@ -85,21 +88,21 @@ class User {
     }
     
     func getFullName() -> String {
-        return full_name
+        return fullName
     }
     
     func getBookmarks() -> [Post] {
-        return bookmarked_posts
+        return bookmarkedPosts
     }
     
     func removeBookmarkPost(post: Post) {
-        if let index = bookmarked_posts.firstIndex(where: {$0 === post}) {
-            bookmarked_posts.remove(at: index)
+        if let index = bookmarkedPosts.firstIndex(where: {$0 === post}) {
+            bookmarkedPosts.remove(at: index)
         }
     }
     
     func addBookmarkPost(post: Post) {
-        bookmarked_posts.append(post)
+        bookmarkedPosts.append(post)
     }
     
     func getPFP() -> UIImage {
@@ -107,7 +110,7 @@ class User {
     }
     
     func getUserName() -> String {
-        return user_name
+        return userName
     }
     
     func getPosts() -> [Post] {
@@ -123,15 +126,15 @@ class User {
         posts.append(post)
     }
     
-    // ------------ Initializer ------------
-    init(pfp: UIImage, full_name: String, user_name: String, bio: String, account_start: Date) {
+    // MARK: - init
+    init(pfp: UIImage, fullName: String, userName: String, bio: String, accountStart: Date) {
         self.pfp = pfp
-        self.full_name = full_name
-        self.user_name = user_name
+        self.fullName = fullName
+        self.userName = userName
         self.bio = bio
         self.posts = []
-        self.bookmarked_posts = []
-        self.account_start = account_start
+        self.bookmarkedPosts = []
+        self.accountStart = accountStart
         self.friends = []
     }
 }

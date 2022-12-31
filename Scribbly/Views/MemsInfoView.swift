@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/27/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -193,7 +193,7 @@ class HideShareView: UIStackView {
         }
         deleteButton.configuration?.image = UIImage(named: "delete_dark")
         shareButton.configuration?.image = UIImage(named: "share_dark")
-        backgroundColor = Constants.post_cell_cap_view_dark
+        backgroundColor = Constants.blur_dark
  
         if mode == .light {
             if post.isHidden() {
@@ -203,7 +203,7 @@ class HideShareView: UIStackView {
             }
             deleteButton.configuration?.image = UIImage(named: "delete_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
-            backgroundColor = Constants.post_cell_cap_view_light
+            backgroundColor = Constants.blur_light
         }
     }
     

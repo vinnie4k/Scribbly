@@ -5,7 +5,7 @@
 //  Created by Vin Bui on 12/18/22.
 //
 
-// TODO: ALREADY REFRACTORED
+// TODO: ALREADY REFACTORED
 
 import UIKit
 
@@ -32,7 +32,7 @@ class HomeVC: UIViewController {
         let lbl = UILabel()
         lbl.text = "scribbly"
         lbl.textColor = .label
-        lbl.font = Constants.logo_font
+        lbl.font = Constants.getFont(size: 24, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
@@ -82,12 +82,12 @@ class HomeVC: UIViewController {
     }()
     
     // TODO: START REMOVE
-    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, full_name: "Vin Bui", user_name: "vinnie", bio: "I hate school", account_start: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
+    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, fullName: "Vin Bui", userName: "vinnie", bio: "I hate school", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
     
     private func createTests() {
-        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
-        let karen = User(pfp: UIImage(named: "piano")!, full_name: "Karen Sabile", user_name: "karensabile", bio: "my music taste is top tier", account_start: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
-        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, full_name: "Katherine Chang", user_name: "strokeslover101", bio: "Slay!!", account_start: Date())
+        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, fullName: "Caitlyn Jin", userName: "cakeymecake", bio: "I love drawing", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
+        let karen = User(pfp: UIImage(named: "piano")!, fullName: "Karen Sabile", userName: "karensabile", bio: "my music taste is top tier", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
+        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, fullName: "Katherine Chang", userName: "strokeslover101", bio: "Slay!!", accountStart: Date())
         
         let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
@@ -129,8 +129,8 @@ class HomeVC: UIViewController {
         vin_post.addComment(comment_user: katherine, text: "So bad 😭")
         vin_post.addComment(comment_user: user, text: "This does not suck")
         vin_post.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, reply_user: user)
-        vin_post.getComments()[0].addReply(text: "Are you okay...", prev: vin_post.getComments()[0].getReplies()[0], reply_user: caitlyn)
+        vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, replyUser: user)
+        vin_post.getComments()[0].addReply(text: "Are you okay...", prev: vin_post.getComments()[0].getReplies()[0], replyUser: caitlyn)
     }
     // TODO: END REMOVE
     
@@ -199,8 +199,8 @@ class HomeVC: UIViewController {
     private func setupCollectionView() {
         postCV.delegate = self
         postCV.dataSource = self
-        postCV.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reuse)
-        postCV.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prompt_reuse)
+        postCV.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.reuseIdentifier)
+        postCV.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PromptHeaderView.reuseIdentifier)
     }
     
     // MARK: - Button Helpers
@@ -232,7 +232,7 @@ extension HomeVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PromptHeaderView.reuseIdentifier, for: indexPath) as? PromptHeaderView {
                 header.backgroundColor = .systemBackground
                 if (user.getPosts().count != 0) {
                     header.configure(prompt: "bird", post: user.getTodaysPost())
@@ -249,7 +249,7 @@ extension HomeVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuse, for: indexPath) as?
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.reuseIdentifier, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
             cell.configure(mainUser: user, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
