@@ -305,7 +305,7 @@ class BooksButtonView: UIStackView {
             commentButton.configuration?.image = UIImage(named: "comment_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
             bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            backgroundColor = Constants.post_cell_cap_view_dark
+            backgroundColor = Constants.post_cell_cap_view_light
         }
         
         if post.containsLikedUser(user: mainUser) {
