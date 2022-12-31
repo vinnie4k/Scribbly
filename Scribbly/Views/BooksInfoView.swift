@@ -9,7 +9,7 @@
 
 import UIKit
 
-// MARK: - BooksInfoView
+// MARK: BooksInfoView
 class BooksInfoView: UIView {
     // MARK: - Properties (view)
     private lazy var drawing: UIImageView = {
@@ -111,7 +111,7 @@ class BooksInfoView: UIView {
 
 }
 
-// MARK: - BooksCaptionView
+// MARK: BooksCaptionView
 class BooksCaptionView: UIView {
     // MARK: - Properties (view)
     private let userPFP: UIButton = {
@@ -201,7 +201,7 @@ class BooksCaptionView: UIView {
     }
 }
 
-// MARK: - BooksButtonView
+// MARK: BooksButtonView
 class BooksButtonView: UIStackView {
     // MARK: - Properties (view)
     private lazy var likeButton: UIButton = {

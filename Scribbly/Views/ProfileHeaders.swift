@@ -10,9 +10,9 @@
 import UIKit
 import RESegmentedControl
 
-// MARK: - MemsBookHeaderView
+// MARK: MemsBookHeaderView
 class MemsBookHeaderView: UICollectionReusableView {
-    // MARK: - Fields (view)
+    // MARK: - Properties (view)
     private lazy var segmentedControl: RESegmentedControl = {
         let control = RESegmentedControl(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Constants.mems_book_height))
         
@@ -34,7 +34,7 @@ class MemsBookHeaderView: UICollectionReusableView {
         return control
     }()
     
-    // MARK: - Fields (data)
+    // MARK: - Properties (data)
     private var mode: UIUserInterfaceStyle?
     var switchViewDelegate: SwitchViewDelegate?
     
@@ -99,7 +99,7 @@ class MemsBookHeaderView: UICollectionReusableView {
     }
 }
 
-// MARK: - ProfileHeaderCell
+// MARK: ProfileHeaderCell
 class ProfileHeaderCell: UICollectionViewCell {
     // MARK: - Properties (view)
     private let profileImage: UIImageView = {

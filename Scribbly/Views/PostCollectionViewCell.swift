@@ -5,11 +5,14 @@
 //  Created by Vin Bui on 12/18/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
+// MARK: PromptHeaderView
 class PromptHeaderView: UICollectionReusableView {
-    // ------------ Fields (view) ------------
-    private lazy var user_post: UIImageView = {
+    // MARK: - Properties (view)
+    private lazy var userPost: UIImageView = {
         let img = UIImageView()
         img.tintColor = .label
         img.contentMode = .scaleAspectFill
@@ -24,7 +27,7 @@ class PromptHeaderView: UICollectionReusableView {
         return img
     }()
     
-    private let prompt_heading: UILabel = {
+    private let promptHeading: UILabel = {
         let lbl = UILabel()
         lbl.text = "today's prompt"
         lbl.textColor = .label
@@ -41,17 +44,17 @@ class PromptHeaderView: UICollectionReusableView {
         return lbl
     }()
     
-    // ------------ Fields (data) ------------
-    var post_info_delegate: PostInfoDelegate?
-    private var post: Post? = nil
+    // MARK: - Properties (data)
+    var postInfoDelegate: PostInfoDelegate!
+    private var post: Post!
 
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(prompt_heading)
+        addSubview(promptHeading)
         addSubview(prompt)
-        addSubview(user_post)
+        addSubview(userPost)
         
         setupConstraints()
     }
@@ -60,36 +63,36 @@ class PromptHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func showStats() {
-        post_info_delegate?.showPostInfo(post: post!)
-    }
-    
     func configure(prompt: String, post: Post) {
         self.prompt.text = prompt
-        self.user_post.image = post.getDrawing()
+        self.userPost.image = post.getDrawing()
         self.post = post
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            prompt_heading.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.prompt_heading_top_padding),
-            prompt_heading.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prompt_side_padding),
+            promptHeading.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.prompt_heading_top_padding),
+            promptHeading.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prompt_side_padding),
 
-            prompt.topAnchor.constraint(equalTo: prompt_heading.bottomAnchor, constant: Constants.prompt_top_padding),
+            prompt.topAnchor.constraint(equalTo: promptHeading.bottomAnchor, constant: Constants.prompt_top_padding),
             prompt.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prompt_side_padding),
             
-            user_post.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.user_post_top_padding),
-            user_post.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.user_post_side_padding),
-            user_post.widthAnchor.constraint(equalToConstant: Constants.user_post_width),
-            user_post.heightAnchor.constraint(equalToConstant: Constants.user_post_height),
+            userPost.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.user_post_top_padding),
+            userPost.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.user_post_side_padding),
+            userPost.widthAnchor.constraint(equalToConstant: Constants.user_post_width),
+            userPost.heightAnchor.constraint(equalToConstant: Constants.user_post_height),
         ])
+    }
+    
+    // MARK: - Button Helpers
+    @objc private func showStats() {
+        postInfoDelegate.showPostInfo(post: post!)
     }
 }
 
-
+// MARK: PostCollectionViewCell
 class PostCollectionViewCell: UICollectionViewCell {
-    
-    // ------------ Fields (view) ------------
+    // MARK: - Properites (view)
     private lazy var drawing: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
@@ -105,7 +108,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         return img
     }()
     
-    private lazy var like_btn: UIButton = {
+    private lazy var likeButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(likePost), for: .touchUpInside)
         var config = UIButton.Configuration.bordered()
@@ -117,7 +120,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         return btn
     }()
     
-    private let comment_btn: UIButton = {
+    private let commentButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
@@ -128,7 +131,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         return btn
     }()
     
-    private let share_btn: UIButton = {
+    private let shareButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
@@ -139,7 +142,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         return btn
     }()
     
-    private lazy var bookmark_btn: UIButton = {
+    private lazy var bookmarkButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(bookmarkPost), for: .touchUpInside)
         var config = UIButton.Configuration.bordered()
@@ -152,7 +155,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }()
     
     private lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [like_btn, comment_btn, share_btn, bookmark_btn])
+        let stack = UIStackView(arrangedSubviews: [likeButton, commentButton, shareButton, bookmarkButton])
         stack.axis = .vertical
         stack.distribution = .equalSpacing
         stack.layoutMargins = UIEdgeInsets(top: Constants.post_cell_stack_top, left: Constants.post_cell_stack_side, bottom: Constants.post_cell_stack_top, right: Constants.post_cell_stack_side)
@@ -164,27 +167,26 @@ class PostCollectionViewCell: UICollectionViewCell {
         return stack
     }()
     
-    private let caption_view: CaptionView = {
+    private let captionView: CaptionView = {
         let view = CaptionView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    // ------------ Fields (Data) ------------
-    private var parent_vc: UIViewController? = nil
-    private var mode: UIUserInterfaceStyle? = nil
-    private var post: Post? = nil
-    private var main_user: User? = nil
-    var enlarge_delegate: EnlargeDrawingDelegate?
+    // MARK: - Properties (data)
+    private var parentVC: UIViewController!
+    private var mode: UIUserInterfaceStyle!
+    private var post: Post!
+    private var mainUser: User!
+    var enlargeDrawingDelegate: EnlargeDrawingDelegate!
     
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(drawing)
         contentView.addSubview(stack)
-        contentView.addSubview(caption_view)
+        contentView.addSubview(captionView)
         
-        // Function Calls
         setupConstraints()
     }
     
@@ -192,109 +194,47 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func bookmarkPost() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.bookmark_btn.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
-        }, completion: {(_ finished: Bool) -> Void in
-            UIView.animate(withDuration: 0, animations: {() -> Void in
-                self.bookmark_btn.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
-            })
-        })
-        
-        if (main_user!.isBookmarked(post: post!)) {
-            main_user?.removeBookmarkPost(post: post!)
-            post?.removeBookmarkUser(user: main_user!)
-            if (mode == .light) {
-                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_empty")
-            } else if (mode == .dark) {
-                bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_empty")
-            }
-        } else {
-            main_user?.addBookmarkPost(post: post!)
-            post?.addBookmarkUser(user: main_user!)
-            if (mode == .light) {
-                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_filled")
-            } else if (mode == .dark) {
-                bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_filled")
-            }
-        }
-    }
-    
-    @objc func likePost() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.like_btn.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
-        }, completion: {(_ finished: Bool) -> Void in
-            UIView.animate(withDuration: 0, animations: {() -> Void in
-                self.like_btn.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
-            })
-        })
-        
-        if (post!.containsLikedUser(user: main_user!)) {
-            post?.removedLikedUsers(user: main_user!)
-            if (mode == .light) {
-                like_btn.configuration?.image = UIImage(named: "heart_light_empty")
-            } else if (mode == .dark) {
-                like_btn.configuration?.image = UIImage(named: "heart_dark_empty")
-            }
-        } else {
-            post?.addLikedUsers(user: main_user!)
-            like_btn.configuration?.image = UIImage(named: "heart_filled")
-        }
-    }
-    
-    @objc func enlargeImage() {
-        if let drawing = drawing.image {
-            enlarge_delegate?.enlargeDrawing(drawing: drawing)
-        }
-    }
-    
-    @objc private func pushCommentVC() {
-        if let post = post {
-            let comment_vc = CommentVC(post: post, main_user: main_user!)
-            parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
-        }
-    }
-    
-    func configure(main_user: User, post: Post, parent_vc: UIViewController, mode: UIUserInterfaceStyle) {
-        self.caption_view.configure(caption: post.getCaption(), post_user: post.getUser(), vc: parent_vc)
-        self.drawing.image = post.getDrawing()
-        self.parent_vc = parent_vc
+    func configure(mainUser: User, post: Post, parentVC: UIViewController, mode: UIUserInterfaceStyle) {
+        self.parentVC = parentVC
         self.mode = mode
         self.post = post
-        self.main_user = main_user
+        self.mainUser = mainUser
+        
         setMode(mode: mode)
         
-        if post.containsLikedUser(user: main_user) {
-            like_btn.configuration?.image = UIImage(named: "heart_filled")
+        captionView.configure(caption: post.getCaption(), postUser: post.getUser(), parentVC: parentVC)
+        drawing.image = post.getDrawing()
+        
+        if post.containsLikedUser(user: mainUser) {
+            likeButton.configuration?.image = UIImage(named: "heart_filled")
         }
-        if main_user.isBookmarked(post: post) {
-            bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_filled")
+        if mainUser.isBookmarked(post: post) {
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
             if mode == .light {
-                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_filled")
+                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
             }
         }
         
-        comment_btn.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
+        commentButton.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
     }
     
     func setMode(mode: UIUserInterfaceStyle) {
-        self.mode = mode
-        if (self.mode == .light) {
-            self.drawing.layer.borderColor = Constants.post_cell_drawing_border_light.cgColor
-            self.stack.backgroundColor = Constants.post_cell_drawing_border_light
-            self.caption_view.backgroundColor = Constants.post_cell_cap_view_light
-            self.like_btn.configuration?.image = UIImage(named: "heart_light_empty")
-            self.comment_btn.configuration?.image = UIImage(named: "comment_light")
-            self.share_btn.configuration?.image = UIImage(named: "share_light")
-            self.bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_empty")
-        } else if (self.mode == .dark) {
-            self.drawing.layer.borderColor = Constants.post_cell_drawing_border_dark.cgColor
-            self.stack.backgroundColor = Constants.post_cell_drawing_border_dark
-            self.caption_view.backgroundColor = Constants.post_cell_cap_view_dark
-            self.like_btn.configuration?.image = UIImage(named: "heart_dark_empty")
-            self.comment_btn.configuration?.image = UIImage(named: "comment_dark")
-            self.share_btn.configuration?.image = UIImage(named: "share_dark")
-            self.bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_empty")
+        if mode == .light {
+            drawing.layer.borderColor = Constants.post_cell_drawing_border_light.cgColor
+            stack.backgroundColor = Constants.post_cell_drawing_border_light
+            captionView.backgroundColor = Constants.post_cell_cap_view_light
+            likeButton.configuration?.image = UIImage(named: "heart_light_empty")
+            commentButton.configuration?.image = UIImage(named: "comment_light")
+            shareButton.configuration?.image = UIImage(named: "share_light")
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
+        } else if mode == .dark {
+            drawing.layer.borderColor = Constants.post_cell_drawing_border_dark.cgColor
+            stack.backgroundColor = Constants.post_cell_drawing_border_dark
+            captionView.backgroundColor = Constants.post_cell_cap_view_dark
+            likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
+            commentButton.configuration?.image = UIImage(named: "comment_dark")
+            shareButton.configuration?.image = UIImage(named: "share_dark")
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
         }
     }
     
@@ -309,18 +249,77 @@ class PostCollectionViewCell: UICollectionViewCell {
             stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             stack.widthAnchor.constraint(equalToConstant: Constants.post_cell_stack_width),
             
-            caption_view.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
-            caption_view.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
-            caption_view.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_cell_cap_view_side),
-            caption_view.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height),
+            captionView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
+            captionView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
+            captionView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_cell_cap_view_side),
+            captionView.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height),
         ])
     }
     
+    // MARK: - Button Helpers
+    @objc func bookmarkPost() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.bookmarkButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        }, completion: {(_ finished: Bool) -> Void in
+            UIView.animate(withDuration: 0, animations: {() -> Void in
+                self.bookmarkButton.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            })
+        })
+        
+        if mainUser.isBookmarked(post: post) {
+            mainUser.removeBookmarkPost(post: post)
+            post.removeBookmarkUser(user: mainUser)
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
+            if mode == .light {
+                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
+            }
+        } else {
+            mainUser.addBookmarkPost(post: post)
+            post.addBookmarkUser(user: mainUser)
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
+            if mode == .light {
+                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
+            }
+        }
+    }
+    
+    @objc func likePost() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.likeButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        }, completion: {(_ finished: Bool) -> Void in
+            UIView.animate(withDuration: 0, animations: {() -> Void in
+                self.likeButton.imageView?.transform = CGAffineTransform(scaleX: 1, y: 1)
+            })
+        })
+        
+        if (post.containsLikedUser(user: mainUser)) {
+            post.removedLikedUsers(user: mainUser)
+            likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
+            if mode == .light {
+                likeButton.configuration?.image = UIImage(named: "heart_light_empty")
+            }
+        } else {
+            post.addLikedUsers(user: mainUser)
+            likeButton.configuration?.image = UIImage(named: "heart_filled")
+        }
+    }
+    
+    @objc func enlargeImage() {
+        if let drawing = drawing.image {
+            enlargeDrawingDelegate.enlargeDrawing(drawing: drawing)
+        }
+    }
+    
+    @objc private func pushCommentVC() {
+        let commentVC = CommentVC(post: post, main_user: mainUser)
+        parentVC.navigationController?.pushViewController(commentVC, animated: true)
+    }
 }
 
+// MARK: CaptionView
 class CaptionView: UIView {
-    // ------------ Fields (View) ------------
-    private let user_pfp: UIButton = {
+    // MARK: - Properties (view)
+    private let userPFP: UIButton = {
         let btn = UIButton()
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
@@ -329,7 +328,7 @@ class CaptionView: UIView {
         return btn
     }()
     
-    private let display_name: UILabel = {
+    private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
         lbl.font = Constants.post_cell_username_font
@@ -347,10 +346,10 @@ class CaptionView: UIView {
         return lbl
     }()
         
-    // ------------ Fields (Data) ------------
-    private var parent_vc: UIViewController? = nil
+    // MARK: - Properties (data)
+    private var parentVC: UIViewController!
 
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -362,12 +361,12 @@ class CaptionView: UIView {
         customBlurEffectView.clipsToBounds = true
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.layer.cornerRadius = Constants.post_cell_cap_view_corner
+        layer.cornerRadius = Constants.post_cell_cap_view_corner
         
         addSubview(customBlurEffectView)
         addSubview(caption)
-        addSubview(display_name)
-        addSubview(user_pfp)
+        addSubview(displayName)
+        addSubview(userPFP)
         setupConstraints()
     }
     
@@ -375,31 +374,33 @@ class CaptionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func pushProfileVC() {
-        let profile_vc = MainUserProfileVC()
-        parent_vc?.navigationController?.pushViewController(profile_vc, animated: true)
-    }
-    
-    func configure(caption: String, post_user: User, vc: UIViewController) {
+    func configure(caption: String, postUser: User, parentVC: UIViewController) {
+        self.parentVC = parentVC
+        
         self.caption.text = caption
-        display_name.text = post_user.getUserName()
-        user_pfp.setImage(post_user.getPFP(), for: .normal)
-        user_pfp.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
-        parent_vc = vc
+        displayName.text = postUser.getUserName()
+        userPFP.setImage(postUser.getPFP(), for: .normal)
+        userPFP.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            user_pfp.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            user_pfp.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_cell_pfp_side),
-            user_pfp.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
-            user_pfp.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            userPFP.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            userPFP.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_cell_pfp_side),
+            userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
             
-            display_name.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -8),
-            display_name.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.post_cell_name_side),
+            displayName.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -8),
+            displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),
             
-            caption.topAnchor.constraint(equalTo: display_name.bottomAnchor, constant: Constants.post_cell_caption_top),
-            caption.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.post_cell_name_side),
+            caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_cell_caption_top),
+            caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),
         ])
+    }
+    
+    // MARK: - Button Helpers
+    @objc private func pushProfileVC() {
+        let profileVC = MainUserProfileVC()
+        parentVC?.navigationController?.pushViewController(profileVC, animated: true)
     }
 }

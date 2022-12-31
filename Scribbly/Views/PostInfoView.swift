@@ -5,10 +5,13 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
+// MARK: PostInfoView
 class PostInfoView: UIView, ReloadStatsDelegate {
-    // ------------ Fields (view) ------------
+    // MARK: - Properties (view)
     private lazy var drawing: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
@@ -23,31 +26,33 @@ class PostInfoView: UIView, ReloadStatsDelegate {
         return img
     }()
     
-    private var redo_delete_view = RedoDeleteView()
-    
-    private lazy var stats_view: PostInfoStatsView = {
+    private lazy var statsView: PostInfoStatsView = {
         let stats = PostInfoStatsView()
         let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(pushCommentVC))
         stats.addGestureRecognizer(tap_gesture)
         stats.isUserInteractionEnabled = true
+        stats.translatesAutoresizingMaskIntoConstraints = false
         return stats
     }()
     
-    // ------------ Fields (Data) ------------
-    private var post: Post? = nil
-    private var mode: UIUserInterfaceStyle? = nil
-    private var parent_vc: UIViewController? = nil
+    private var redoDeleteView: RedoDeleteView = {
+        let rdv = RedoDeleteView()
+        rdv.translatesAutoresizingMaskIntoConstraints = false
+        return rdv
+    }()
+    
+    // MARK: - Properties (data)
+    private var post: Post!
+    private var mode: UIUserInterfaceStyle!
+    private var parentVC: UIViewController!
 
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
                 
         addSubview(drawing)
-        addSubview(stats_view)
-        addSubview(redo_delete_view)
-        
-        stats_view.translatesAutoresizingMaskIntoConstraints = false
-        redo_delete_view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(statsView)
+        addSubview(redoDeleteView)
         
         setupConstraints()
     }
@@ -56,37 +61,14 @@ class PostInfoView: UIView, ReloadStatsDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func reloadStats() {
-        stats_view.reloadStats()
-    }
-    
-    @objc private func pushCommentVC() {
-        if let post = post {
-            let comment_vc = CommentVC(post: post, main_user: post.getUser())
-            comment_vc.reload_stats_delegate = self
-            parent_vc?.navigationController?.pushViewController(comment_vc, animated: true)
-        }
-    }
-    
-    @objc func toggleStats() {
-        if (self.stats_view.alpha == 1.0) {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-                self.stats_view.alpha = 0.0
-            }, completion: nil)
-        } else if (self.stats_view.alpha == 0.0) {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-                self.stats_view.alpha = 1.0
-            }, completion: nil)
-        }
-    }
-    
-    func configure(post: Post, mode: UIUserInterfaceStyle, parent_vc: UIViewController) {
+    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
         self.post = post
         self.mode = mode
-        self.parent_vc = parent_vc
+        self.parentVC = parentVC
+        
         drawing.image = post.getDrawing()
-        stats_view.configure(post: post, mode: mode)
-        redo_delete_view.configure(post: post, mode: mode)
+        statsView.configure(post: post, mode: mode)
+        redoDeleteView.configure(post: post, mode: mode)
     }
     
     private func setupConstraints() {
@@ -95,21 +77,44 @@ class PostInfoView: UIView, ReloadStatsDelegate {
             drawing.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             drawing.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
 
-            stats_view.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
-            stats_view.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
-            stats_view.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
-            stats_view.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
+            statsView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
+            statsView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
+            statsView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
+            statsView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
             
-            redo_delete_view.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
-            redo_delete_view.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            redoDeleteView.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
+            redoDeleteView.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
     
+    // MARK: - Button Helpers
+    @objc private func pushCommentVC() {
+        let commentVC = CommentVC(post: post, main_user: post.getUser())
+        commentVC.reload_stats_delegate = self
+        parentVC.navigationController?.pushViewController(commentVC, animated: true)
+    }
+    
+    @objc func toggleStats() {
+        if self.statsView.alpha == 1.0 {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                self.statsView.alpha = 0.0
+            }, completion: nil)
+        } else if self.statsView.alpha == 0.0 {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                self.statsView.alpha = 1.0
+            }, completion: nil)
+        }
+    }
+    
+    func reloadStats() {
+        statsView.reloadStats()
+    }
 }
 
+// MARK: PostInfoStatsView
 class PostInfoStatsView: UIView {
-    // ------------ Fields (View) ------------
-    private let user_pfp: UIButton = {
+    // MARK: - Properties (view)
+    private let userPFP: UIButton = {
         let btn = UIButton()
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
@@ -118,7 +123,7 @@ class PostInfoStatsView: UIView {
         return btn
     }()
     
-    private let display_name: UILabel = {
+    private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
         lbl.font = Constants.post_cell_username_font
@@ -136,20 +141,20 @@ class PostInfoStatsView: UIView {
         return lbl
     }()
     
-    private let likes_view = UIView()
-    private var comment_view = UIView()
-    private let bookmark_view = UIView()
+    private let likesView = UIView()
+    private var commentView = UIView()
+    private let bookmarkView = UIView()
     private let stack = UIStackView()
     
-    // ------------ Fields (Data) ------------
-    private var post: Post? = nil
-    private var mode: UIUserInterfaceStyle? = nil
+    // MARK: - Properties (data)
+    private var post: Post!
+    private var mode: UIUserInterfaceStyle!
 
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.layer.cornerRadius = Constants.post_info_view_corner
+        layer.cornerRadius = Constants.post_info_view_corner
         
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
         let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.3)
@@ -160,8 +165,8 @@ class PostInfoStatsView: UIView {
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(customBlurEffectView)
-        addSubview(user_pfp)
-        addSubview(display_name)
+        addSubview(userPFP)
+        addSubview(displayName)
         addSubview(caption)
         addSubview(stack)
         
@@ -172,132 +177,38 @@ class PostInfoStatsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func reloadStats() {
-        for sub in comment_view.subviews {
-            sub.removeFromSuperview()
-        }
-        createCommentView(comment_count: post!.getCommentReplyCount(), mode: mode!)
-    }
-        
     func configure(post: Post, mode: UIUserInterfaceStyle) {
         self.post = post
         self.mode = mode
-        user_pfp.setImage(post.getUser().getPFP(), for: .normal)
-        display_name.text = post.getUser().getUserName()
+        
+        userPFP.setImage(post.getUser().getPFP(), for: .normal)
+        displayName.text = post.getUser().getUserName()
         caption.text = post.getCaption()
         
-        if (mode == .dark) {
-            backgroundColor = Constants.post_cell_cap_view_dark
-        } else if (mode == .light) {
+        backgroundColor = Constants.post_cell_cap_view_dark
+        if mode == .light {
             backgroundColor = Constants.post_cell_cap_view_light
         }
         
-        createLikesView(like_count: post.getLikeCount(), mode: mode)
-        createCommentView(comment_count: post.getCommentReplyCount(), mode: mode)
-        createBookmarkView(bookmark_count: post.getBookmarkCount(), mode: mode)
+        createLikesView(likeCount: post.getLikeCount(), mode: mode)
+        createCommentView(commentCount: post.getCommentReplyCount(), mode: mode)
+        createBookmarkView(bookmarkCount: post.getBookmarkCount(), mode: mode)
         
         createStackView()
     }
     
-    private func createLikesView(like_count: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "heart_dark_empty"))
-        if (mode == .light) {
-            img = UIImageView(image: UIImage(named: "heart_light_empty"))
-        }
-
-        let lbl = UILabel()
-        lbl.text = String(like_count)
-        lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
-
-        img.translatesAutoresizingMaskIntoConstraints = false
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        likes_view.translatesAutoresizingMaskIntoConstraints = false
-        likes_view.addSubview(img)
-        likes_view.addSubview(lbl)
-        
-        NSLayoutConstraint.activate([
-            img.centerYAnchor.constraint(equalTo: likes_view.centerYAnchor),
-            img.leadingAnchor.constraint(equalTo: likes_view.leadingAnchor),
-            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
-            lbl.centerYAnchor.constraint(equalTo: likes_view.centerYAnchor)
-        ])
-    }
-
-    private func createCommentView(comment_count: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "comment_dark"))
-        if (mode == .light) {
-            img = UIImageView(image: UIImage(named: "comment_light"))
-        }
-
-        let lbl = UILabel()
-        lbl.text = String(comment_count)
-        lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
-
-        img.translatesAutoresizingMaskIntoConstraints = false
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        comment_view.translatesAutoresizingMaskIntoConstraints = false
-        comment_view.addSubview(img)
-        comment_view.addSubview(lbl)
-
-        NSLayoutConstraint.activate([
-            img.centerYAnchor.constraint(equalTo: comment_view.centerYAnchor),
-            img.leadingAnchor.constraint(equalTo: comment_view.leadingAnchor),
-            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
-            lbl.centerYAnchor.constraint(equalTo: comment_view.centerYAnchor)
-        ])
-    }
-
-    private func createBookmarkView(bookmark_count: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "bookmark_dark_empty"))
-        if (mode == .light) {
-            img = UIImageView(image: UIImage(named: "bookmark_light_empty"))
-        }
-
-        let lbl = UILabel()
-        lbl.text = String(bookmark_count)
-        lbl.textColor = .label
-        lbl.font = Constants.post_info_number_font
-
-        img.translatesAutoresizingMaskIntoConstraints = false
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        bookmark_view.translatesAutoresizingMaskIntoConstraints = false
-        bookmark_view.addSubview(img)
-        bookmark_view.addSubview(lbl)
-
-        NSLayoutConstraint.activate([
-            img.centerYAnchor.constraint(equalTo: bookmark_view.centerYAnchor),
-            img.leadingAnchor.constraint(equalTo: bookmark_view.leadingAnchor),
-            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
-            lbl.centerYAnchor.constraint(equalTo: bookmark_view.centerYAnchor)
-        ])
-    }
-
-    private func createStackView() {
-        stack.addArrangedSubview(likes_view)
-        stack.addArrangedSubview(comment_view)
-        stack.addArrangedSubview(bookmark_view)
-
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = Constants.post_info_stack_spacing
-
-        stack.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            user_pfp.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.post_info_pfp_top),
-            user_pfp.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_info_pfp_side),
-            user_pfp.widthAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
-            user_pfp.heightAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
+            userPFP.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.post_info_pfp_top),
+            userPFP.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_info_pfp_side),
+            userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
+            userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             
-            display_name.topAnchor.constraint(equalTo: user_pfp.topAnchor, constant: 2),
-            display_name.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.post_info_name_left),
+            displayName.topAnchor.constraint(equalTo: userPFP.topAnchor, constant: 2),
+            displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
             
-            caption.topAnchor.constraint(equalTo: display_name.bottomAnchor, constant: Constants.post_info_caption_top),
-            caption.leadingAnchor.constraint(equalTo: user_pfp.trailingAnchor, constant: Constants.post_info_name_left),
+            caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_info_caption_top),
+            caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
 
             stack.topAnchor.constraint(equalTo: caption.bottomAnchor, constant: Constants.post_info_stack_top),
             stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
@@ -305,11 +216,107 @@ class PostInfoStatsView: UIView {
             stack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_pfp_top),
         ])
     }
+    
+    // MARK: - Helpers
+    func reloadStats() {
+        for sub in commentView.subviews {
+            sub.removeFromSuperview()
+        }
+        createCommentView(commentCount: post.getCommentReplyCount(), mode: mode)
+    }
+    
+    private func createLikesView(likeCount: Int, mode: UIUserInterfaceStyle) {
+        var img = UIImageView(image: UIImage(named: "heart_dark_empty"))
+        if mode == .light {
+            img = UIImageView(image: UIImage(named: "heart_light_empty"))
+        }
+        
+        let lbl = UILabel()
+        lbl.text = String(likeCount)
+        lbl.textColor = .label
+        lbl.font = Constants.post_info_number_font
+        
+        img.translatesAutoresizingMaskIntoConstraints = false
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        likesView.translatesAutoresizingMaskIntoConstraints = false
+        likesView.addSubview(img)
+        likesView.addSubview(lbl)
+        
+        NSLayoutConstraint.activate([
+            img.centerYAnchor.constraint(equalTo: likesView.centerYAnchor),
+            img.leadingAnchor.constraint(equalTo: likesView.leadingAnchor),
+            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
+            lbl.centerYAnchor.constraint(equalTo: likesView.centerYAnchor)
+        ])
+    }
+
+    private func createCommentView(commentCount: Int, mode: UIUserInterfaceStyle) {
+        var img = UIImageView(image: UIImage(named: "comment_dark"))
+        if mode == .light {
+            img = UIImageView(image: UIImage(named: "comment_light"))
+        }
+
+        let lbl = UILabel()
+        lbl.text = String(commentCount)
+        lbl.textColor = .label
+        lbl.font = Constants.post_info_number_font
+
+        img.translatesAutoresizingMaskIntoConstraints = false
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        commentView.translatesAutoresizingMaskIntoConstraints = false
+        commentView.addSubview(img)
+        commentView.addSubview(lbl)
+
+        NSLayoutConstraint.activate([
+            img.centerYAnchor.constraint(equalTo: commentView.centerYAnchor),
+            img.leadingAnchor.constraint(equalTo: commentView.leadingAnchor),
+            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
+            lbl.centerYAnchor.constraint(equalTo: commentView.centerYAnchor)
+        ])
+    }
+
+    private func createBookmarkView(bookmarkCount: Int, mode: UIUserInterfaceStyle) {
+        var img = UIImageView(image: UIImage(named: "bookmark_dark_empty"))
+        if mode == .light {
+            img = UIImageView(image: UIImage(named: "bookmark_light_empty"))
+        }
+
+        let lbl = UILabel()
+        lbl.text = String(bookmarkCount)
+        lbl.textColor = .label
+        lbl.font = Constants.post_info_number_font
+
+        img.translatesAutoresizingMaskIntoConstraints = false
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        bookmarkView.translatesAutoresizingMaskIntoConstraints = false
+        bookmarkView.addSubview(img)
+        bookmarkView.addSubview(lbl)
+
+        NSLayoutConstraint.activate([
+            img.centerYAnchor.constraint(equalTo: bookmarkView.centerYAnchor),
+            img.leadingAnchor.constraint(equalTo: bookmarkView.leadingAnchor),
+            lbl.leadingAnchor.constraint(equalTo: img.trailingAnchor, constant: Constants.post_info_number_left),
+            lbl.centerYAnchor.constraint(equalTo: bookmarkView.centerYAnchor)
+        ])
+    }
+
+    private func createStackView() {
+        stack.addArrangedSubview(likesView)
+        stack.addArrangedSubview(commentView)
+        stack.addArrangedSubview(bookmarkView)
+
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.spacing = Constants.post_info_stack_spacing
+
+        stack.translatesAutoresizingMaskIntoConstraints = false
+    }
 }
 
+// MARK: RedoDeleteView
 class RedoDeleteView: UIStackView {
-    // ------------ Fields (View) ------------
-    private let redo_btn: UIButton = {
+    // MARK: - Properties (view)
+    private let redoButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -320,7 +327,7 @@ class RedoDeleteView: UIStackView {
         return btn
     }()
     
-    private let delete_btn: UIButton = {
+    private let deleteButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -331,7 +338,7 @@ class RedoDeleteView: UIStackView {
         return btn
     }()
     
-    private let share_btn: UIButton = {
+    private let shareButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -342,10 +349,10 @@ class RedoDeleteView: UIStackView {
         return btn
     }()
     
-    // ------------ Fields (Data) ------------
-    private var post: Post? = nil
+    // MARK: - Properties (data)
+    private var post: Post!
     
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -353,9 +360,9 @@ class RedoDeleteView: UIStackView {
         distribution = .fillEqually
         spacing = Constants.post_info_redo_spacing
         
-        self.layer.cornerRadius = Constants.post_info_redo_corner
-        self.layoutMargins = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        self.isLayoutMarginsRelativeArrangement = true
+        layer.cornerRadius = Constants.post_info_redo_corner
+        layoutMargins = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        isLayoutMarginsRelativeArrangement = true
         
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.systemUltraThinMaterial)
         let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.5)
@@ -366,9 +373,9 @@ class RedoDeleteView: UIStackView {
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(customBlurEffectView)
-        addArrangedSubview(redo_btn)
-        addArrangedSubview(delete_btn)
-        addArrangedSubview(share_btn)
+        addArrangedSubview(redoButton)
+        addArrangedSubview(deleteButton)
+        addArrangedSubview(shareButton)
     }
     
     required init(coder: NSCoder) {
@@ -377,16 +384,16 @@ class RedoDeleteView: UIStackView {
     
     func configure(post: Post, mode: UIUserInterfaceStyle) {
         self.post = post
-
-        if (mode == .dark) {
-            redo_btn.configuration?.image = UIImage(named: "redo_dark")
-            delete_btn.configuration?.image = UIImage(named: "delete_dark")
-            share_btn.configuration?.image = UIImage(named: "share_dark")
-            backgroundColor = Constants.post_cell_cap_view_dark
-        } else if (mode == .light) {
-            redo_btn.configuration?.image = UIImage(named: "redo_light")
-            delete_btn.configuration?.image = UIImage(named: "delete_light")
-            share_btn.configuration?.image = UIImage(named: "share_light")
+        
+        redoButton.configuration?.image = UIImage(named: "redo_dark")
+        deleteButton.configuration?.image = UIImage(named: "delete_dark")
+        shareButton.configuration?.image = UIImage(named: "share_dark")
+        backgroundColor = Constants.post_cell_cap_view_dark
+        
+        if mode == .light {
+            redoButton.configuration?.image = UIImage(named: "redo_light")
+            deleteButton.configuration?.image = UIImage(named: "delete_light")
+            shareButton.configuration?.image = UIImage(named: "share_light")
             backgroundColor = Constants.post_cell_cap_view_light
         }
     }

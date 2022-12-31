@@ -229,9 +229,9 @@ extension HomeVC: UICollectionViewDataSource {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reuse, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
-            cell.configure(main_user: user, post: post, parent_vc: self, mode: traitCollection.userInterfaceStyle)
+            cell.configure(mainUser: user, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
             cell.layer.cornerRadius = Constants.post_cell_corner
-            cell.enlarge_delegate = self
+            cell.enlargeDrawingDelegate = self
             return cell
         } else {
             return UICollectionViewCell()
@@ -244,7 +244,7 @@ extension HomeVC: UICollectionViewDataSource {
                 header.backgroundColor = .systemBackground
                 if (user.getPosts().count != 0) {
                     header.configure(prompt: "bird", post: user.getTodaysPost())
-                    header.post_info_delegate = self
+                    header.postInfoDelegate = self
                 }
                 return header
             }
@@ -308,7 +308,7 @@ extension HomeVC: EnlargeDrawingDelegate {
 extension HomeVC: PostInfoDelegate, UpdateFeedDelegate {
     func showPostInfo(post: Post) {        
         let view = PostInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parent_vc: self)
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         draw_view_large.addSubview(view)

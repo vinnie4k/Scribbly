@@ -9,7 +9,7 @@
 
 import UIKit
 
-// MARK: - MemsInfoView
+// MARK: MemsInfoView
 class MemsInfoView: UIView, ReloadStatsDelegate {
     // MARK: - Properties (view)
     private lazy var drawing: UIImageView = {
@@ -111,7 +111,7 @@ class MemsInfoView: UIView, ReloadStatsDelegate {
     }
 }
 
-// MARK: - HideShareView
+// MARK: HideShareView
 class HideShareView: UIStackView {
     // MARK: - Properties (view)
     private lazy var hideButton: UIButton = {

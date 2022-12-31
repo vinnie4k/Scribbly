@@ -9,7 +9,7 @@
 
 import UIKit
 
-// MARK: - MemsTinyPostView
+// MARK: MemsTinyPostView
 class MemsTinyPostView: UIView {
     // MARK: - Properties (view)
     private let dateLabel: UILabel = {
@@ -115,7 +115,7 @@ class MemsTinyPostView: UIView {
     }
 }
 
-// MARK: - MemsCollectionViewCell
+// MARK: MemsCollectionViewCell
 class MemsCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (view)
     private let monthLabel: UILabel = {

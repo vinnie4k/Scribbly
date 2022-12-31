@@ -417,8 +417,8 @@ extension CommentVC: UICollectionViewDataSource {
                     cell.backgroundColor = Constants.comment_cell_dark
                 }
                 cell.layer.cornerRadius = Constants.comment_cell_corner
-                cell.configure(vc: self, comment: comment, reply: rep)
-                cell.reply_delegate = self
+                cell.configure(parentVC: self, comment: comment, reply: rep)
+                cell.replyDelegate = self
                 return cell
             }
         }
@@ -429,7 +429,7 @@ extension CommentVC: UICollectionViewDataSource {
         if kind == UICollectionView.elementKindSectionHeader && indexPath.section == 0 {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.drawing_reuse, for: indexPath) as? DrawingHeaderView {
                 header.configure(drawing: post.getDrawing())
-                header.enlarge_delegate = self
+                header.enlargeDrawingDelegate = self
                 return header
             }
         }
@@ -443,8 +443,8 @@ extension CommentVC: UICollectionViewDataSource {
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = post.getComments()[indexPath.section - 1]
-                header.configure(vc: self, comment: comment, main_user: main_user)
-                header.delegate = self
+                header.configure(parentVC: self, comment: comment, mainUser: main_user)
+                header.commentDelegate = self
                 return header
             }
         }

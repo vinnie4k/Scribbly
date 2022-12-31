@@ -9,7 +9,7 @@
 
 import UIKit
 
-// MARK: - BookmarksCollectionViewCell
+// MARK: BookmarksCollectionViewCell
 class BookmarksCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (view)
     private lazy var drawing: UIImageView = {
