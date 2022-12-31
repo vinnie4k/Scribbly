@@ -5,11 +5,13 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
 class MainUserProfileVC: UIViewController {
     // MARK: - Properties (view)
-    private let title_lbl: UILabel = {
+    private let titleLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "profile"
         lbl.textColor = .label
@@ -18,7 +20,7 @@ class MainUserProfileVC: UIViewController {
         return lbl
     }()
     
-    private lazy var back_btn: UIButton = {
+    private lazy var backButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -31,7 +33,7 @@ class MainUserProfileVC: UIViewController {
         return btn
     }()
     
-    private lazy var settings_btn: UIButton = {
+    private lazy var settingsButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -47,7 +49,7 @@ class MainUserProfileVC: UIViewController {
         return btn
     }()
     
-    private lazy var draw_view_large: UIView = {
+    private lazy var drawViewLarge: UIView = {
         let view = UIView()
 
         var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
@@ -82,14 +84,14 @@ class MainUserProfileVC: UIViewController {
     }()
     
     // MARK: - Properties (data)
-    var main_user: User? = nil
-    private var mems_data = [Month]()
-    private var books_data = [Bookmarks]()
+    var mainUser: User!
+    private var memsData = [Month]()
+    private var booksData = [Bookmarks]()
     private var datasource: Datasource!
     private var updateMems: Bool = true
     var updateFeedDelegate: UpdateFeedDelegate!
     
-    // MARK: - viewDidLoad
+    // MARK: - viewDidLoad, setupNavBar, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -101,7 +103,7 @@ class MainUserProfileVC: UIViewController {
         }
         
         view.addSubview(collectionView)
-        view.addSubview(draw_view_large)
+        view.addSubview(drawViewLarge)
         
         setupBooksData()
         setupMemsData()
@@ -110,16 +112,36 @@ class MainUserProfileVC: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - BooksData Helpers
-    private func setupBooksData() {
-        books_data = [Bookmarks]()   // Must reset first
-        for books in main_user!.getBookmarks() {
-            books_data.append(Bookmarks(post: books))
-        }
-        books_data.reverse()
+    private func setupNavBar() {
+        navigationItem.titleView = titleLabel
+        backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settingsButton)
     }
     
-    // MARK: - MemsData Helpers
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prof_head_top),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
+            drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
+    }
+    
+    // MARK: - Data Helper Functions
+    private func setupBooksData() {
+        booksData = [Bookmarks]()   // Must reset first
+        for books in mainUser.getBookmarks() {
+            booksData.append(Bookmarks(post: books))
+        }
+        booksData.reverse()
+    }
+    
     /**
      Returns a list of Strings representing a day given a selected date. An empty string is used as a placeholder.
      The first element is a String representing the month and year (such as "December 2022")
@@ -127,9 +149,9 @@ class MainUserProfileVC: UIViewController {
      ["","","","","1","2",...]
      */
     private func setupMemsData() {
-        mems_data = [Month]()   // Must reset first
+        memsData = [Month]()   // Must reset first
         
-        let months = main_user!.monthsFromStart()
+        let months = mainUser.monthsFromStart()
         for month in months {
             var accum = [String]()
             accum.append(month)
@@ -139,7 +161,7 @@ class MainUserProfileVC: UIViewController {
             for day in days {
                 accum.append(day)
             }
-            mems_data.append(Month(array: accum))
+            memsData.append(Month(array: accum))
         }
     }
     
@@ -180,28 +202,6 @@ class MainUserProfileVC: UIViewController {
         return result
     }
     
-    // MARK: - setupNavBar and setupConstraints
-    private func setupNavBar() {
-        navigationItem.titleView = title_lbl
-        back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settings_btn)
-    }
-    
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prof_head_top),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
-            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        ])
-    }
-    
     // MARK: - Button Helpers
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
@@ -209,14 +209,15 @@ class MainUserProfileVC: UIViewController {
     
     @objc private func reduceImage() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 0.0
+            self.drawViewLarge.alpha = 0.0
         }, completion: nil)
-        draw_view_large.subviews[1].removeFromSuperview()
+        drawViewLarge.subviews[1].removeFromSuperview()
         reloadMemsBooksItems()
         updateFeedDelegate.updateFeed()
     }
 }
 
+// MARK: - Extensions
 extension MainUserProfileVC {
     // MARK: - Layout
     func createLayout() -> UICollectionViewLayout {
@@ -318,12 +319,12 @@ extension MainUserProfileVC {
         switch item {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
-            cell.configure(user: main_user!, mode: traitCollection.userInterfaceStyle)
+            cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle)
             return cell
         case .memsCell (let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MemsCollectionViewCell.reuseIdentifier, for: indexPath) as! MemsCollectionViewCell
             cell.postInfoDelegate = self
-            cell.configure(data: data.array, user: main_user!)
+            cell.configure(data: data.array, user: mainUser)
             return cell
         case .booksCell(let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmarksCollectionViewCell.reuseIdentifier, for: indexPath) as! BookmarksCollectionViewCell
@@ -360,13 +361,14 @@ extension MainUserProfileVC {
         var snapshot = Snapshot()
         snapshot.appendSections([.profileHeader, .memsSection])
         snapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-        snapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+        snapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
         return snapshot
     }
 }
 
 // MARK: - Delegation and Other Extensions
 extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
+    // MARK: - PostInfoDelegate
     func showPostInfo(post: Post) {
         return  // Do nothing here
     }
@@ -376,39 +378,40 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
         view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
 
-        draw_view_large.addSubview(view)
+        drawViewLarge.addSubview(view)
 
         NSLayoutConstraint.activate([
-            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
-            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: drawViewLarge.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: drawViewLarge.trailingAnchor, constant: -Constants.enlarge_side_padding),
             view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
         ])
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 1.0
+            self.drawViewLarge.alpha = 1.0
         }, completion: nil)
     }
     
     func showBooksInfo(post: Post) {
         let view = BooksInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self, mainUser: main_user!)
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self, mainUser: mainUser)
         view.translatesAutoresizingMaskIntoConstraints = false
 
-        draw_view_large.addSubview(view)
+        drawViewLarge.addSubview(view)
 
         NSLayoutConstraint.activate([
-            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
-            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: drawViewLarge.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: drawViewLarge.trailingAnchor, constant: -Constants.enlarge_side_padding),
             view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
         ])
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 1.0
+            self.drawViewLarge.alpha = 1.0
         }, completion: nil)
     }
     
+    // MARK: - SwitchViewDelegate
     func switchView(pos: Int) {
         var newSnapshot = Snapshot()
         
@@ -421,7 +424,7 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
             
             newSnapshot.appendSections([.profileHeader, .memsSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-            newSnapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+            newSnapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
             
             updateMems = true
         } else if pos == 1 {
@@ -430,13 +433,14 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
             
             newSnapshot.appendSections([.profileHeader, .booksSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-            newSnapshot.appendItems(books_data.map({ Item.booksCell($0) }), toSection: .booksSection)
+            newSnapshot.appendItems(booksData.map({ Item.booksCell($0) }), toSection: .booksSection)
             
             updateMems = false
         }
         datasource.apply(newSnapshot, animatingDifferences: true)
     }
     
+    // MARK: - Extra Helpers
     func reloadMemsBooksItems() {
         var newSnapshot = Snapshot()
         
@@ -448,7 +452,7 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
 
             newSnapshot.appendSections([.profileHeader, .memsSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-            newSnapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+            newSnapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
         } else {
             var oldSnapshot = datasource.snapshot(for: Section.memsSection)
             oldSnapshot.deleteAll()
@@ -457,7 +461,7 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
             
             newSnapshot.appendSections([.profileHeader, .booksSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-            newSnapshot.appendItems(books_data.map({ Item.booksCell($0) }), toSection: .booksSection)
+            newSnapshot.appendItems(booksData.map({ Item.booksCell($0) }), toSection: .booksSection)
         }
         datasource.applySnapshotUsingReloadData(newSnapshot)
     }

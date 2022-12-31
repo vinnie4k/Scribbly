@@ -5,12 +5,14 @@
 //  Created by Vin Bui on 12/20/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
+// MARK: CommentVC
 class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
-
-    // ------------ Fields (view) ------------
-    private let title_lbl: UILabel = {
+    // MARK: - Properties (view)
+    private let titleLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "comments"
         lbl.textColor = .label
@@ -19,7 +21,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return lbl
     }()
     
-    private lazy var back_btn: UIButton = {
+    private lazy var backButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -32,20 +34,20 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return btn
     }()
     
-    private lazy var reply_cv: UICollectionView = {
+    private lazy var replyCV: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
          
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-        cv.backgroundColor = bg_color
+        cv.backgroundColor = bgColor
         cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
     }()
     
-    private lazy var txt_field: UITextField = {
+    private lazy var textField: UITextField = {
         let txt_field = UITextField()
-        txt_field.placeholder = "add a comment as @" + main_user.getUserName()
+        txt_field.placeholder = "add a comment as @" + mainUser.getUserName()
         txt_field.textColor = .label
         txt_field.font = Constants.comment_cell_text_font
         txt_field.tintColor = .label
@@ -56,8 +58,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return txt_field
     }()
     
-    private lazy var profile_img: UIImageView = {
-        let img = UIImageView(image: main_user.getPFP())
+    private lazy var profileImage: UIImageView = {
+        let img = UIImageView(image: mainUser.getPFP())
         img.contentMode = .scaleAspectFill
         img.layer.cornerRadius = 0.5 * 2 * Constants.post_cell_pfp_radius
         img.layer.masksToBounds = true
@@ -65,7 +67,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return img
     }()
     
-    private lazy var comment_btn: UIButton = {
+    private lazy var commentButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(sendComment), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
@@ -98,15 +100,15 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return gradient
     }()
     
-    private lazy var input_view: UIView = {
+    private lazy var textInputView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = Constants.comment_input_corner
 
         view.addSubview(gradient)
-        view.addSubview(txt_field)
-        view.addSubview(profile_img)
-        view.addSubview(comment_btn)
+        view.addSubview(textField)
+        view.addSubview(profileImage)
+        view.addSubview(commentButton)
 
         NSLayoutConstraint.activate([
             gradient.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -114,22 +116,22 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             gradient.topAnchor.constraint(equalTo: view.topAnchor),
             gradient.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            profile_img.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_input_pfp_side),
-            profile_img.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
-            profile_img.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_input_pfp_side),
+            profileImage.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
+            profileImage.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
 
-            txt_field.centerYAnchor.constraint(equalTo: profile_img.centerYAnchor),
-            txt_field.leadingAnchor.constraint(equalTo: profile_img.trailingAnchor, constant: Constants.comment_input_txt_side),
+            textField.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor),
+            textField.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: Constants.comment_input_txt_side),
 
-            comment_btn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
-            comment_btn.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.comment_input_pfp_top2),
-            comment_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
-            comment_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
+            commentButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
+            commentButton.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.comment_input_pfp_top2),
+            commentButton.widthAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
+            commentButton.heightAnchor.constraint(equalToConstant: 2 * Constants.comment_input_btn_radius),
         ])
         return view
     }()
     
-    private lazy var draw_view_large: UIView = {
+    private lazy var drawViewLarge: UIView = {
         let view = UIView()
         
         var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
@@ -142,8 +144,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
-        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
-        view.addGestureRecognizer(tap_gesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
+        view.addGestureRecognizer(tapGesture)
         view.isUserInteractionEnabled = true
         
         view.addSubview(customBlurEffectView)
@@ -152,33 +154,33 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return view
     }()
     
-    // ------------ Fields (data) ------------
+    // MARK: - Properties (data)
     private let post: Post
-    private let main_user: User
-    private var bg_color: UIColor?
+    private let mainUser: User
+    private var bgColor: UIColor?
     private var change: [NSLayoutConstraint]
-    private var prev_comment: Comment? = nil
-    private var prev_reply: Reply? = nil
-    var reload_stats_delegate: ReloadStatsDelegate?
+    private var prevComment: Comment? = nil
+    private var prevReply: Reply? = nil
+    var reloadStatsDelegate: ReloadStatsDelegate!
     
-    // ------------ Functions ------------
+    // MARK: - viewDidLoad, viewWillDisappear, init, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
+        bgColor = Constants.comment_dark_bg
         if (traitCollection.userInterfaceStyle == .light) {
-            bg_color = Constants.comment_light_bg
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            bg_color = Constants.comment_dark_bg
+            bgColor = Constants.comment_light_bg
         }
-        view.backgroundColor = bg_color
+        
+        view.backgroundColor = bgColor
         title = "comments"
                
         hideKeyboardWhenTappedAround()  // For dismissing keyboard
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        view.addSubview(reply_cv)
-        view.addSubview(input_view)
-        view.addSubview(draw_view_large)
+        view.addSubview(replyCV)
+        view.addSubview(textInputView)
+        view.addSubview(drawViewLarge)
     
         setupCollectionView()
         setupNavBar()
@@ -192,10 +194,10 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    init(post: Post, main_user: User) {
+    init(post: Post, mainUser: User) {
         self.post = post
-        self.main_user = main_user
-        self.bg_color = nil
+        self.mainUser = mainUser
+        self.bgColor = nil
         self.change = []
         super.init(nibName: nil, bundle: nil)
     }
@@ -204,142 +206,115 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            replyCV.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.comment_cv_top_padding),
+            replyCV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
+            replyCV.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
+            replyCV.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.comment_cv_bot_padding),
+            
+            textInputView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            textInputView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
+            drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
+        
+        addConstr(lst: [
+            textInputView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            textInputView.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
+            
+            profileImage.topAnchor.constraint(equalTo: textInputView.topAnchor, constant: Constants.comment_input_pfp_top),
+            textField.trailingAnchor.constraint(equalTo: textInputView.trailingAnchor, constant: -Constants.comment_input_pfp_side)
+        ])
+    }
+    
+    // MARK: - Button Helpers
     @objc private func reduceImage() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 0.0
+            self.drawViewLarge.alpha = 0.0
         }, completion: nil)
-        draw_view_large.subviews[1].removeFromSuperview()
-//        self.navigationController?.navigationBar.toggle()
+        drawViewLarge.subviews[1].removeFromSuperview()
     }
     
     func deleteComment(comment: Comment) {
         // For delegation
         post.removeComment(comment: comment)
-        reply_cv.reloadData()
-        reload_stats_delegate?.reloadStats()
+        replyCV.reloadData()
+        reloadStatsDelegate?.reloadStats()
     }
     
     func sendReplyReply(comment: Comment, reply: Reply) {
         // For delegation
-        txt_field.becomeFirstResponder()
-        txt_field.text = "@" + reply.getReplyUser().getUserName() + " "
-        prev_comment = comment
-        prev_reply = reply
+        textField.becomeFirstResponder()
+        textField.text = "@" + reply.getReplyUser().getUserName() + " "
+        prevComment = comment
+        prevReply = reply
     }
         
     func sendReplyComment(comment: Comment) {
         // For delegation
-        txt_field.becomeFirstResponder()
-        txt_field.text = "@" + comment.getUser().getUserName() + " "
-        prev_comment = comment
-        prev_reply = nil
+        textField.becomeFirstResponder()
+        textField.text = "@" + comment.getUser().getUserName() + " "
+        prevComment = comment
+        prevReply = nil
     }
     
     @objc private func sendComment() {
-        if let text = txt_field.text, !text.isEmpty {
-            if prev_comment != nil, prev_reply != nil {
-                let username = "@" + (prev_reply?.getReplyUser().getUserName())! + " "
+        if let text = textField.text, !text.isEmpty {
+            if prevComment != nil, prevReply != nil {
+                let username = "@" + (prevReply?.getReplyUser().getUserName())! + " "
                 
                 if text.contains(username) {
-                    let length = (prev_reply?.getReplyUser().getUserName().count)! + 2
+                    let length = (prevReply?.getReplyUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prev_comment?.addReply(text: String(rep), prev: prev_reply, reply_user: main_user)
+                    prevComment?.addReply(text: String(rep), prev: prevReply, reply_user: mainUser)
                 } else {
-                    prev_comment?.addReply(text: text, prev: prev_reply, reply_user: main_user)
+                    prevComment?.addReply(text: text, prev: prevReply, reply_user: mainUser)
                 }
-                prev_comment = nil  // Set back to nil
-                prev_reply = nil    // Set back to nil
-            } else if prev_comment != nil {
-                let username = "@" + (prev_comment?.getUser().getUserName())! + " "
+                prevComment = nil  // Set back to nil
+                prevReply = nil    // Set back to nil
+            } else if prevComment != nil {
+                let username = "@" + (prevComment?.getUser().getUserName())! + " "
                 
                 if text.contains(username) {
-                    let length = (prev_comment?.getUser().getUserName().count)! + 2
+                    let length = (prevComment?.getUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prev_comment?.addReply(text: String(rep), prev: nil, reply_user: main_user)
+                    prevComment?.addReply(text: String(rep), prev: nil, reply_user: mainUser)
                 } else {
-                    prev_comment?.addReply(text: text, prev: nil, reply_user: main_user)
+                    prevComment?.addReply(text: text, prev: nil, reply_user: mainUser)
                 }
-                prev_comment = nil  // Set back to nil
+                prevComment = nil  // Set back to nil
             } else {
-                post.addComment(comment_user: main_user, text: text)
+                post.addComment(comment_user: mainUser, text: text)
             }
             hideKeyboard()
-            txt_field.text = ""
-            reply_cv.reloadData()
-            reload_stats_delegate?.reloadStats()
+            textField.text = ""
+            replyCV.reloadData()
+            reloadStatsDelegate?.reloadStats()
         }
     }
     
     @objc private func changeSendButtonColor(sender: UITextField) {
         if let text = sender.text, !text.isEmpty {
-            comment_btn.isUserInteractionEnabled = true
+            commentButton.isUserInteractionEnabled = true
             if (traitCollection.userInterfaceStyle == .dark) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_white")
+                commentButton.configuration?.image = UIImage(named: "comment_send_white")
             } else if (traitCollection.userInterfaceStyle == .light) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_black")
+                commentButton.configuration?.image = UIImage(named: "comment_send_black")
             }
         } else {
-            comment_btn.isUserInteractionEnabled = false
+            commentButton.isUserInteractionEnabled = false
             if (traitCollection.userInterfaceStyle == .dark) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_dark")
+                commentButton.configuration?.image = UIImage(named: "comment_send_gray_dark")
             } else if (traitCollection.userInterfaceStyle == .light) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_light")
+                commentButton.configuration?.image = UIImage(named: "comment_send_gray_light")
             }
         }
-    }
-    
-    private func changeCommentView(pop: Bool) {
-        if (pop) { // Keyboard pops up
-            if (traitCollection.userInterfaceStyle == .dark) {
-                input_view.backgroundColor = Constants.comment_input_dark
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                input_view.backgroundColor = Constants.comment_input_light
-            }
-            gradient.isHidden = true
-            comment_btn.isHidden = false
-
-            addConstr(lst: [
-                input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: Constants.comment_input_pfp_top2),
-                input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_normal),
-                
-                profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top2),
-                                
-                txt_field.trailingAnchor.constraint(equalTo: comment_btn.leadingAnchor, constant: -Constants.comment_input_pfp_side)
-            ])
-        } else {
-            prev_comment = nil
-            prev_reply =  nil
-            txt_field.text = ""
-            comment_btn.isUserInteractionEnabled = false
-            if (traitCollection.userInterfaceStyle == .dark) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_dark")
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                comment_btn.configuration?.image = UIImage(named: "comment_send_gray_light")
-            }
-            
-            input_view.backgroundColor = .none
-            comment_btn.isHidden = true
-            gradient.isHidden = false
-
-            addConstr(lst: [
-                input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-                input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
-                
-                profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top),
-                
-                txt_field.trailingAnchor.constraint(equalTo: input_view.trailingAnchor, constant: -Constants.comment_input_pfp_side),
-            ])
-        }
-    }
-    
-    private func setupCollectionView() {
-        reply_cv.delegate = self
-        reply_cv.dataSource = self
-        reply_cv.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
-        reply_cv.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
-        reply_cv.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.drawing_reuse)
     }
     
     @objc private func popVC() {
@@ -347,40 +322,68 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         navigationController?.popViewController(animated: true)
     }
     
+    // MARK: - Helper Functions
+    private func changeCommentView(pop: Bool) {
+        if (pop) { // Keyboard pops up
+            if (traitCollection.userInterfaceStyle == .dark) {
+                textInputView.backgroundColor = Constants.comment_input_dark
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                textInputView.backgroundColor = Constants.comment_input_light
+            }
+            gradient.isHidden = true
+            commentButton.isHidden = false
+
+            addConstr(lst: [
+                textInputView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: Constants.comment_input_pfp_top2),
+                textInputView.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_normal),
+                
+                profileImage.topAnchor.constraint(equalTo: textInputView.topAnchor, constant: Constants.comment_input_pfp_top2),
+                                
+                textField.trailingAnchor.constraint(equalTo: commentButton.leadingAnchor, constant: -Constants.comment_input_pfp_side)
+            ])
+        } else {
+            prevComment = nil
+            prevReply =  nil
+            textField.text = ""
+            commentButton.isUserInteractionEnabled = false
+            if (traitCollection.userInterfaceStyle == .dark) {
+                commentButton.configuration?.image = UIImage(named: "comment_send_gray_dark")
+            } else if (traitCollection.userInterfaceStyle == .light) {
+                commentButton.configuration?.image = UIImage(named: "comment_send_gray_light")
+            }
+            
+            textInputView.backgroundColor = .none
+            commentButton.isHidden = true
+            gradient.isHidden = false
+
+            addConstr(lst: [
+                textInputView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+                textInputView.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
+                
+                profileImage.topAnchor.constraint(equalTo: textInputView.topAnchor, constant: Constants.comment_input_pfp_top),
+                
+                textField.trailingAnchor.constraint(equalTo: textInputView.trailingAnchor, constant: -Constants.comment_input_pfp_side),
+            ])
+        }
+    }
+    
+    private func setupCollectionView() {
+        replyCV.delegate = self
+        replyCV.dataSource = self
+        replyCV.register(CommentCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reply_reuse)
+        replyCV.register(CommentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.comment_reuse)
+        replyCV.register(DrawingHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.drawing_reuse)
+    }
+    
     private func setupNavBar() {
-        navigationItem.titleView = title_lbl
-        back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
+        navigationItem.titleView = titleLabel
+        backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-    }
-    
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            reply_cv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.comment_cv_top_padding),
-            reply_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.comment_cv_side_padding),
-            reply_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.comment_cv_side_padding),
-            reply_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.comment_cv_bot_padding),
-            
-            input_view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            input_view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
-            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        ])
-        
-        addConstr(lst: [
-            input_view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            input_view.heightAnchor.constraint(equalToConstant: Constants.comment_input_height_gradient),
-            
-            profile_img.topAnchor.constraint(equalTo: input_view.topAnchor, constant: Constants.comment_input_pfp_top),
-            txt_field.trailingAnchor.constraint(equalTo: input_view.trailingAnchor, constant: -Constants.comment_input_pfp_side)
-        ])
     }
     
     private func estimateFrameForText(text: String) -> CGRect {
@@ -394,35 +397,11 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
 }
 
+// MARK: - Extension: UICollectionViewDataSource
 extension CommentVC: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (section == 0) {
-            return 0
-        }
-        return post.getComments()[section - 1].getReplies().count
-    }
-    
+    // MARK: - Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return post.getComments().count + 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section != 0 {
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
-                let comment = post.getComments()[indexPath.section - 1]
-                let rep = comment.getReplies()[indexPath.row]
-                if (traitCollection.userInterfaceStyle == .light) {
-                    cell.backgroundColor = Constants.comment_cell_light
-                } else if (traitCollection.userInterfaceStyle == .dark) {
-                    cell.backgroundColor = Constants.comment_cell_dark
-                }
-                cell.layer.cornerRadius = Constants.comment_cell_corner
-                cell.configure(parentVC: self, comment: comment, reply: rep)
-                cell.replyDelegate = self
-                return cell
-            }
-        }
-        return UICollectionViewListCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -443,14 +422,14 @@ extension CommentVC: UICollectionViewDataSource {
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = post.getComments()[indexPath.section - 1]
-                header.configure(parentVC: self, comment: comment, mainUser: main_user)
+                header.configure(parentVC: self, comment: comment, mainUser: mainUser)
                 header.commentDelegate = self
                 return header
             }
         }
         return UICollectionReusableView()
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if (section == 0) {
             return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -473,8 +452,36 @@ extension CommentVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return Constants.comment_cv_spacing
     }
+    
+    // MARK: - Items
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == 0 {
+            return 0
+        }
+        return post.getComments()[section - 1].getReplies().count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.section != 0 {
+            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.reply_reuse, for: indexPath) as? CommentCollectionViewCell {
+                let comment = post.getComments()[indexPath.section - 1]
+                let rep = comment.getReplies()[indexPath.row]
+                if (traitCollection.userInterfaceStyle == .light) {
+                    cell.backgroundColor = Constants.comment_cell_light
+                } else if (traitCollection.userInterfaceStyle == .dark) {
+                    cell.backgroundColor = Constants.comment_cell_dark
+                }
+                cell.layer.cornerRadius = Constants.comment_cell_corner
+                cell.configure(parentVC: self, comment: comment, reply: rep)
+                cell.replyDelegate = self
+                return cell
+            }
+        }
+        return UICollectionViewListCell()
+    }
 }
 
+// MARK: - Extension: UICollectionViewDelegateFlowLayout
 extension CommentVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
@@ -490,6 +497,7 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: - Extension: UICollectionViewDelegate
 extension CommentVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                                  contextMenuConfigurationForItemAt indexPath: IndexPath,
@@ -503,15 +511,15 @@ extension CommentVC: UICollectionViewDelegate {
                     UIPasteboard.general.string = rep.getText().string
                 }
             
-            if (rep.getReplyUser() === self.main_user) {
+            if (rep.getReplyUser() === self.mainUser) {
                 let deleteAction =
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),
                              attributes: .destructive) { [self] action in
 
                         comment.removeReply(reply: rep)
-                        self.reload_stats_delegate?.reloadStats()
-                        self.reply_cv.reloadData()
+                        self.reloadStatsDelegate?.reloadStats()
+                        self.replyCV.reloadData()
                     }
                 return UIMenu(title: "", children: [copyAction, deleteAction])
             }
@@ -520,7 +528,8 @@ extension CommentVC: UICollectionViewDelegate {
     }
 }
 
-extension CommentVC {
+// MARK: - Other Extensions and Delegation
+extension CommentVC: EnlargeDrawingDelegate {
     private func addConstr(lst: [NSLayoutConstraint]) {
         // Deactivates all the old constraints in the list
         // Activate the new constraints and add to the list
@@ -540,9 +549,8 @@ extension CommentVC {
     @objc func keyboardWillHide(notification: Notification) {
         changeCommentView(pop: false)
     }
-}
-
-extension CommentVC: EnlargeDrawingDelegate {
+    
+    // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
         outerView.clipsToBounds = false
@@ -562,21 +570,20 @@ extension CommentVC: EnlargeDrawingDelegate {
         
         outerView.addSubview(img)
         
-        draw_view_large.addSubview(outerView)
+        drawViewLarge.addSubview(outerView)
         
         NSLayoutConstraint.activate([
             img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             
-            outerView.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            outerView.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
+            outerView.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            outerView.centerXAnchor.constraint(equalTo: drawViewLarge.centerXAnchor),
             outerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             outerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 1.0
+            self.drawViewLarge.alpha = 1.0
         }, completion: nil)
-//        self.navigationController?.navigationBar.toggle()
     }
 }

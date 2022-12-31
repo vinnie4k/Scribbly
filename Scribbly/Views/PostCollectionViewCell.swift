@@ -311,7 +311,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func pushCommentVC() {
-        let commentVC = CommentVC(post: post, main_user: mainUser)
+        let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
 }

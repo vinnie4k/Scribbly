@@ -89,8 +89,8 @@ class PostInfoView: UIView, ReloadStatsDelegate {
     
     // MARK: - Button Helpers
     @objc private func pushCommentVC() {
-        let commentVC = CommentVC(post: post, main_user: post.getUser())
-        commentVC.reload_stats_delegate = self
+        let commentVC = CommentVC(post: post, mainUser: post.getUser())
+        commentVC.reloadStatsDelegate = self
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
     

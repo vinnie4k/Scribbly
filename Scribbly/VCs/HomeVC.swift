@@ -5,10 +5,12 @@
 //  Created by Vin Bui on 12/18/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
+// MARK: HomeVC
 class HomeVC: UIViewController {
-
     // MARK: - Properties (view)
     private lazy var searchButton: UIButton = {
         let btn = UIButton()
@@ -56,7 +58,7 @@ class HomeVC: UIViewController {
         return cv
     }()
     
-    private lazy var draw_view_large: UIView = {
+    private lazy var drawViewLarge: UIView = {
         let view = UIView()
         
         var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
@@ -69,8 +71,8 @@ class HomeVC: UIViewController {
         customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
         
-        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
-        view.addGestureRecognizer(tap_gesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
+        view.addGestureRecognizer(tapGesture)
         view.isUserInteractionEnabled = true
         
         view.addSubview(customBlurEffectView)
@@ -135,15 +137,14 @@ class HomeVC: UIViewController {
     // MARK: - Properties (data)
     private var posts: [Post] = []
     
-    // ------------ Functions ------------
+    // MARK: - viewDidLoad and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
         view.addSubview(postCV)
-        view.addSubview(draw_view_large)
+        view.addSubview(drawViewLarge)
         
-        // Function Calls
         setupGradient()
         setupNavBar()
         setupCollectionView()
@@ -153,6 +154,27 @@ class HomeVC: UIViewController {
         // TODO: END REMOVE
     }
     
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            profileButton.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
+            profileButton.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
+            
+            searchButton.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
+            searchButton.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
+            
+            postCV.topAnchor.constraint(equalTo: view.topAnchor),
+            postCV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
+            postCV.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
+            postCV.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
+            drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
+    }
+    
+    // MARK: - Helper Functions
     private func setupGradient() {
         if (traitCollection.userInterfaceStyle == .dark) {
             let gradient = CAGradientLayer()
@@ -161,20 +183,6 @@ class HomeVC: UIViewController {
             gradient.locations = [0, 0.1, 0.85, 1]
             view.layer.mask = gradient
         }
-    }
-    
-    @objc private func reduceImage() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 0.0
-        }, completion: nil)
-        draw_view_large.subviews[1].removeFromSuperview()
-    }
-    
-    @objc private func pushMainUserProfileVC() {
-        let profile_vc = MainUserProfileVC()
-        profile_vc.main_user = user
-        profile_vc.updateFeedDelegate = self
-        navigationController?.pushViewController(profile_vc, animated: true)
     }
     
     private func setupNavBar() {
@@ -195,32 +203,47 @@ class HomeVC: UIViewController {
         postCV.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prompt_reuse)
     }
     
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            profileButton.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
-            profileButton.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
-            
-            searchButton.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
-            searchButton.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
-            
-            postCV.topAnchor.constraint(equalTo: view.topAnchor),
-            postCV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
-            postCV.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
-            postCV.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
-            draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            draw_view_large.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        ])
+    // MARK: - Button Helpers
+    @objc private func reduceImage() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.drawViewLarge.alpha = 0.0
+        }, completion: nil)
+        drawViewLarge.subviews[1].removeFromSuperview()
+    }
+    
+    @objc private func pushMainUserProfileVC() {
+        let profileVC = MainUserProfileVC()
+        profileVC.mainUser = user
+        profileVC.updateFeedDelegate = self
+        navigationController?.pushViewController(profileVC, animated: true)
     }
 }
 
+// MARK: - Extension: UICollectionViewDataSource
 extension HomeVC: UICollectionViewDataSource {
+    // MARK: - Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: Constants.prompt_width, height: Constants.prompt_height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
+                header.backgroundColor = .systemBackground
+                if (user.getPosts().count != 0) {
+                    header.configure(prompt: "bird", post: user.getTodaysPost())
+                    header.postInfoDelegate = self
+                }
+                return header
+            }
+        }
+        return UICollectionReusableView()
+    }
+    // MARK: - Items
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
     }
@@ -237,26 +260,9 @@ extension HomeVC: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if kind == UICollectionView.elementKindSectionHeader {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prompt_reuse, for: indexPath) as? PromptHeaderView {
-                header.backgroundColor = .systemBackground
-                if (user.getPosts().count != 0) {
-                    header.configure(prompt: "bird", post: user.getTodaysPost())
-                    header.postInfoDelegate = self
-                }
-                return header
-            }
-        }
-        return UICollectionReusableView()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: Constants.prompt_width, height: Constants.prompt_height)
-    }
 }
 
+// MARK: - Extension: UICollectionViewDelegateFlowLayout
 extension HomeVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: Constants.post_container_width, height: Constants.post_container_height)
@@ -267,7 +273,9 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension HomeVC: EnlargeDrawingDelegate {
+// MARK: - Extension: Delegation
+extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate {
+    // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
         outerView.clipsToBounds = false
@@ -287,41 +295,40 @@ extension HomeVC: EnlargeDrawingDelegate {
         
         outerView.addSubview(img)
         
-        draw_view_large.addSubview(outerView)
+        drawViewLarge.addSubview(outerView)
         
         NSLayoutConstraint.activate([
             img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             
-            outerView.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            outerView.centerXAnchor.constraint(equalTo: draw_view_large.centerXAnchor),
+            outerView.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            outerView.centerXAnchor.constraint(equalTo: drawViewLarge.centerXAnchor),
             outerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             outerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 1.0
+            self.drawViewLarge.alpha = 1.0
         }, completion: nil)
     }
-}
-
-extension HomeVC: PostInfoDelegate, UpdateFeedDelegate {
-    func showPostInfo(post: Post) {        
+    
+    // MARK: - PostInfoDelegate
+    func showPostInfo(post: Post) {
         let view = PostInfoView()
         view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
         
-        draw_view_large.addSubview(view)
+        drawViewLarge.addSubview(view)
 
         NSLayoutConstraint.activate([
-            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
-            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
-            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: drawViewLarge.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: drawViewLarge.trailingAnchor, constant: -Constants.enlarge_side_padding),
             view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
         ])
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 1.0
+            self.drawViewLarge.alpha = 1.0
         }, completion: nil)
     }
     
@@ -333,6 +340,7 @@ extension HomeVC: PostInfoDelegate, UpdateFeedDelegate {
         return  // Do nothing here
     }
     
+    // MARK: - UpdateFeedDelegate
     func updateFeed() {
         postCV.reloadData()
     }

@@ -105,7 +105,7 @@ class BooksInfoView: UIView {
     }
     
     @objc private func pushCommentVC() {
-        let commentVC = CommentVC(post: post, main_user: mainUser)
+        let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
 
@@ -336,7 +336,7 @@ class BooksButtonView: UIStackView {
     }
     
     @objc func pushCommentVC() {
-        let commentVC = CommentVC(post: post, main_user: mainUser)
+        let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
     
