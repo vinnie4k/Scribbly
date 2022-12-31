@@ -42,17 +42,30 @@ class UploadpictureVC: UIViewController {
         return lbl
     }()
     
-    private let forms: UITextField = {
-        let txt_field = UITextField()
-        txt_field.placeholder = "(xxx) xxx-xxxx"
-        txt_field.textColor = .label
-        txt_field.font = OnboardConstants.question_font
-        txt_field.tintColor = .label
-        txt_field.background = UIImage(named: "textfieldunderline")
-        txt_field.contentMode = .scaleAspectFit
-        txt_field.keyboardType = UIKeyboardType.twitter
-        txt_field.translatesAutoresizingMaskIntoConstraints = false
-        return txt_field
+    private let hint: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "uploading a picture can be useful for your friends to find you!"
+        lbl.textAlignment = .left
+        lbl.textColor = OnboardConstants.secondary_text
+        lbl.font = OnboardConstants.description_font
+        lbl.numberOfLines = 2
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private let forms: UIButton = {
+        let uploadbtn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(named: "uploadlogo")
+        config.baseForegroundColor = OnboardConstants.text_dark
+        config.baseBackgroundColor = .clear
+        uploadbtn.configuration = config
+        uploadbtn.addTarget(self, action: #selector(previousview), for: .touchUpInside)
+        uploadbtn.setTitleColor(.white, for: .normal)
+        uploadbtn.layer.cornerRadius = 100
+        uploadbtn.backgroundColor = OnboardConstants.primary_dark
+        uploadbtn.translatesAutoresizingMaskIntoConstraints = false
+        return uploadbtn
     }()
     
     private let carousel: UIImageView = {
@@ -106,6 +119,7 @@ class UploadpictureVC: UIViewController {
         view.backgroundColor = .black
         setupNavBar()
         view.addSubview(question)
+        view.addSubview(hint)
         view.addSubview(forms)
         view.addSubview(carousel)
         view.addSubview(nextButton)
@@ -124,9 +138,16 @@ class UploadpictureVC: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            forms.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 228),
-            forms.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            forms.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hint.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 14),
+            hint.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hint.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+        ])
+        
+        NSLayoutConstraint.activate([
+            forms.topAnchor.constraint(equalTo: hint.bottomAnchor, constant: 80),
+            forms.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            forms.widthAnchor.constraint(equalToConstant: 200),
+            forms.heightAnchor.constraint(equalToConstant: 200)
         ])
         
         NSLayoutConstraint.activate([

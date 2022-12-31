@@ -42,6 +42,17 @@ class FriendrecVC: UIViewController {
         return lbl
     }()
     
+    private let hint: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "you can always revisit this page to add your friends"
+        lbl.textAlignment = .left
+        lbl.textColor = OnboardConstants.secondary_text
+        lbl.font = OnboardConstants.description_font
+        lbl.numberOfLines = 2
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
     private let forms: UITextField = {
         let txt_field = UITextField()
         txt_field.placeholder = "(xxx) xxx-xxxx"
@@ -106,6 +117,7 @@ class FriendrecVC: UIViewController {
         view.backgroundColor = .black
         setupNavBar()
         view.addSubview(question)
+        view.addSubview(hint)
         view.addSubview(forms)
         view.addSubview(carousel)
         view.addSubview(nextButton)
@@ -124,7 +136,13 @@ class FriendrecVC: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            forms.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 228),
+            hint.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 14),
+            hint.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hint.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+        ])
+        
+        NSLayoutConstraint.activate([
+            forms.topAnchor.constraint(equalTo: hint.bottomAnchor, constant: 228),
             forms.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             forms.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
         ])

@@ -21,8 +21,13 @@ struct OnboardConstants {
     static let text_dark = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
     
     // ------------ Onboard Texts ------------
-    static let description_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    static let eula_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
+    
+    static let description_font = UIFont(descriptor: UIFont.systemFont(ofSize: 16, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 16)
+    
     static let question_font = UIFont(descriptor: UIFont.systemFont(ofSize: 36, weight: .semibold).fontDescriptor.withDesign(.rounded)!, size: 36)
+    
+    static let tutorial_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .semibold).fontDescriptor.withDesign(.rounded)!, size: 24)
     
     // ------------ Onboard Components ------------
     //this shit doenst fucking work

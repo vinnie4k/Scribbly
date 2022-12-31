@@ -43,18 +43,29 @@ class TutorialVC: UIViewController {
         return lbl
     }()
     
-    private let forms: UITextField = {
-        let txt_field = UITextField()
-        txt_field.placeholder = "(xxx) xxx-xxxx"
-        txt_field.textColor = .label
-        txt_field.font = OnboardConstants.question_font
-        txt_field.tintColor = .label
-        txt_field.background = UIImage(named: "textfieldunderline")
-        txt_field.contentMode = .scaleAspectFit
-        txt_field.keyboardType = UIKeyboardType.twitter
-        txt_field.translatesAutoresizingMaskIntoConstraints = false
-        return txt_field
+    private let hint: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "here is a quick tutorial of how the app works!"
+        lbl.textAlignment = .left
+        lbl.textColor = OnboardConstants.text_dark
+        lbl.font = OnboardConstants.tutorial_font
+        lbl.numberOfLines = 2
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
     }()
+    
+    private let tutorial: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "1. you + friends will receive a prompt everyday. \n\n2. you can draw it any way you like and at any time as long as it is before the new prompt comes. \n\n3. when you finish your artwork with your preferred medium, take a pic and upload it. \n\n4. each artwork is intended to be completed around 10 minutes, and the app has a built in timer before you upload! \n\n5. this timeframe is not meant to be stressful, but rather meant to keep it light and simple. \n\n6. you cannot see what your friends drew unless you post your artwork. \n\n7. your profile page serves as a way to see how you progressed throughout the time you spent practicing everyday."
+        lbl.textAlignment = .left
+        lbl.textColor = OnboardConstants.text_dark
+        lbl.font = OnboardConstants.eula_font
+        lbl.numberOfLines = 50
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+
     
     private let carousel: UIImageView = {
         let carousel = UIImageView()
@@ -107,7 +118,8 @@ class TutorialVC: UIViewController {
         view.backgroundColor = .black
         setupNavBar()
         view.addSubview(question)
-        view.addSubview(forms)
+        view.addSubview(hint)
+        view.addSubview(tutorial)
         view.addSubview(carousel)
         view.addSubview(nextButton)
         view.addSubview(backButton)
@@ -125,9 +137,15 @@ class TutorialVC: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            forms.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 228),
-            forms.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            forms.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            hint.topAnchor.constraint(equalTo: question.bottomAnchor, constant: 14),
+            hint.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            hint.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+        ])
+        
+        NSLayoutConstraint.activate([
+            tutorial.topAnchor.constraint(equalTo: hint.bottomAnchor, constant: 16),
+            tutorial.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            tutorial.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32)
         ])
         
         NSLayoutConstraint.activate([
