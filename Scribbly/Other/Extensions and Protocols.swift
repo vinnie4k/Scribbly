@@ -38,8 +38,9 @@ protocol CommentDelegate {
     func deleteComment(comment: Comment)
 }
 
-// MARK: - UIViewController (dismiss keyboard)
+// MARK: - UIViewController
 extension UIViewController {
+    // MARK: - Dismissing keyboard
     func hideKeyboardWhenTappedAround() {
         let tapGesture = UITapGestureRecognizer(target: self,
                          action: #selector(hideKeyboard))
@@ -53,6 +54,17 @@ extension UIViewController {
     @objc func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
+    }
+    
+    // MARK: - Gradient Scroll
+    func setupGradient() {
+        if traitCollection.userInterfaceStyle == .dark {
+            let gradient = CAGradientLayer()
+            gradient.frame = view.bounds
+            gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+            gradient.locations = [0, 0.1, 0.85, 1]
+            view.layer.mask = gradient
+        }
     }
 }
 

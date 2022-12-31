@@ -175,16 +175,6 @@ class HomeVC: UIViewController {
     }
     
     // MARK: - Helper Functions
-    private func setupGradient() {
-        if (traitCollection.userInterfaceStyle == .dark) {
-            let gradient = CAGradientLayer()
-            gradient.frame = view.bounds
-            gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
-            gradient.locations = [0, 0.1, 0.85, 1]
-            view.layer.mask = gradient
-        }
-    }
-    
     private func setupNavBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)

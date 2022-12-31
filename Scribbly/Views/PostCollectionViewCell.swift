@@ -102,10 +102,6 @@ class PostCollectionViewCell: UICollectionViewCell {
         img.layer.borderWidth = Constants.post_cell_drawing_border_width
         img.translatesAutoresizingMaskIntoConstraints = false
         
-        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(enlargeImage))
-        img.addGestureRecognizer(tap_gesture)
-        img.isUserInteractionEnabled = true
-        
         return img
     }()
     
@@ -168,8 +164,8 @@ class PostCollectionViewCell: UICollectionViewCell {
         return stack
     }()
     
-    private let captionView: CaptionView = {
-        let view = CaptionView()
+    private lazy var captionView: CaptionView = {
+        let view = CaptionView()        
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -185,6 +181,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         contentView.addSubview(drawing)
         contentView.addSubview(stack)
         contentView.addSubview(captionView)
@@ -254,7 +251,7 @@ class PostCollectionViewCell: UICollectionViewCell {
             captionView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
             captionView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
             captionView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_cell_cap_view_side),
-            captionView.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height),
+            captionView.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height)
         ])
     }
     

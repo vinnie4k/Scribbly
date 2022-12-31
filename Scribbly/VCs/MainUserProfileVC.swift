@@ -105,6 +105,7 @@ class MainUserProfileVC: UIViewController {
         view.addSubview(collectionView)
         view.addSubview(drawViewLarge)
         
+        setupGradient()
         setupBooksData()
         setupMemsData()
         configureDatasource()

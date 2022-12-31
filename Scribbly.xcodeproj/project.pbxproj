@@ -99,7 +99,11 @@
 		2E0C0884294F15290021C2D9 /* Scribbly */ = {
 			isa = PBXGroup;
 			children = (
-				2E3112232960E5A7009D2752 /* Default Files */,
+				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
+				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
+				2E0C0893294F152A0021C2D9 /* Info.plist */,
+				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
+				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
 				2E553EB62955960600A40575 /* Views */,
 				2E553EB5295595DD00A40575 /* VCs */,
 				2E0C08A0294F28470021C2D9 /* Images */,
@@ -124,18 +128,6 @@
 			children = (
 			);
 			path = Images;
-			sourceTree = "<group>";
-		};
-		2E3112232960E5A7009D2752 /* Default Files */ = {
-			isa = PBXGroup;
-			children = (
-				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
-				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
-				2E0C0893294F152A0021C2D9 /* Info.plist */,
-				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
-				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
-			);
-			path = "Default Files";
 			sourceTree = "<group>";
 		};
 		2E3112242960E5C1009D2752 /* Other */ = {
