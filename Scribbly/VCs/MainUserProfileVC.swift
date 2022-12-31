@@ -2,13 +2,13 @@
 //  MainUserProfileVC.swift
 //  Scribbly
 //
-//  Created by Vin Bui on 12/19/22.
+//  Created by Vin Bui on 12/25/22.
 //
 
 import UIKit
 
 class MainUserProfileVC: UIViewController {
-    // ------------ Fields (view) ------------
+    // MARK: - Properties (view)
     private let title_lbl: UILabel = {
         let lbl = UILabel()
         lbl.text = "profile"
@@ -47,72 +47,79 @@ class MainUserProfileVC: UIViewController {
         return btn
     }()
     
-    private let mems_cv: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionHeadersPinToVisibleBounds = true
-
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.translatesAutoresizingMaskIntoConstraints = false
-        return cv
-    }()
-    
     private lazy var draw_view_large: UIView = {
         let view = UIView()
-        
+
         var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
         if (traitCollection.userInterfaceStyle == .light) {
             blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
         }
-        
+
         let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
         customBlurEffectView.frame = view.bounds
         customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(reduceImage))
         view.addGestureRecognizer(tap_gesture)
         view.isUserInteractionEnabled = true
-        
+
         view.addSubview(customBlurEffectView)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.alpha = 0
         return view
     }()
     
-    // ------------ Fields (data) ------------
-    var main_user: User? = nil
-    private var mems_data = [[String]]() // 43 elements, first element is the month and year
+    private lazy var collectionView: UICollectionView = {
+        let cv = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        cv.register(ProfileHeaderCell.self, forCellWithReuseIdentifier: ProfileHeaderCell.reuseIdentifier)
+        cv.register(MemsBookHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier)
+        cv.register(MemsBookHeaderView.self, forSupplementaryViewOfKind: MemsBookHeaderView.reuseIdentifier, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier)
+        cv.register(MemsCollectionViewCell.self, forCellWithReuseIdentifier: MemsCollectionViewCell.reuseIdentifier)
+        cv.register(BookmarksCollectionViewCell.self, forCellWithReuseIdentifier: BookmarksCollectionViewCell.reuseIdentifier)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        return cv
+    }()
     
-    // ------------ Functions ------------
+    // MARK: - Properties (data)
+    var main_user: User? = nil
+    private var mems_data = [Month]()
+    private var books_data = [Bookmarks]()
+    private var datasource: Datasource!
+    private var updateMems: Bool = true
+    var updateFeedDelegate: UpdateFeedDelegate!
+    
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "profile"
         
-        if (traitCollection.userInterfaceStyle == .dark) {
-            view.backgroundColor = Constants.secondary_dark
-        } else if (traitCollection.userInterfaceStyle == .light) {
-            view.backgroundColor = Constants.secondary_light
+        view.backgroundColor = Constants.primary_dark
+        collectionView.backgroundColor = Constants.primary_dark
+        if traitCollection.userInterfaceStyle == .light {
+            view.backgroundColor =  Constants.primary_light
+            collectionView.backgroundColor = Constants.primary_light
         }
         
-        view.addSubview(mems_cv)
+        view.addSubview(collectionView)
         view.addSubview(draw_view_large)
         
+        setupBooksData()
         setupMemsData()
-        setupMemsCV()
+        configureDatasource()
         setupNavBar()
         setupConstraints()
     }
     
-    @objc private func reduceImage() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.draw_view_large.alpha = 0.0
-        }, completion: nil)
-        draw_view_large.subviews[1].removeFromSuperview()
-        mems_cv.reloadData()
-//        self.navigationController?.navigationBar. toggle()
+    // MARK: - BooksData Helpers
+    private func setupBooksData() {
+        books_data = [Bookmarks]()   // Must reset first
+        for books in main_user!.getBookmarks() {
+            books_data.append(Bookmarks(post: books))
+        }
+        books_data.reverse()
     }
     
+    // MARK: - MemsData Helpers
     /**
      Returns a list of Strings representing a day given a selected date. An empty string is used as a placeholder.
      The first element is a String representing the month and year (such as "December 2022")
@@ -120,6 +127,8 @@ class MainUserProfileVC: UIViewController {
      ["","","","","1","2",...]
      */
     private func setupMemsData() {
+        mems_data = [Month]()   // Must reset first
+        
         let months = main_user!.monthsFromStart()
         for month in months {
             var accum = [String]()
@@ -130,7 +139,7 @@ class MainUserProfileVC: UIViewController {
             for day in days {
                 accum.append(day)
             }
-            mems_data.append(accum)
+            mems_data.append(Month(array: accum))
         }
     }
     
@@ -171,38 +180,20 @@ class MainUserProfileVC: UIViewController {
         return result
     }
     
-    private func setupMemsCV() {
-        mems_cv.dataSource = self
-        mems_cv.delegate = self
-        mems_cv.register(MemsCollectionViewCell.self, forCellWithReuseIdentifier: Constants.mems_reuse)
-        mems_cv.register(ProfileHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prof_head_reuse)
-        mems_cv.register(MonthHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.mems_month_reuse)
-        
-        mems_cv.contentInsetAdjustmentBehavior = .never
-    }
-    
+    // MARK: - setupNavBar and setupConstraints
     private func setupNavBar() {
         navigationItem.titleView = title_lbl
         back_btn.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back_btn)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settings_btn)
-
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithTransparentBackground()
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-    }
-    
-    @objc private func popVC() {
-        navigationController?.popViewController(animated: true)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            mems_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mems_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mems_cv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prof_head_top),
-            mems_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.prof_head_top),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
             draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -210,79 +201,180 @@ class MainUserProfileVC: UIViewController {
             draw_view_large.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
+    
+    // MARK: - Button Helpers
+    @objc private func popVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func reduceImage() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 0.0
+        }, completion: nil)
+        draw_view_large.subviews[1].removeFromSuperview()
+        reloadMemsBooksItems()
+        updateFeedDelegate.updateFeed()
+    }
 }
 
-extension MainUserProfileVC: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if (kind == UICollectionView.elementKindSectionHeader && indexPath.section == 0) {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.prof_head_reuse, for: indexPath) as? ProfileHeaderView {
-                header.configure(user: main_user!, mode: traitCollection.userInterfaceStyle)
-                return header
-            }
-        } else {
-            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.mems_month_reuse, for: indexPath) as? MonthHeaderView {
-                header.configure(text: mems_data[indexPath.section - 1][0])
-                return header
-            }
+extension MainUserProfileVC {
+    // MARK: - Layout
+    func createLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { [unowned self] index, env in
+            return self.sectionFor(index: index, environment: env)
         }
-        return UICollectionReusableView()
     }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return mems_data.count + 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (section == 0) {
-            return 0
+
+    func sectionFor(index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        let section = datasource.snapshot().sectionIdentifiers[index]
+
+        switch section {
+        case .profileHeader:
+            return createProfileHeaderSection()
+        case .memsSection:
+            return createMemsSection()
+        case .booksSection:
+            return createBooksSection()
         }
-        return mems_data[section - 1].count - 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = mems_cv.dequeueReusableCell(withReuseIdentifier: Constants.mems_reuse, for: indexPath) as? MemsCollectionViewCell {
-            let text = mems_data[indexPath.section - 1][indexPath.row + 1]
-            if (text != "") {
-                let month_str = mems_data[indexPath.section - 1][0]
-                let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + month_str)
-                let post = main_user!.getPostFromDate(selected_date: date)
-                cell.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
-                cell.post_info_delegate = self
-            } else {
-                cell.configure(post: nil, text: "", mode: traitCollection.userInterfaceStyle)
-            }
+    func createBooksSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4), heightDimension: .fractionalHeight(1.0)))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(1/4)), subitems: [item])
+        
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.mems_book_height)), elementKind: MemsBookHeaderView.reuseIdentifier, alignment: .top)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        
+        header.pinToVisibleBounds = true
+        section.boundarySupplementaryItems = [header]
+        
+        return section
+    }
+    
+    func createMemsSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(100)))
+        
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(Constants.mems_month_height + 50)), subitems: [item])
+        
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.mems_book_height)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        
+        header.pinToVisibleBounds = true
+        section.boundarySupplementaryItems = [header]
+        
+        return section
+    }
+    
+    func createProfileHeaderSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.prof_head_height)), subitems: [item])
+
+        return NSCollectionLayoutSection(group: group)
+    }
+    
+    // MARK: - Diffable Data Source
+    typealias Datasource = UICollectionViewDiffableDataSource<Section, Item>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
+    
+    enum Section: Hashable {
+        case profileHeader
+        case memsSection
+        case booksSection
+    }
+
+    enum Item: Hashable {
+        case profileHeaderCell
+        case memsCell(Month)
+        case booksCell(Bookmarks)
+    }
+    
+    struct Bookmarks: Hashable {
+        var id = UUID()
+        var post: Post
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+        
+        static func == (lhs: MainUserProfileVC.Bookmarks, rhs: MainUserProfileVC.Bookmarks) -> Bool {
+            lhs.post === rhs.post
+        }
+    }
+    
+    struct Month: Hashable {
+        var id = UUID()
+        var array: [String]
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    }
+        
+    private func cell(collectionView: UICollectionView, indexPath: IndexPath, item: Item) -> UICollectionViewCell {
+        switch item {
+        case .profileHeaderCell:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
+            cell.configure(user: main_user!, mode: traitCollection.userInterfaceStyle)
+            return cell
+        case .memsCell (let data):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MemsCollectionViewCell.reuseIdentifier, for: indexPath) as! MemsCollectionViewCell
+            cell.postInfoDelegate = self
+            cell.configure(data: data.array, user: main_user!)
+            return cell
+        case .booksCell(let data):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmarksCollectionViewCell.reuseIdentifier, for: indexPath) as! BookmarksCollectionViewCell
+            cell.configure(post: data.post)
+            cell.postInfoDelegate = self
             return cell
         }
-        return UICollectionViewCell()
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if (section == 0) {
-            return CGSize(width: UIScreen.main.bounds.width, height: Constants.prof_head_height)
+    private func supplementary(collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case MemsBookHeaderView.reuseIdentifier:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: MemsBookHeaderView.reuseIdentifier, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier, for: indexPath) as! MemsBookHeaderView
+            header.switchViewDelegate = self
+            header.configure(mode: traitCollection.userInterfaceStyle, start: 1)
+            return header
+        default:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier, for: indexPath) as! MemsBookHeaderView
+            header.switchViewDelegate = self
+            header.configure(mode: traitCollection.userInterfaceStyle, start: 0)
+            return header
         }
-        return CGSize(width: UIScreen.main.bounds.width, height: Constants.mems_month_head_height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if (section == 0) {
-            return UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
+    private func configureDatasource() {
+        datasource = Datasource(collectionView: collectionView, cellProvider: cell(collectionView:indexPath:item:))
+        datasource.apply(snapshot(), animatingDifferences: false)
+        datasource.supplementaryViewProvider = { [unowned self] collectionView, kind, indexPath in
+            return self.supplementary(collectionView: collectionView, kind: kind, indexPath: indexPath)
         }
-        return UIEdgeInsets(top: Constants.mems_section_top, left: 10, bottom: Constants.mems_section_bot, right: 10)
+    }
+    
+    func snapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.profileHeader, .memsSection])
+        snapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+        snapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+        return snapshot
     }
 }
 
-extension MainUserProfileVC: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: Constants.mems_cell_width, height: Constants.mems_cell_width)
-    }
-}
-
-extension MainUserProfileVC: ReloadCVDelegate, PostInfoDelegate {
+// MARK: - Delegation and Other Extensions
+extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
     func showPostInfo(post: Post) {
+        return  // Do nothing here
+    }
+    
+    func showMemsInfo(post: Post) {
         let view = MemsInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parent_vc: self)
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.hide_share_view.reload_cv_delegate = self
 
         draw_view_large.addSubview(view)
 
@@ -296,10 +388,77 @@ extension MainUserProfileVC: ReloadCVDelegate, PostInfoDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-        //        self.navigationController?.navigationBar.toggle()
     }
+    
+    func showBooksInfo(post: Post) {
+        let view = BooksInfoView()
+        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self, mainUser: main_user!)
+        view.translatesAutoresizingMaskIntoConstraints = false
 
-    func reloadCV() {
-        mems_cv.reloadData()
+        draw_view_large.addSubview(view)
+
+        NSLayoutConstraint.activate([
+            view.centerYAnchor.constraint(equalTo: draw_view_large.centerYAnchor),
+            view.leadingAnchor.constraint(equalTo: draw_view_large.leadingAnchor, constant: Constants.enlarge_side_padding),
+            view.trailingAnchor.constraint(equalTo: draw_view_large.trailingAnchor, constant: -Constants.enlarge_side_padding),
+            view.heightAnchor.constraint(equalToConstant: Constants.post_info_view_height),
+        ])
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.draw_view_large.alpha = 1.0
+        }, completion: nil)
+    }
+    
+    func switchView(pos: Int) {
+        var newSnapshot = Snapshot()
+        
+        var oldSnapshot = datasource.snapshot(for: Section.profileHeader)
+        oldSnapshot.deleteAll()
+        
+        if pos == 0 {
+            var oldSnapshot = datasource.snapshot(for: Section.booksSection)
+            oldSnapshot.deleteAll()
+            
+            newSnapshot.appendSections([.profileHeader, .memsSection])
+            newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+            newSnapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+            
+            updateMems = true
+        } else if pos == 1 {
+            var oldSnapshot = datasource.snapshot(for: Section.memsSection)
+            oldSnapshot.deleteAll()
+            
+            newSnapshot.appendSections([.profileHeader, .booksSection])
+            newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+            newSnapshot.appendItems(books_data.map({ Item.booksCell($0) }), toSection: .booksSection)
+            
+            updateMems = false
+        }
+        datasource.apply(newSnapshot, animatingDifferences: true)
+    }
+    
+    func reloadMemsBooksItems() {
+        var newSnapshot = Snapshot()
+        
+        if updateMems {
+            var oldSnapshot = datasource.snapshot(for: Section.memsSection)
+            oldSnapshot.deleteAll()
+            
+            setupMemsData()
+
+            newSnapshot.appendSections([.profileHeader, .memsSection])
+            newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+            newSnapshot.appendItems(mems_data.map({ Item.memsCell($0) }), toSection: .memsSection)
+        } else {
+            var oldSnapshot = datasource.snapshot(for: Section.memsSection)
+            oldSnapshot.deleteAll()
+            
+            setupBooksData()
+            
+            newSnapshot.appendSections([.profileHeader, .booksSection])
+            newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+            newSnapshot.appendItems(books_data.map({ Item.booksCell($0) }), toSection: .booksSection)
+        }
+        datasource.applySnapshotUsingReloadData(newSnapshot)
     }
 }

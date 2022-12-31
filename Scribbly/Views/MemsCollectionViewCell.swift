@@ -5,11 +5,14 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
 
-class MemsCollectionViewCell: UICollectionViewCell {
-    // ------------ Fields (View) ------------
-    private let date_lbl: UILabel = {
+// MARK: - MemsTinyPostView
+class MemsTinyPostView: UIView {
+    // MARK: - Properties (view)
+    private let dateLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = Constants.mems_date_font
         lbl.tintColor = .label
@@ -31,57 +34,35 @@ class MemsCollectionViewCell: UICollectionViewCell {
         return img
     }()
 
-    private let hidden_img: UIImageView = {
+    private let hiddenImage: UIImageView = {
         let img = UIImageView()
         img.translatesAutoresizingMaskIntoConstraints = false
         return img
     }()
 
-    // ------------ Fields (Data) ------------
-    private var parent_vc: UIViewController? = nil
+    // MARK: - Properties (data)
+    private var parentVC: UIViewController!
     private var post: Post? = nil
-    private var mode: UIUserInterfaceStyle? = nil
-    var post_info_delegate: PostInfoDelegate?
-
-    // ------------ Functions ------------
+    private var mode: UIUserInterfaceStyle!
+    var postInfoDelegate: PostInfoDelegate?
+    
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         layer.cornerRadius = Constants.mems_cell_corner
-
+        
         addSubview(drawing)
-        addSubview(date_lbl)
-        addSubview(hidden_img)
+        addSubview(dateLabel)
+        addSubview(hiddenImage)
 
         setupConstraints()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private func determineBlur() {
-        if (post != nil) {
-            if (post!.isHidden()) {
-                drawing.applyBlurEffect()
-                date_lbl.text = ""
-                if (mode == .dark) {
-                    hidden_img.image = UIImage(named: "hidden_dark")
-                } else if (mode == .light) {
-                    hidden_img.image = UIImage(named: "hidden_light")
-                }
-            } else {
-                hidden_img.image = nil
-            }
-        }
-    }
-
-    @objc private func showStats() {
-        if post != nil {
-            post_info_delegate?.showPostInfo(post: post!)
-        }
-    }
-
+    
     func configure(post: Post?, text: String, mode: UIUserInterfaceStyle) {
         self.post = post
         self.mode = mode
@@ -91,10 +72,10 @@ class MemsCollectionViewCell: UICollectionViewCell {
         } else {
             drawing.image = post?.getDrawing()
         }
-        date_lbl.text = text
+        dateLabel.text = text
         determineBlur()
     }
-
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             drawing.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -102,22 +83,169 @@ class MemsCollectionViewCell: UICollectionViewCell {
             drawing.topAnchor.constraint(equalTo: self.topAnchor),
             drawing.bottomAnchor.constraint(equalTo: self.bottomAnchor),
 
-            date_lbl.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            date_lbl.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            dateLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
-            hidden_img.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            hidden_img.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            hiddenImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            hiddenImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
         ])
     }
+    
+    // MARK: - Helper Functions
+    private func determineBlur() {
+        if post != nil {
+            if post!.isHidden() {
+                drawing.applyBlurEffect()
+                dateLabel.text = ""
+                hiddenImage.image = UIImage(named: "hidden_dark")
+                if mode == .light {
+                    hiddenImage.image = UIImage(named: "hidden_light")
+                }
+            } else {
+                hiddenImage.image = nil
+            }
+        }
+    }
+    
+    // MARK: - Button Helpers
+    @objc private func showStats() {
+        if post != nil {
+            postInfoDelegate?.showMemsInfo(post: post!)
+        }
+    }
+}
 
+// MARK: - MemsCollectionViewCell
+class MemsCollectionViewCell: UICollectionViewCell {
+    // MARK: - Properties (view)
+    private let monthLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.font = Constants.mems_date_font
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private let dayOfWeekStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.tintColor = .label
+        stack.distribution = .equalCentering
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        let day_of_week = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+        for day in day_of_week {
+            let lbl = UILabel()
+            lbl.text = day
+            lbl.font = Constants.mems_date_font
+            lbl.translatesAutoresizingMaskIntoConstraints = false
+            stack.addArrangedSubview(lbl)
+        }
+        return stack
+    }()
+    
+    private var stackGrid: UIStackView!
+    
+    // MARK: - Properties (data)
+    static let reuseIdentifier = "MemsCollectionViewCellReuse"
+    private var data: [String]!
+    private var user: User!
+    var postInfoDelegate: PostInfoDelegate!
+    
+    // MARK: - init, configure, and setupConstraints
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = .systemBackground
+        
+        addSubview(monthLabel)
+        addSubview(dayOfWeekStack)
+                
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(data: [String], user: User) {
+        self.data = data
+        self.user = user
+        
+        monthLabel.text = data[0].lowercased()
+        stackGrid = createOuterStack(info: data, spacing: CGFloat(5))
+        
+        addSubview(stackGrid)
+        
+        NSLayoutConstraint.activate([
+            stackGrid.topAnchor.constraint(equalTo: dayOfWeekStack.bottomAnchor, constant: 5),
+            stackGrid.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
+            stackGrid.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
+            stackGrid.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
+        ])
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            monthLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+            monthLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            monthLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            dayOfWeekStack.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 5),
+            dayOfWeekStack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.mems_day_of_week_side),
+            dayOfWeekStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side),
+        ])
+    }
+    
+    // MARK: - Helper Functions
+    private func createOuterStack(info: [String], spacing: CGFloat) -> UIStackView {
+        let outerStack = UIStackView()
+        outerStack.axis = .vertical
+        outerStack.distribution = .equalSpacing
+        outerStack.spacing = spacing
+        outerStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        var data = info
+        data.removeFirst()
+        
+        var count = 7
+        while count < info.count {
+            outerStack.addArrangedSubview(getInnerStack(info: Array(data.prefix(upTo: 7)), spacing: spacing))
+            data.removeFirst(7)
+            count += 7
+        }
+        return outerStack
+    }
+    
+    private func getInnerStack(info: [String], spacing: CGFloat) -> UIStackView {
+        let innerStack = UIStackView()
+        innerStack.axis = .horizontal
+        innerStack.distribution = .fillEqually
+        innerStack.spacing = spacing
+        innerStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        for text in info {
+            let tinyView = MemsTinyPostView()
+            
+            if (text != "") {
+                let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + data[0])
+                let post = user.getPostFromDate(selected_date: date)
+                tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                tinyView.postInfoDelegate = postInfoDelegate
+            } else {
+                tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
+            }
+
+            tinyView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 7 - 4).isActive = true
+            
+            innerStack.addArrangedSubview(tinyView)
+        }
+        return innerStack
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
-        // Clear all content based views and their actions here
-        drawing.image = nil
-        date_lbl.text = ""
-        hidden_img.image = nil
-        for view in drawing.subviews {
-            view.removeFromSuperview()
-        }
+        data = nil
+        stackGrid.removeFromSuperview()
+        stackGrid = nil
     }
 }

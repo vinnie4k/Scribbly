@@ -14,21 +14,25 @@
 		2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C0899294F16C90021C2D9 /* HomeVC.swift */; };
 		2E0C089D294F17A10021C2D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089C294F17A10021C2D9 /* User.swift */; };
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
-		2E5360C72950596F00C7A8CA /* MainUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5360C62950596F00C7A8CA /* MainUserProfileVC.swift */; };
+		2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */; };
+		2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E311221295FCCA6009D2752 /* BooksInfoView.swift */; };
 		2E553EB4295595A300A40575 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions.swift */; };
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
 		2ECBE29E2958204D00DFA64F /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29D2958204D00DFA64F /* PostInfoView.swift */; };
-		2ECBE2A029590F2400DFA64F /* OtherUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29F29590F2400DFA64F /* OtherUserProfileVC.swift */; };
+		2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */; };
 		2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */; };
 		2ECBE2A42959560E00DFA64F /* MemsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */; };
 		2ED4F1152953669B00E66E5F /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment.swift */; };
 		2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentCells.swift */; };
 		2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EED0C852952D09F009BA4CE /* CommentVC.swift */; };
+		95F9EA770B5CCB2FEEC95B2E /* Pods_Scribbly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09CD26885C10DD91ED831959 /* Pods-Scribbly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Scribbly.release.xcconfig"; path = "Target Support Files/Pods-Scribbly/Pods-Scribbly.release.xcconfig"; sourceTree = "<group>"; };
+		15497A12645BB170857FF96D /* Pods-Scribbly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Scribbly.debug.xcconfig"; path = "Target Support Files/Pods-Scribbly/Pods-Scribbly.debug.xcconfig"; sourceTree = "<group>"; };
 		2E0C0882294F15290021C2D9 /* Scribbly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scribbly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E0C0885294F15290021C2D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E0C0887294F15290021C2D9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -38,18 +42,20 @@
 		2E0C0899294F16C90021C2D9 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		2E0C089C294F17A10021C2D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
-		2E5360C62950596F00C7A8CA /* MainUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileVC.swift; sourceTree = "<group>"; };
+		2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCollectionViewCell.swift; sourceTree = "<group>"; };
+		2E311221295FCCA6009D2752 /* BooksInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksInfoView.swift; sourceTree = "<group>"; };
 		2E553EB3295595A300A40575 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2E70868C295B9E97003D6E87 /* MemsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsInfoView.swift; sourceTree = "<group>"; };
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ECBE29D2958204D00DFA64F /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
-		2ECBE29F29590F2400DFA64F /* OtherUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileVC.swift; sourceTree = "<group>"; };
+		2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileVC.swift; sourceTree = "<group>"; };
 		2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaders.swift; sourceTree = "<group>"; };
 		2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ED4F1142953669B00E66E5F /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		2ED4F1162953711A00E66E5F /* CommentCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCells.swift; sourceTree = "<group>"; };
 		2EED0C852952D09F009BA4CE /* CommentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentVC.swift; sourceTree = "<group>"; };
+		7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Scribbly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,17 +63,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95F9EA770B5CCB2FEEC95B2E /* Pods_Scribbly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2AC938B8D2C2523E39FA89D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2E0C0879294F15290021C2D9 = {
 			isa = PBXGroup;
 			children = (
 				2E0C0884294F15290021C2D9 /* Scribbly */,
 				2E0C0883294F15290021C2D9 /* Products */,
+				826A180F7573537C2C38A89B /* Pods */,
+				2AC938B8D2C2523E39FA89D9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -119,8 +136,7 @@
 			children = (
 				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
 				2EED0C852952D09F009BA4CE /* CommentVC.swift */,
-				2E5360C62950596F00C7A8CA /* MainUserProfileVC.swift */,
-				2ECBE29F29590F2400DFA64F /* OtherUserProfileVC.swift */,
+				2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -132,10 +148,22 @@
 				2ED4F1162953711A00E66E5F /* CommentCells.swift */,
 				2ECBE29D2958204D00DFA64F /* PostInfoView.swift */,
 				2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */,
-				2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */,
 				2E70868C295B9E97003D6E87 /* MemsInfoView.swift */,
+				2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */,
+				2E311221295FCCA6009D2752 /* BooksInfoView.swift */,
+				2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		826A180F7573537C2C38A89B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				15497A12645BB170857FF96D /* Pods-Scribbly.debug.xcconfig */,
+				09CD26885C10DD91ED831959 /* Pods-Scribbly.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,9 +173,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E0C0896294F152A0021C2D9 /* Build configuration list for PBXNativeTarget "Scribbly" */;
 			buildPhases = (
+				EC29E5859F186C40AF1CBCDF /* [CP] Check Pods Manifest.lock */,
 				2E0C087E294F15290021C2D9 /* Sources */,
 				2E0C087F294F15290021C2D9 /* Frameworks */,
 				2E0C0880294F15290021C2D9 /* Resources */,
+				91B8472D09B182D539268478 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,6 +233,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		91B8472D09B182D539268478 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Scribbly/Pods-Scribbly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Scribbly/Pods-Scribbly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Scribbly/Pods-Scribbly-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EC29E5859F186C40AF1CBCDF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Scribbly-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2E0C087E294F15290021C2D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -211,17 +283,18 @@
 				2ECBE2A42959560E00DFA64F /* MemsCollectionViewCell.swift in Sources */,
 				2ECBE29E2958204D00DFA64F /* PostInfoView.swift in Sources */,
 				2E0C089D294F17A10021C2D9 /* User.swift in Sources */,
+				2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */,
 				2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */,
 				2E0C0886294F15290021C2D9 /* AppDelegate.swift in Sources */,
 				2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */,
+				2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */,
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
-				2ECBE2A029590F2400DFA64F /* OtherUserProfileVC.swift in Sources */,
+				2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */,
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment.swift in Sources */,
 				2E553EB4295595A300A40575 /* Extensions.swift in Sources */,
-				2E5360C72950596F00C7A8CA /* MainUserProfileVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,
 				2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */,
@@ -358,6 +431,7 @@
 		};
 		2E0C0897294F152A0021C2D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 15497A12645BB170857FF96D /* Pods-Scribbly.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -386,6 +460,7 @@
 		};
 		2E0C0898294F152A0021C2D9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09CD26885C10DD91ED831959 /* Pods-Scribbly.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

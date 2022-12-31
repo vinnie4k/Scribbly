@@ -11,16 +11,22 @@ import UIKit
  Delegation
  */
 
+protocol UpdateFeedDelegate {
+    func updateFeed()
+}
+
+protocol SwitchViewDelegate {
+    func switchView(pos: Int)
+}
+
 protocol ReloadStatsDelegate {
     func reloadStats()
 }
 
-protocol ReloadCVDelegate {
-    func reloadCV()
-}
-
 protocol PostInfoDelegate {
     func showPostInfo(post: Post)
+    func showMemsInfo(post: Post)
+    func showBooksInfo(post: Post)
 }
 
 protocol EnlargeDrawingDelegate {
@@ -227,7 +233,7 @@ class CalendarHelper {
 
 extension UIImageView {
     func applyBlurEffect() {
-        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffect = UIBlurEffect(style: .systemThinMaterial)
         let blurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.1)
         blurEffectView.frame = bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]

@@ -263,6 +263,17 @@ class PostCollectionViewCell: UICollectionViewCell {
         self.post = post
         self.main_user = main_user
         setMode(mode: mode)
+        
+        if post.containsLikedUser(user: main_user) {
+            like_btn.configuration?.image = UIImage(named: "heart_filled")
+        }
+        if main_user.isBookmarked(post: post) {
+            bookmark_btn.configuration?.image = UIImage(named: "bookmark_dark_filled")
+            if mode == .light {
+                bookmark_btn.configuration?.image = UIImage(named: "bookmark_light_filled")
+            }
+        }
+        
         comment_btn.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
     }
     

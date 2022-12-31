@@ -22,30 +22,28 @@ struct Constants {
     static let reply_reuse = "ReplyReuse"
     static let drawing_reuse = "DrawingReuse"
     static let prompt_reuse = "PromptReuse"
-    static let mems_reuse = "MemsReuse"
-    static let prof_head_reuse = "ProfHeadReuse"
-    static let mems_month_reuse = "MemsMonthReuse"
+    
+    // ------------ Bookmarks ------------
+    static let books_cell_corner = CGFloat(10)
+    
+    // ------------ MemsBook Segment ------------
+    static let mems_book_height = CGFloat(55)
     
     // ------------ Memories ------------
-    static let mems_cv_side_padding = CGFloat(10)
-    static let mems_cell_width = UIScreen.main.bounds.width / 9
     static let mems_cell_corner = CGFloat(7)
     static let mems_date_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
-    static let mems_month_head_height = CGFloat(40)
     static let mems_day_of_week_side = CGFloat(20)
-    static let mems_section_top = CGFloat(10)
-    static let mems_section_bot = CGFloat(30)
+    static let mems_month_height = UIScreen.main.bounds.width - 30
     
     // ------------ ProfileHeaderView ------------
     static let prof_head_top = CGFloat(10)
-    static let prof_head_height = UIScreen.main.bounds.height / 2.5
-    static let prof_head_corner = CGFloat(25)
+    static let prof_head_height = CGFloat(280)
     static let prof_pfp_radius = CGFloat(47)
-    static let prof_pfp_top = CGFloat(50)
+    static let prof_pfp_top = CGFloat(25)
     static let prof_fullname_font = UIFont(descriptor: UIFont.systemFont(ofSize: 24, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 24)
     static let prof_username_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .medium).fontDescriptor.withDesign(.rounded)!, size: 14)
     static let prof_bio_font = UIFont(descriptor: UIFont.systemFont(ofSize: 14, weight: .regular).fontDescriptor.withDesign(.rounded)!, size: 14)
-    static let prof_fullname_top = CGFloat(10)
+    static let prof_fullname_top = CGFloat(15)
     static let prof_username_top = CGFloat(10)
     static let prof_bio_top = CGFloat(8)
     static let prof_btn_top = CGFloat(15)

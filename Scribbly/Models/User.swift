@@ -88,6 +88,10 @@ class User {
         return full_name
     }
     
+    func getBookmarks() -> [Post] {
+        return bookmarked_posts
+    }
+    
     func removeBookmarkPost(post: Post) {
         if let index = bookmarked_posts.firstIndex(where: {$0 === post}) {
             bookmarked_posts.remove(at: index)

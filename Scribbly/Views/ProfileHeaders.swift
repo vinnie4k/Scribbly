@@ -5,61 +5,104 @@
 //  Created by Vin Bui on 12/25/22.
 //
 
+// TODO: ALREADY REFRACTORED
+
 import UIKit
+import RESegmentedControl
 
-class MonthHeaderView: UICollectionReusableView {
-    // ------------ Fields (view) ------------
-    private let month_lbl: UILabel = {
-        let lbl = UILabel()
-        lbl.font = Constants.mems_date_font
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+// MARK: - MemsBookHeaderView
+class MemsBookHeaderView: UICollectionReusableView {
+    // MARK: - Fields (view)
+    private lazy var segmentedControl: RESegmentedControl = {
+        let control = RESegmentedControl(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Constants.mems_book_height))
+        
+        var style = SegmentItemStyle(textColor: UIColor.white, tintColor: UIColor.white, selectedTextColor: UIColor.white, selectedTintColor: UIColor.white, backgroundColor: Constants.primary_dark, borderWidth: 0, borderColor: nil, font: UIFont.systemFont(ofSize: 10), selectedFont: UIFont.systemFont(ofSize: 10), imageHeight: Constants.mems_book_height - 23, imageRenderMode: .alwaysOriginal, spacing: 0, cornerRadius: 0, shadow: nil, separator: nil, axis: .horizontal)
+        
+        var selectedStyle = SegmentSelectedItemStyle(backgroundColor: UIColor.white, cornerRadius: 0, borderWidth: 0, borderColor: nil, size: .height(2.0, position: .bottom), offset: 0, shadow: nil)
+    
+        var segmentItems = [SegmentModel(imageName: "mems_dark"), SegmentModel(imageName: "bookmarks_dark")]
+        
+        var preset = MaterialPreset(backgroundColor: Constants.primary_dark, tintColor: UIColor.white)
+        
+        preset.segmentItemStyle = style
+        preset.segmentSelectedItemStyle = selectedStyle
+        
+        control.configure(segmentItems: segmentItems, preset: preset)
+        
+        control.addTarget(self, action: #selector(changeView), for: .valueChanged)
+        control.translatesAutoresizingMaskIntoConstraints = false
+        return control
     }()
     
-    private let stack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.tintColor = .label
-        stack.distribution = .equalCentering
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        let day_of_week = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
-        for day in day_of_week {
-            let lbl = UILabel()
-            lbl.text = day
-            lbl.font = Constants.mems_date_font
-            lbl.translatesAutoresizingMaskIntoConstraints = false
-            stack.addArrangedSubview(lbl)
-        }
-        return stack
-    }()
+    // MARK: - Fields (data)
+    private var mode: UIUserInterfaceStyle?
+    var switchViewDelegate: SwitchViewDelegate?
     
+    static let reuseIdentifier = "MemsBookHeaderViewReuseMems"
+    
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(month_lbl)
-        addSubview(stack)
-        
-        NSLayoutConstraint.activate([
-            month_lbl.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.mems_day_of_week_side),
-            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side),
-            stack.topAnchor.constraint(equalTo: month_lbl.bottomAnchor, constant: 5)
-        ])
+        addSubview(segmentedControl)
+
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(text: String) {
-        month_lbl.text = text.lowercased()
+    func configure(mode: UIUserInterfaceStyle, start: Int) {
+        self.mode = mode
+        if mode == .light {
+            configureLightMode()
+        }
+        segmentedControl.selectedSegmentIndex = start
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: self.topAnchor),
+            segmentedControl.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            segmentedControl.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            segmentedControl.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        ])
+    }
+    
+    // MARK: - Button Helpers
+    @objc func changeView() {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            switchViewDelegate?.switchView(pos: 0)
+        case 1:
+            switchViewDelegate?.switchView(pos: 1)
+        default:
+            switchViewDelegate?.switchView(pos: 0)
+        }
+    }
+    
+    // MARK: - Helper Functions
+    private func configureLightMode() {
+        let style = SegmentItemStyle(textColor: UIColor.black, tintColor: UIColor.black, selectedTextColor: UIColor.black, selectedTintColor: UIColor.black, backgroundColor: Constants.primary_light, borderWidth: 0, borderColor: nil, font: UIFont.systemFont(ofSize: 10), selectedFont: UIFont.systemFont(ofSize: 10), imageHeight: Constants.mems_book_height - 23, imageRenderMode: .alwaysOriginal, spacing: 0, cornerRadius: 0, shadow: nil, separator: nil, axis: .horizontal)
+            
+        let selectedStyle = SegmentSelectedItemStyle(backgroundColor: UIColor.black, cornerRadius: 0, borderWidth: 0, borderColor: nil, size: .height(2.0, position: .bottom), offset: 0, shadow: nil)
+            
+        let segmentItems = [SegmentModel(imageName: "mems_light"), SegmentModel(imageName: "bookmarks_light")]
+            
+        var preset = MaterialPreset(backgroundColor: Constants.primary_light, tintColor: UIColor.black)
+        
+        preset.segmentItemStyle = style
+        preset.segmentSelectedItemStyle = selectedStyle
+        
+        segmentedControl.configure(segmentItems: segmentItems, preset: preset)
     }
 }
 
-class ProfileHeaderView: UICollectionReusableView {
-    // ------------ Fields (view) ------------    
-    private let profile_img: UIImageView = {
+// MARK: - ProfileHeaderCell
+class ProfileHeaderCell: UICollectionViewCell {
+    // MARK: - Properties (view)
+    private let profileImage: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
         img.layer.cornerRadius = 0.5 * 2 * Constants.prof_pfp_radius
@@ -68,7 +111,7 @@ class ProfileHeaderView: UICollectionReusableView {
         return img
     }()
     
-    private let fullname_lbl: UILabel = {
+    private let fullnameLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = Constants.prof_fullname_font
         lbl.textColor = .label
@@ -76,7 +119,7 @@ class ProfileHeaderView: UICollectionReusableView {
         return lbl
     }()
     
-    private let username_lbl: UILabel = {
+    private let usernameLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = Constants.prof_username_font
         lbl.textColor = .label
@@ -84,7 +127,7 @@ class ProfileHeaderView: UICollectionReusableView {
         return lbl
     }()
     
-    private let bio_lbl: UILabel = {
+    private let bioLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = Constants.prof_bio_font
         lbl.textColor = .label
@@ -92,7 +135,7 @@ class ProfileHeaderView: UICollectionReusableView {
         return lbl
     }()
     
-    private let friends_btn: UIButton = {
+    private let friendsButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         var text = AttributedString("friends")
@@ -107,7 +150,7 @@ class ProfileHeaderView: UICollectionReusableView {
         return btn
     }()
     
-    private let edit_btn: UIButton = {
+    private let editButton: UIButton = {
         let btn = UIButton()
         var config = UIButton.Configuration.filled()
         var text = AttributedString("edit")
@@ -122,46 +165,22 @@ class ProfileHeaderView: UICollectionReusableView {
         return btn
     }()
     
-    private let mems_btn: UIButton = {
-        let btn = UIButton()
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .large
-        config.baseBackgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
-        btn.configuration = config
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
+    // MARK: - Properties (data)
+    private var user: User!
+    private var mode: UIUserInterfaceStyle!
     
-    private let bookmarks_btn: UIButton = {
-        let btn = UIButton()
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .large
-        config.baseBackgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
-        btn.configuration = config
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
+    static let reuseIdentifier = "ProfileHeaderViewReuse"
     
-    // ------------ Fields (data) ------------
-    private var user: User? = nil
-    private var mode: UIUserInterfaceStyle? = nil
-    
-    // ------------ Functions ------------
+    // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.layer.cornerRadius = Constants.prof_head_corner
-        
-        addSubview(profile_img)
-        addSubview(fullname_lbl)
-        addSubview(username_lbl)
-        addSubview(bio_lbl)
-        addSubview(friends_btn)
-        addSubview(edit_btn)
-        addSubview(bookmarks_btn)
-        addSubview(mems_btn)
+                
+        addSubview(profileImage)
+        addSubview(fullnameLabel)
+        addSubview(usernameLabel)
+        addSubview(bioLabel)
+        addSubview(friendsButton)
+        addSubview(editButton)
         
         setupConstraints()
     }
@@ -174,58 +193,45 @@ class ProfileHeaderView: UICollectionReusableView {
         self.user = user
         self.mode = mode
         
-        if (mode == .dark) {
-            backgroundColor = Constants.primary_dark
-            friends_btn.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
-            edit_btn.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
-            mems_btn.configuration?.image = UIImage(named: "mems_dark")
-            bookmarks_btn.configuration?.image = UIImage(named: "bookmarks_dark")
+        backgroundColor = Constants.primary_dark
+        friendsButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
+        editButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_dark
             
-        } else if (mode == .light) {
+        if mode == .light {
             backgroundColor = Constants.primary_light
-            friends_btn.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
-            edit_btn.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
-            mems_btn.configuration?.image = UIImage(named: "mems_light")
-            bookmarks_btn.configuration?.image = UIImage(named: "bookmarks_light")
+            friendsButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
+            editButton.configuration?.baseBackgroundColor = Constants.prof_btn_color_light
         }
        
-        profile_img.image = user.getPFP()
-        fullname_lbl.text = user.getFullName().lowercased()
-        username_lbl.text = "@" + user.getUserName().lowercased()
-        bio_lbl.text = user.getBio().lowercased()
+        profileImage.image = user.getPFP()
+        fullnameLabel.text = user.getFullName().lowercased()
+        usernameLabel.text = "@" + user.getUserName().lowercased()
+        bioLabel.text = user.getBio().lowercased()
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            profile_img.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            profile_img.widthAnchor.constraint(equalToConstant: Constants.prof_pfp_radius * 2),
-            profile_img.heightAnchor.constraint(equalToConstant: Constants.prof_pfp_radius * 2),
-            profile_img.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.prof_pfp_top),
+            profileImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            profileImage.widthAnchor.constraint(equalToConstant: Constants.prof_pfp_radius * 2),
+            profileImage.heightAnchor.constraint(equalToConstant: Constants.prof_pfp_radius * 2),
+            profileImage.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.prof_pfp_top),
             
-            fullname_lbl.topAnchor.constraint(equalTo: profile_img.bottomAnchor, constant: Constants.prof_fullname_top),
-            fullname_lbl.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            fullnameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: Constants.prof_fullname_top),
+            fullnameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
-            username_lbl.topAnchor.constraint(equalTo: fullname_lbl.bottomAnchor, constant: Constants.prof_username_top),
-            username_lbl.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            usernameLabel.topAnchor.constraint(equalTo: fullnameLabel.bottomAnchor, constant: Constants.prof_username_top),
+            usernameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
-            bio_lbl.topAnchor.constraint(equalTo: username_lbl.bottomAnchor, constant: Constants.prof_bio_top),
-            bio_lbl.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            bioLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: Constants.prof_bio_top),
+            bioLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
-            friends_btn.topAnchor.constraint(equalTo: bio_lbl.bottomAnchor, constant: Constants.prof_btn_top),
-            friends_btn.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prof_btn_side),
-            friends_btn.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
+            friendsButton.topAnchor.constraint(equalTo: bioLabel.bottomAnchor, constant: Constants.prof_btn_top),
+            friendsButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.prof_btn_side),
+            friendsButton.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
             
-            edit_btn.topAnchor.constraint(equalTo: bio_lbl.bottomAnchor, constant: Constants.prof_btn_top),
-            edit_btn.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.prof_btn_side),
-            edit_btn.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
-            
-            mems_btn.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
-            mems_btn.leadingAnchor.constraint(equalTo: friends_btn.leadingAnchor),
-            mems_btn.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
-            
-            bookmarks_btn.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
-            bookmarks_btn.trailingAnchor.constraint(equalTo: edit_btn.trailingAnchor),
-            bookmarks_btn.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width)
+            editButton.topAnchor.constraint(equalTo: bioLabel.bottomAnchor, constant: Constants.prof_btn_top),
+            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.prof_btn_side),
+            editButton.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
         ])
     }
 }

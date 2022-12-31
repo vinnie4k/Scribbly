@@ -8,10 +8,10 @@
 import UIKit
 
 class HomeVC: UIViewController {
-    // ------------ Fields (view) ------------    
-    private lazy var search_btn: UIButton = {
+
+    // MARK: - Properties (view)
+    private lazy var searchButton: UIButton = {
         let btn = UIButton()
-        btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         if (traitCollection.userInterfaceStyle == .light) {
@@ -35,9 +35,9 @@ class HomeVC: UIViewController {
         return lbl
     }()
     
-    private lazy var profile_btn: UIButton = {
+    private lazy var profileButton: UIButton = {
         let btn = UIButton()
-        btn.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
         btn.setImage(user.getPFP(), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.profile_button_radius
@@ -46,7 +46,7 @@ class HomeVC: UIViewController {
         return btn
     }()
     
-    private let post_cv: UICollectionView = {
+    private let postCV: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
 
@@ -85,10 +85,12 @@ class HomeVC: UIViewController {
     private func createTests() {
         let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, full_name: "Caitlyn Jin", user_name: "cakeymecake", bio: "I love drawing", account_start: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
         let karen = User(pfp: UIImage(named: "piano")!, full_name: "Karen Sabile", user_name: "karensabile", bio: "my music taste is top tier", account_start: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
+        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, full_name: "Katherine Chang", user_name: "strokeslover101", bio: "Slay!!", account_start: Date())
         
         let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
         let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
+        let katherine_post = Post(user: katherine, drawing: UIImage(named: "katherine_drawing")!, caption: "This is so beautiful❤️", time: Date())
         
         for i in 1...25 {
             let date = String(i) + " December 2022"
@@ -100,17 +102,29 @@ class HomeVC: UIViewController {
         
         user.addFriend(friend: caitlyn)
         user.addFriend(friend: karen)
+        user.addFriend(friend: katherine)
+        
+        for _ in 1...30 {
+            let newPost = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing1")!, caption: "hey", time: Date())
+            caitlyn.addPost(post: newPost)
+            user.addBookmarkPost(post: newPost)
+        }
+        
         caitlyn.addFriend(friend: user)
         karen.addFriend(friend: user)
+        katherine.addFriend(friend: user)
         
         user.addPost(post: vin_post)
         vin_post.setHidden(bool: true)
         caitlyn.addPost(post: caitlyn_post)
+        katherine.addPost(post: katherine_post)
+        
         karen.addPost(post: karen_post)
         
         posts = user.updateFeed()
         
         vin_post.addComment(comment_user: caitlyn, text: "This sucks")
+        vin_post.addComment(comment_user: katherine, text: "So bad 😭")
         vin_post.addComment(comment_user: user, text: "This does not suck")
         vin_post.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, reply_user: user)
@@ -118,7 +132,7 @@ class HomeVC: UIViewController {
     }
     // TODO: END REMOVE
     
-    // ------------ Fields (data) ------------
+    // MARK: - Properties (data)
     private var posts: [Post] = []
     
     // ------------ Functions ------------
@@ -126,7 +140,7 @@ class HomeVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
-        view.addSubview(post_cv)
+        view.addSubview(postCV)
         view.addSubview(draw_view_large)
         
         // Function Calls
@@ -154,18 +168,18 @@ class HomeVC: UIViewController {
             self.draw_view_large.alpha = 0.0
         }, completion: nil)
         draw_view_large.subviews[1].removeFromSuperview()
-//        self.navigationController?.navigationBar.toggle()
     }
     
-    @objc private func pushProfileVC() {
+    @objc private func pushMainUserProfileVC() {
         let profile_vc = MainUserProfileVC()
         profile_vc.main_user = user
-        self.navigationController?.pushViewController(profile_vc, animated: true)
+        profile_vc.updateFeedDelegate = self
+        navigationController?.pushViewController(profile_vc, animated: true)
     }
     
     private func setupNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: search_btn)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profile_btn)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)
         navigationItem.titleView = logo
         
         let appearance = UINavigationBarAppearance()
@@ -175,24 +189,24 @@ class HomeVC: UIViewController {
     }
     
     private func setupCollectionView() {
-        post_cv.delegate = self
-        post_cv.dataSource = self
-        post_cv.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reuse)
-        post_cv.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prompt_reuse)
+        postCV.delegate = self
+        postCV.dataSource = self
+        postCV.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: Constants.reuse)
+        postCV.register(PromptHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.prompt_reuse)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            profile_btn.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
-            profile_btn.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
+            profileButton.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
+            profileButton.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             
-            search_btn.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
-            search_btn.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
+            searchButton.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
+            searchButton.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
             
-            post_cv.topAnchor.constraint(equalTo: view.topAnchor),
-            post_cv.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
-            post_cv.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
-            post_cv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            postCV.topAnchor.constraint(equalTo: view.topAnchor),
+            postCV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
+            postCV.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
+            postCV.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             draw_view_large.topAnchor.constraint(equalTo: view.topAnchor),
             draw_view_large.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -288,11 +302,10 @@ extension HomeVC: EnlargeDrawingDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-//        self.navigationController?.navigationBar.toggle()
     }
 }
 
-extension HomeVC: PostInfoDelegate {
+extension HomeVC: PostInfoDelegate, UpdateFeedDelegate {
     func showPostInfo(post: Post) {        
         let view = PostInfoView()
         view.configure(post: post, mode: traitCollection.userInterfaceStyle, parent_vc: self)
@@ -310,6 +323,17 @@ extension HomeVC: PostInfoDelegate {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.draw_view_large.alpha = 1.0
         }, completion: nil)
-//        self.navigationController?.navigationBar.toggle()
+    }
+    
+    func showMemsInfo(post: Post) {
+        return  // Do nothing here
+    }
+    
+    func showBooksInfo(post: Post) {
+        return  // Do nothing here
+    }
+    
+    func updateFeed() {
+        postCV.reloadData()
     }
 }
