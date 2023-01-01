@@ -200,6 +200,10 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         firstNameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        lastNameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        userNameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        bioTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     
