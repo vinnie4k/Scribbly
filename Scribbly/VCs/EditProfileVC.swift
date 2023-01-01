@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import PhotosUI
 
 // MARK: EditProfileVC
 class EditProfileVC: UIViewController, UITextFieldDelegate {
-
+    
     // MARK: - Properties (view)
     private let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -35,6 +36,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     private lazy var doneButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(confirmChanges), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.image = UIImage(named: "checkmark_dark")
@@ -52,6 +54,11 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         let view = EditProfilePictureView()
         view.configure(mode: traitCollection.userInterfaceStyle, mainUser: mainUser)
         view.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(pfpAlert))
+        view.addGestureRecognizer(tapGesture)
+        view.isUserInteractionEnabled = true
+        
         return view
     }()
     
@@ -172,11 +179,13 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     // MARK: - Properties (data)
     private var mainUser: User
-
+    var updatePFPDelegate: UpdatePFPDelegate!
+    var updateProfileDelegate: UpdateProfileDelegate!
+    
     // MARK: - viewDidLoad, viewWillAppear, init, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .systemBackground
         
         hideKeyboardWhenTappedAround()  // For dismissing keyboard
@@ -276,6 +285,65 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         return false
     }
     
+    private func checkCriteria() {
+        // First name, last name, username, and email cannot be empty
+        // username and email cannot be taken
+        // email must contain @ symbol
+        if !validFirstName() {
+            firstNameTextField.addInvalid()
+        } else {
+            firstNameTextField.removeInvalid()
+        }
+        
+        if !validLastName() {
+            lastNameTextField.addInvalid()
+        } else {
+            lastNameTextField.removeInvalid()
+        }
+        
+        if !validUserName() {
+            userNameTextField.addInvalid()
+        } else {
+            userNameTextField.removeInvalid()
+        }
+        
+        if !validEmail() {
+            emailTextField.addInvalid()
+        } else {
+            emailTextField.removeInvalid()
+        }
+    }
+    
+    private func validFirstName() -> Bool {
+        if firstNameTextField.text!.isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    private func validLastName() -> Bool {
+        if lastNameTextField.text!.isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    private func validUserName() -> Bool {
+        let text = userNameTextField.text!
+        if text.isEmpty || text.firstIndex(of: " ") != nil || Database.containsUsername(username: text, user: mainUser) {
+            return false
+        }
+        return true
+    }
+    
+    private func validEmail() -> Bool {
+        let text = emailTextField.text!
+        if text.isEmpty || text.firstIndex(of: "@") == nil || Database.containsEmail(email: text, user: mainUser) {
+            return false
+        }
+        return true
+    }
+    
     // MARK: - Button Helpers
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
@@ -283,5 +351,174 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     @objc func textFieldDidChange(textField: UITextField) {
         textField.text = textField.text?.lowercased()
+        
+        checkCriteria()
+    }
+    
+    @objc func pfpAlert() {
+        let photoLibraryAlert = UIAlertAction(title: "Photo Library", style: .default) { (action) in
+            self.checkPhotosAccess()
+        }
+        
+        let cameraAlert = UIAlertAction(title: "Camera", style: .default) { (action) in
+            self.checkCameraAccess()
+        }
+        
+        let deleteAlert = UIAlertAction(title: "Delete Profile Picture", style: .destructive) { (action) in
+            self.deleteProfilePicture()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        let alert = UIAlertController(title: "Change Profile Picture", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(photoLibraryAlert)
+        alert.addAction(cameraAlert)
+        alert.addAction(deleteAlert)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true)
+    }
+    
+    @objc func confirmChanges() {
+        if validFirstName() && validLastName() && validEmail() && validUserName() {
+            mainUser.setFullName(name: firstNameTextField.text! + " " + lastNameTextField.text!)
+            mainUser.setUserName(name: userNameTextField.text!)
+            mainUser.setEmail(text: emailTextField.text!)
+            mainUser.setBio(text: bioTextField.text!)
+            updatePFPDelegate.updatePFP()
+            updateProfileDelegate.updateProfile()
+            navigationController?.popViewController(animated: true)
+        } else {
+            let alert = UIAlertController(title: "Invalid Changes", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+            present(alert, animated: true)
+        }
+    }
+}
+
+// MARK: - Extensions
+extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // MARK: - Accessing Photo Library
+    private func checkPhotosAccess() {
+        let authStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        switch authStatus {
+        case .authorized, .limited:
+            self.accessPhotos()
+        case .denied, .restricted:
+            self.accessDenied(title: "Photo library access denied", message: "Please enable in Settings > Privacy")
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization() { (status) -> Void in
+                switch status {
+                case .authorized, .limited:
+                    self.accessPhotos()
+                case .denied, .restricted:
+                    self.accessDenied(title: "Photo library access denied", message: "Please enable in Settings > Privacy")
+                case .notDetermined:
+                    print("This won't happen")
+                @unknown default:
+                    fatalError("Unknown")
+                }
+            }
+        @unknown default:
+            fatalError("Unknown")
+        }
+    }
+    
+    private func accessPhotos() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.livePhotos, .images])
+        configuration.preferredAssetRepresentationMode = .automatic
+        
+        DispatchQueue.main.async {
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.present(picker, animated: true)
+        }
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        guard !results.isEmpty else {
+            return
+        }
+        
+        let item = results[0].itemProvider
+        if item.canLoadObject(ofClass: UIImage.self) {
+            item.loadObject(ofClass: UIImage.self) { (image, error) in
+                DispatchQueue.main.async {
+                    if let image = image as? UIImage {
+                        self.mainUser.setPFP(image: image)
+                        self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+                        self.updatePFPDelegate.updatePFP()
+                        self.updateProfileDelegate.updateProfile()
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - Accessing Camera
+    private func checkCameraAccess() {
+        let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+        switch authStatus {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    self.accessCamera()
+                } else {
+                    self.accessDenied(title: "Camera access denied", message: "Please enable in Settings > Privacy")
+                }
+            }
+        case .denied, .restricted:
+            self.accessDenied(title: "Camera access denied", message: "Please enable in Settings > Privacy")
+        case .authorized:
+            self.accessCamera()
+        @unknown default:
+            fatalError("Unknown")
+        }
+    }
+    
+    private func accessCamera() {
+        DispatchQueue.main.async {
+            let picker = UIImagePickerController()
+            picker.delegate = self;
+            picker.mediaTypes = ["public.image"]
+            picker.sourceType = UIImagePickerController.SourceType.camera
+
+            self.present(picker, animated: true, completion: nil)
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController,
+                                      didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let image = info[.originalImage] as? UIImage {
+            self.mainUser.setPFP(image: image)
+            self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+            self.updatePFPDelegate.updatePFP()
+            self.updateProfileDelegate.updateProfile()
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: - Delete Profile Picture
+    private func deleteProfilePicture() {
+        self.mainUser.defaultPFP()
+        self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+        self.updatePFPDelegate.updatePFP()
+        self.updateProfileDelegate.updateProfile()
+    }
+    
+    // MARK: - Helpers
+    private func accessDenied(title: String, message: String) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+            self.present(alert, animated: true)
+        }
     }
 }

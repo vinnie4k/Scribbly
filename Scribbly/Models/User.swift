@@ -24,6 +24,10 @@ class User {
     private var bookmarkedPosts: [Post]
     
     // MARK: - Helper Functions
+    func defaultPFP() {
+        pfp = UIImage(systemName: "person.circle.fill")!.withTintColor(UIColor.gray, renderingMode: .alwaysOriginal)
+    }
+    
     func updateFeed() -> [Post] {
         var result = [Post]()
         for i in friends {
@@ -48,14 +52,17 @@ class User {
      */
     func monthsFromStart() -> [String] {
         let calendar = Calendar(identifier: .gregorian)
-        let components = calendar.dateComponents(Set([.month]), from: accountStart, to: Date())
+        
+        let firstOfMonth = CalendarHelper().firstOfMonth(date: accountStart)
+        
+        let components = calendar.dateComponents(Set([.month]), from: firstOfMonth, to: Date())
 
         var allDates: [String] = []
         let dateRangeFormatter = DateFormatter()
         dateRangeFormatter.dateFormat = "MMMM yyyy"
 
         for i in 0 ... components.month! {
-            guard let date = calendar.date(byAdding: .month, value: i, to: accountStart) else {
+            guard let date = calendar.date(byAdding: .month, value: i, to: firstOfMonth) else {
             continue
             }
 
@@ -76,6 +83,26 @@ class User {
     }
     
     // MARK: - Getters and Setters
+    func setBio(text: String) {
+        bio = text
+    }
+    
+    func setEmail(text: String) {
+        email = text
+    }
+    
+    func setUserName(name: String) {
+        userName = name
+    }
+    
+    func setFullName(name: String) {
+        fullName = name
+    }
+    
+    func setPFP(image: UIImage) {
+        pfp = image
+    }
+    
     func getEmail() -> String {
         return email
     }

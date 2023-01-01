@@ -171,6 +171,8 @@ class ProfileHeaderCell: UICollectionViewCell {
     private var user: User!
     private var mode: UIUserInterfaceStyle!
     private var parentVC: UIViewController!
+    var updatePFPDelegate: UpdatePFPDelegate!
+    var updateProfileDelegate: UpdateProfileDelegate!
     
     static let reuseIdentifier = "ProfileHeaderViewReuse"
     
@@ -247,6 +249,8 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     @objc func pushEditProfileVC() {
         let editProfileVC = EditProfileVC(mainUser: self.user)
+        editProfileVC.updatePFPDelegate = updatePFPDelegate
+        editProfileVC.updateProfileDelegate = updateProfileDelegate
         parentVC.navigationController?.pushViewController(editProfileVC, animated: true)
     }
 }

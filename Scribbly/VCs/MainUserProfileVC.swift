@@ -90,6 +90,7 @@ class MainUserProfileVC: UIViewController {
     private var datasource: Datasource!
     private var updateMems: Bool = true
     var updateFeedDelegate: UpdateFeedDelegate!
+    var updatePFPDelegate: UpdatePFPDelegate!
     
     // MARK: - viewDidLoad, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -321,6 +322,8 @@ extension MainUserProfileVC {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
             cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle, parentVC: self)
+            cell.updatePFPDelegate = updatePFPDelegate
+            cell.updateProfileDelegate = self
             return cell
         case .memsCell (let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MemsCollectionViewCell.reuseIdentifier, for: indexPath) as! MemsCollectionViewCell
@@ -368,7 +371,7 @@ extension MainUserProfileVC {
 }
 
 // MARK: - Delegation and Other Extensions
-extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
+extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate, UpdateProfileDelegate {
     // MARK: - PostInfoDelegate
     func showPostInfo(post: Post) {
         return  // Do nothing here
@@ -439,6 +442,11 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
             updateMems = false
         }
         datasource.apply(newSnapshot, animatingDifferences: true)
+    }
+    
+    // MARK: - UpdateProfileDelegate
+    func updateProfile() {
+        collectionView.reloadData()
     }
     
     // MARK: - Extra Helpers

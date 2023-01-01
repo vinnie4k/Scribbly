@@ -102,6 +102,10 @@ class PostCollectionViewCell: UICollectionViewCell {
         img.layer.borderWidth = Constants.post_cell_drawing_border_width
         img.translatesAutoresizingMaskIntoConstraints = false
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(enlargeImage))
+        img.addGestureRecognizer(tapGesture)
+        img.isUserInteractionEnabled = true
+        
         return img
     }()
     

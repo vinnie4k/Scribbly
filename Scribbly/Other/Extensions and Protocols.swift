@@ -10,6 +10,14 @@
 import UIKit
 
 // MARK: - Protocols
+protocol UpdateProfileDelegate {
+    func updateProfile()
+}
+
+protocol UpdatePFPDelegate {
+    func updatePFP()
+}
+
 protocol UpdateFeedDelegate {
     func updateFeed()
 }
@@ -205,5 +213,21 @@ extension UITextField {
         bottomLine.backgroundColor = color.cgColor
         self.borderStyle = UITextField.BorderStyle.none
         self.layer.addSublayer(bottomLine)
+    }
+    
+    func addInvalid() {
+        let img = UIImageView(image: UIImage(named: "caution_sign"))
+        img.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(img)
+        img.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -2).isActive = true
+        img.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5).isActive = true
+        img.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        img.widthAnchor.constraint(equalToConstant: 20).isActive = true
+    }
+    
+    func removeInvalid() {
+        for i in self.subviews {
+            i.removeFromSuperview()
+        }
     }
 }

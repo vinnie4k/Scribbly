@@ -86,7 +86,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     private let text: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.getFont(size: 14, weight: .bold)
+        lbl.font = Constants.getFont(size: 16, weight: .regular)
         lbl.numberOfLines = 0
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.translatesAutoresizingMaskIntoConstraints = false

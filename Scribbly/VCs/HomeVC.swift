@@ -102,6 +102,11 @@ class HomeVC: UIViewController {
             user.addPost(post: post)
         }
         
+        Database.addUser(user: user)
+        Database.addUser(user: caitlyn)
+        Database.addUser(user: karen)
+        Database.addUser(user: katherine)
+        
         user.addFriend(friend: caitlyn)
         user.addFriend(friend: karen)
         user.addFriend(friend: katherine)
@@ -205,6 +210,7 @@ class HomeVC: UIViewController {
         let profileVC = MainUserProfileVC()
         profileVC.mainUser = user
         profileVC.updateFeedDelegate = self
+        profileVC.updatePFPDelegate = self
         navigationController?.pushViewController(profileVC, animated: true)
     }
 }
@@ -264,7 +270,7 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Extension: Delegation
-extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate {
+extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, UpdatePFPDelegate {
     // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
@@ -333,5 +339,10 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate {
     // MARK: - UpdateFeedDelegate
     func updateFeed() {
         postCV.reloadData()
+    }
+    
+    // MARK: - UpdatePFPDelegate
+    func updatePFP() {
+        profileButton.setImage(user.getPFP(), for: .normal)
     }
 }

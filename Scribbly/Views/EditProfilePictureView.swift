@@ -10,7 +10,7 @@ import UIKit
 // MARK: EditProfilePictureView
 class EditProfilePictureView: UIView {
     // MARK: - Properties (view)
-    private let profileImage: UIImageView = {
+    let profileImage: UIImageView = {
         let img = UIImageView()
         img.alpha = 0.5
         img.contentMode = .scaleAspectFill

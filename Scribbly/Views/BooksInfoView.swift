@@ -126,7 +126,7 @@ class BooksCaptionView: UIView {
     private let displayName: UILabel = {
         let lbl = UILabel()
         lbl.textColor = .label
-        lbl.font = Constants.getFont(size: 10, weight: .bold)
+        lbl.font = Constants.getFont(size: 14, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
