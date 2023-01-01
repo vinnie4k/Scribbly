@@ -196,3 +196,14 @@ extension UIImageView {
         addSubview(blurEffectView)
     }
 }
+
+// MARK: - UITextField
+extension UITextField {
+    func addUnderline(color: UIColor, width: Int) {
+        let bottomLine = CALayer()
+        bottomLine.frame = CGRect(x: 0, y: 20, width: width, height: 1)
+        bottomLine.backgroundColor = color.cgColor
+        self.borderStyle = UITextField.BorderStyle.none
+        self.layer.addSublayer(bottomLine)
+    }
+}

@@ -156,4 +156,11 @@ struct Constants {
     static let mems_month_height = UIScreen.main.bounds.width - 30
     static let books_cell_corner = CGFloat(10)
     static let mems_book_height = CGFloat(55)
+    
+    // MARK: - EditProfileVC
+    static let edit_prof_pfp_top = CGFloat(15)
+    static let edit_prof_pfp_radius = CGFloat(47)
+    static let edit_prof_label_top = CGFloat(20)
+    static let edit_prof_side_padding = CGFloat(20)
+    static let edit_prof_txtfield_top = CGFloat(5)
 }

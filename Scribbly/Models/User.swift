@@ -19,6 +19,7 @@ class User {
     private var fullName: String
     private var userName: String
     private var bio: String
+    private var email: String
     private var posts: [Post]
     private var bookmarkedPosts: [Post]
     
@@ -75,6 +76,22 @@ class User {
     }
     
     // MARK: - Getters and Setters
+    func getEmail() -> String {
+        return email
+    }
+    
+    func getLastName() -> String {
+        var space = fullName.firstIndex(of: " ")!
+        space = fullName.index(space, offsetBy: 1)
+        return String(fullName[space...])
+    }
+    
+    func getFirstName() -> String {
+        var space = fullName.firstIndex(of: " ")!
+        space = fullName.index(space, offsetBy: -1)
+        return String(fullName[...space])
+    }
+    
     func addFriend(friend: User) {
         friends.append(friend)
     }
@@ -127,11 +144,12 @@ class User {
     }
     
     // MARK: - init
-    init(pfp: UIImage, fullName: String, userName: String, bio: String, accountStart: Date) {
+    init(pfp: UIImage, fullName: String, userName: String, bio: String, email: String, accountStart: Date) {
         self.pfp = pfp
         self.fullName = fullName
         self.userName = userName
         self.bio = bio
+        self.email = email
         self.posts = []
         self.bookmarkedPosts = []
         self.accountStart = accountStart

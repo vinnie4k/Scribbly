@@ -82,12 +82,12 @@ class HomeVC: UIViewController {
     }()
     
     // TODO: START REMOVE
-    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, fullName: "Vin Bui", userName: "vinnie", bio: "I hate school", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
+    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, fullName: "Vin Bui", userName: "vinnie", bio: "I hate school", email: "vinbui@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
     
     private func createTests() {
-        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, fullName: "Caitlyn Jin", userName: "cakeymecake", bio: "I love drawing", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
-        let karen = User(pfp: UIImage(named: "piano")!, fullName: "Karen Sabile", userName: "karensabile", bio: "my music taste is top tier", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
-        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, fullName: "Katherine Chang", userName: "strokeslover101", bio: "Slay!!", accountStart: Date())
+        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, fullName: "Caitlyn Jin", userName: "cakeymecake", bio: "I love drawing", email: "caitlynjin@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
+        let karen = User(pfp: UIImage(named: "piano")!, fullName: "Karen Sabile", userName: "karensabile", bio: "my music taste is top tier", email: "karensabile@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
+        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, fullName: "Katherine Chang", userName: "strokeslover101", bio: "Slay!!", email: "katherinechang@gmail.com", accountStart: Date())
         
         let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())

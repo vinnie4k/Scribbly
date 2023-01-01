@@ -320,7 +320,7 @@ extension MainUserProfileVC {
         switch item {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
-            cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle)
+            cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle, parentVC: self)
             return cell
         case .memsCell (let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MemsCollectionViewCell.reuseIdentifier, for: indexPath) as! MemsCollectionViewCell

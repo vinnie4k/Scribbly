@@ -16,6 +16,9 @@
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
 		2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */; };
 		2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E311221295FCCA6009D2752 /* BooksInfoView.swift */; };
+		2E31122629611C63009D2752 /* FriendsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31122529611C63009D2752 /* FriendsVC.swift */; };
+		2E31122829612335009D2752 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31122729612335009D2752 /* EditProfileVC.swift */; };
+		2E31122A29612787009D2752 /* EditProfilePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31122929612787009D2752 /* EditProfilePictureView.swift */; };
 		2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions and Protocols.swift */; };
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
@@ -44,6 +47,9 @@
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E311221295FCCA6009D2752 /* BooksInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksInfoView.swift; sourceTree = "<group>"; };
+		2E31122529611C63009D2752 /* FriendsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsVC.swift; sourceTree = "<group>"; };
+		2E31122729612335009D2752 /* EditProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
+		2E31122929612787009D2752 /* EditProfilePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfilePictureView.swift; sourceTree = "<group>"; };
 		2E553EB3295595A300A40575 /* Extensions and Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions and Protocols.swift"; sourceTree = "<group>"; };
 		2E70868C295B9E97003D6E87 /* MemsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsInfoView.swift; sourceTree = "<group>"; };
 		2E77F7DE294FAC2100D6E8D0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -145,6 +151,8 @@
 				2E0C0899294F16C90021C2D9 /* HomeVC.swift */,
 				2EED0C852952D09F009BA4CE /* CommentVC.swift */,
 				2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */,
+				2E31122529611C63009D2752 /* FriendsVC.swift */,
+				2E31122729612335009D2752 /* EditProfileVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -160,6 +168,7 @@
 				2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */,
 				2E311221295FCCA6009D2752 /* BooksInfoView.swift */,
 				2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */,
+				2E31122929612787009D2752 /* EditProfilePictureView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2ECBE2A42959560E00DFA64F /* MemsCollectionViewCell.swift in Sources */,
+				2E31122629611C63009D2752 /* FriendsVC.swift in Sources */,
 				2ECBE29E2958204D00DFA64F /* PostInfoView.swift in Sources */,
 				2E0C089D294F17A10021C2D9 /* User.swift in Sources */,
 				2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */,
@@ -296,11 +306,13 @@
 				2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */,
 				2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */,
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
+				2E31122829612335009D2752 /* EditProfileVC.swift in Sources */,
 				2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */,
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */,
+				2E31122A29612787009D2752 /* EditProfilePictureView.swift in Sources */,
 				2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,

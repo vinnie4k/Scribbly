@@ -135,8 +135,9 @@ class ProfileHeaderCell: UICollectionViewCell {
         return lbl
     }()
     
-    private let friendsButton: UIButton = {
+    private lazy var friendsButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(pushFriendsVC), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         var text = AttributedString("friends")
         text.font = Constants.getFont(size: 14, weight: .medium)
@@ -150,8 +151,9 @@ class ProfileHeaderCell: UICollectionViewCell {
         return btn
     }()
     
-    private let editButton: UIButton = {
+    private lazy var editButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(pushEditProfileVC), for: .touchUpInside)
         var config = UIButton.Configuration.filled()
         var text = AttributedString("edit")
         text.font = Constants.getFont(size: 14, weight: .medium)
@@ -168,6 +170,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     // MARK: - Properties (data)
     private var user: User!
     private var mode: UIUserInterfaceStyle!
+    private var parentVC: UIViewController!
     
     static let reuseIdentifier = "ProfileHeaderViewReuse"
     
@@ -189,9 +192,10 @@ class ProfileHeaderCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(user: User, mode: UIUserInterfaceStyle) {
+    func configure(user: User, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
         self.user = user
         self.mode = mode
+        self.parentVC = parentVC
         
         backgroundColor = Constants.primary_dark
         friendsButton.configuration?.baseBackgroundColor = Constants.button_dark
@@ -233,5 +237,16 @@ class ProfileHeaderCell: UICollectionViewCell {
             editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.prof_btn_side),
             editButton.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
         ])
+    }
+    
+    // MARK: - Button Helpers
+    @objc func pushFriendsVC() {
+        let friendsVC = FriendsVC()
+        parentVC.navigationController?.pushViewController(friendsVC, animated: true)
+    }
+    
+    @objc func pushEditProfileVC() {
+        let editProfileVC = EditProfileVC(mainUser: self.user)
+        parentVC.navigationController?.pushViewController(editProfileVC, animated: true)
     }
 }
