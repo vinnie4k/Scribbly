@@ -14,6 +14,7 @@ class User {
     // MARK: - Properties
     private let accountStart: Date
     private var friends: [User]
+    private var requests: [User]
     
     private var pfp: UIImage
     private var fullName: String
@@ -24,6 +25,44 @@ class User {
     private var bookmarkedPosts: [Post]
     
     // MARK: - Helper Functions
+    func hasRequested(user: User) -> Bool {
+        for i in user.getRequests() {
+            if i === self {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func isFriendsWith(user: User) -> Bool {
+        for i in friends {
+            if i === user {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func unsendRequest(user: User) {
+        user.removeRequest(user: self)
+    }
+    
+    func acceptRequest(user: User) {
+        var found = false
+        for i in 0..<requests.count {
+            if !found && requests[i] === user {
+                friends.append(user)
+                requests.remove(at: i)
+                user.addFriend(friend: self)
+                found = true
+            }
+        }
+    }
+    
+    func sendRequest(user: User) {
+        user.addRequest(user: self)
+    }
+    
     func defaultPFP() {
         pfp = UIImage(systemName: "person.circle.fill")!.withTintColor(UIColor.gray, renderingMode: .alwaysOriginal)
     }
@@ -83,6 +122,35 @@ class User {
     }
     
     // MARK: - Getters and Setters
+    func removeRequest(user: User) {
+        var found = false
+        for i in 0..<requests.count {
+            if !found && requests[i] === user {
+                requests.remove(at: i)
+                found = true
+            }
+        }
+    }
+    
+    func removeFriend(user: User) {
+        var found = false
+        for i in 0..<friends.count {
+            if !found && friends[i] === user {
+                friends.remove(at: i)
+                user.removeFriend(user: self)
+                found = true
+            }
+        }
+    }
+    
+    func addRequest(user: User) {
+        requests.append(user)
+    }
+    
+    func getRequests() -> [User] {
+        return requests
+    }
+    
     func setBio(text: String) {
         bio = text
     }
@@ -181,5 +249,6 @@ class User {
         self.bookmarkedPosts = []
         self.accountStart = accountStart
         self.friends = []
+        self.requests = []
     }
 }

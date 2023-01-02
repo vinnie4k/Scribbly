@@ -163,4 +163,12 @@ struct Constants {
     static let edit_prof_label_top = CGFloat(20)
     static let edit_prof_side_padding = CGFloat(20)
     static let edit_prof_txtfield_top = CGFloat(5)
+    
+    // MARK: - FriendsVC
+    static let friends_tv_side_padding = CGFloat(20)
+    static let friends_pfp_radius = CGFloat(25)
+    static let friends_fullname_left = CGFloat(15)
+    static let friends_follow_btn_width = CGFloat(96)
+    static let friends_cell_height = CGFloat(80)
+    static let friends_request_pfp_radius = CGFloat(20)
 }

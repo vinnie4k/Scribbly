@@ -48,13 +48,14 @@ class HomeVC: UIViewController {
         return btn
     }()
     
-    private let postCV: UICollectionView = {
+    private lazy var postCV: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
 
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.contentInset = UIEdgeInsets(top: Constants.post_cv_top_padding, left: 0, bottom: Constants.post_cv_bot_padding, right: 0)
         cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.addSubview(refreshControl)
         return cv
     }()
     
@@ -81,13 +82,19 @@ class HomeVC: UIViewController {
         return view
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshFeed), for: .valueChanged)
+        return refresh
+    }()
+    
     // TODO: START REMOVE
-    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, fullName: "Vin Bui", userName: "vinnie", bio: "I hate school", email: "vinbui@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
+    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, fullName: "vin bui", userName: "vinnie", bio: "I hate school", email: "vinbui@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
     
     private func createTests() {
-        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, fullName: "Caitlyn Jin", userName: "cakeymecake", bio: "I love drawing", email: "caitlynjin@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
-        let karen = User(pfp: UIImage(named: "piano")!, fullName: "Karen Sabile", userName: "karensabile", bio: "my music taste is top tier", email: "karensabile@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
-        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, fullName: "Katherine Chang", userName: "strokeslover101", bio: "Slay!!", email: "katherinechang@gmail.com", accountStart: Date())
+        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, fullName: "caitlyn jin", userName: "cakeymecake", bio: "I love drawing", email: "caitlynjin@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
+        let karen = User(pfp: UIImage(named: "piano")!, fullName: "karen sabile", userName: "karensabile", bio: "my music taste is top tier", email: "karensabile@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
+        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, fullName: "katherine chang", userName: "strokeslover101", bio: "Slay!!", email: "katherinechang@gmail.com", accountStart: Date())
         
         let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
@@ -128,14 +135,21 @@ class HomeVC: UIViewController {
         
         karen.addPost(post: karen_post)
         
-        posts = user.updateFeed()
-        
         vin_post.addComment(comment_user: caitlyn, text: "This sucks")
         vin_post.addComment(comment_user: katherine, text: "So bad 😭")
         vin_post.addComment(comment_user: user, text: "This does not suck")
         vin_post.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, replyUser: user)
         vin_post.getComments()[0].addReply(text: "Are you okay...", prev: vin_post.getComments()[0].getReplies()[0], replyUser: caitlyn)
+        
+        // Friend requests
+        let liam = User(pfp: UIImage(named: "liam_pfp")!, fullName: "liam du", userName: "liamdu", bio: "i eat cheese", email: "liamdu@gmail.com", accountStart: Date())
+        Database.addUser(user: liam)
+        let liam_post = Post(user: liam, drawing: UIImage(named: "bird_drawing2")!, caption: "yo", time: Date())
+        liam.addPost(post: liam_post)
+//        karen.sendRequest(user: user)
+//        katherine.sendRequest(user: user)
+        liam.sendRequest(user: user)
     }
     // TODO: END REMOVE
     
@@ -150,13 +164,15 @@ class HomeVC: UIViewController {
         view.addSubview(postCV)
         view.addSubview(drawViewLarge)
         
+        // TODO: START REMOVE
+        createTests()
+        // TODO: END REMOVE
+        
+        setupPostsData()
         setupGradient()
         setupNavBar()
         setupCollectionView()
         setupConstraints()
-        // TODO: START REMOVE
-        createTests()
-        // TODO: END REMOVE
     }
     
     private func setupConstraints() {
@@ -177,6 +193,12 @@ class HomeVC: UIViewController {
             drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
+    }
+    
+    // MARK: - Setup Data
+    private func setupPostsData() {
+        posts = [Post]()
+        posts = user.updateFeed()
     }
     
     // MARK: - Helper Functions
@@ -212,6 +234,12 @@ class HomeVC: UIViewController {
         profileVC.updateFeedDelegate = self
         profileVC.updatePFPDelegate = self
         navigationController?.pushViewController(profileVC, animated: true)
+    }
+    
+    @objc private func refreshFeed() {
+        setupPostsData()
+        postCV.reloadData()
+        refreshControl.endRefreshing()
     }
 }
 
@@ -338,6 +366,7 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
     
     // MARK: - UpdateFeedDelegate
     func updateFeed() {
+        setupPostsData()
         postCV.reloadData()
     }
     

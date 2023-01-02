@@ -243,7 +243,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc func pushFriendsVC() {
-        let friendsVC = FriendsVC()
+        let friendsVC = FriendsVC(user: user)
         parentVC.navigationController?.pushViewController(friendsVC, animated: true)
     }
     

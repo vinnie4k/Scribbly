@@ -10,6 +10,10 @@
 import UIKit
 
 // MARK: - Protocols
+protocol UpdateRequestsDelegate {
+    func updateRequests()
+}
+
 protocol UpdateProfileDelegate {
     func updateProfile()
 }
