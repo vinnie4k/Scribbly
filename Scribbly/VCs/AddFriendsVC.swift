@@ -1,18 +1,18 @@
 //
-//  RequestsVC.swift
+//  AddFriendsVC.swift
 //  Scribbly
 //
-//  Created by Vin Bui on 1/1/23.
+//  Created by Vin Bui on 1/3/23.
 //
 
 import UIKit
 
-// MARK: RequestsVC
-class RequestsVC: UIViewController {
+// MARK: AddFriendsVC
+class AddFriendsVC: UIViewController {
     // MARK: - Properties (view)
     private let titleLabel: UILabel = {
         let lbl = UILabel()
-        lbl.text = "requests"
+        lbl.text = "add friends"
         lbl.textColor = .label
         lbl.font = Constants.getFont(size: 20, weight: .semibold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +34,7 @@ class RequestsVC: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tv = UITableView()
-        tv.register(RequestTableViewCell.self, forCellReuseIdentifier: RequestTableViewCell.reuseIdentifier)
+        tv.register(AddFriendsTableViewCell.self, forCellReuseIdentifier: AddFriendsTableViewCell.reuseIdentifier)
         tv.sectionHeaderTopPadding = 0
         tv.separatorStyle = .none
         tv.delegate = self
@@ -42,20 +42,10 @@ class RequestsVC: UIViewController {
         return tv
     }()
     
-    private let noRequestLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "there are no requests"
-        lbl.font = Constants.getFont(size: 20, weight: .regular)
-        lbl.textColor = .label
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        lbl.alpha = 0
-        return lbl
-    }()
-    
     private lazy var searchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.backgroundImage = UIImage()
-        bar.placeholder = "search requests"
+        bar.placeholder = "search for a user"
         bar.tintColor = .label
         bar.translatesAutoresizingMaskIntoConstraints = false
         bar.delegate = self
@@ -64,10 +54,10 @@ class RequestsVC: UIViewController {
     
     // MARK: - Properties (data)
     private var datasource: Datasource!
-    private var requestsData = [Request]()
+    private var friendsData = [Friend]()
     private var mainUser: User
     var updateRequestsDelegate: UpdateRequestsDelegate!
-    private var filteredRequests = [Request]()
+    private var filteredFriends = [Friend]()
     var updateFeedDelegate: UpdateFeedDelegate!
     
     // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
@@ -78,7 +68,6 @@ class RequestsVC: UIViewController {
         
         view.addSubview(searchBar)
         view.addSubview(tableView)
-        view.addSubview(noRequestLabel)
         
 //        setupGradient()
         setupNavBar()
@@ -86,19 +75,10 @@ class RequestsVC: UIViewController {
         setupConstraints()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if requestsData.isEmpty {
-            noRequestLabel.alpha = 1
-        } else {
-            noRequestLabel.alpha = 0
-        }
-    }
-    
-    init(mainUser: User, requests: [User]) {
+    init(mainUser: User, users: [User]) {
         self.mainUser = mainUser
         super.init(nibName: nil, bundle: nil)
-        setupRequestsData(requests: requests)
+        setupFriendsData(users: users)
     }
     
     required init?(coder: NSCoder) {
@@ -120,19 +100,16 @@ class RequestsVC: UIViewController {
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 5),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
-            
-            noRequestLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
-            noRequestLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding)
         ])
     }
     
     // MARK: - Setup Data
-    func setupRequestsData(requests: [User]) {
-        for i in requests {
-            requestsData.append(Request(user: i))
+    func setupFriendsData(users: [User]) {
+        for i in users {
+            friendsData.append(Friend(user: i))
         }
-        filteredRequests = requestsData
+        filteredFriends = friendsData
     }
     
     // MARK: - Button Helpers
@@ -142,20 +119,20 @@ class RequestsVC: UIViewController {
 }
 
 // MARK: - Extensions
-extension RequestsVC {
+extension AddFriendsVC {
     // MARK: - Diffable Data Source
     typealias Datasource = UITableViewDiffableDataSource<Section, Item>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     
     enum Section: Hashable {
-        case requestsListSection
+        case friendsListSection
     }
     
     enum Item: Hashable {
-        case requestsListItem(Request)
+        case friendsListItem(Friend)
     }
     
-    struct Request: Hashable {
+    struct Friend: Hashable {
         let id = UUID()
         let user: User
         
@@ -163,16 +140,16 @@ extension RequestsVC {
             hasher.combine(id)
         }
 
-        static func == (lhs: RequestsVC.Request, rhs: RequestsVC.Request) -> Bool {
+        static func == (lhs: AddFriendsVC.Friend, rhs: AddFriendsVC.Friend) -> Bool {
             lhs.user === rhs.user
         }
     }
     
     private func cell(tableView: UITableView, indexPath: IndexPath, item: Item) -> UITableViewCell {
         switch item {
-        case .requestsListItem(let request):
-            let cell = tableView.dequeueReusableCell(withIdentifier: RequestTableViewCell.reuseIdentifier, for: indexPath) as! RequestTableViewCell
-            cell.configure(user: request.user, mainUser: mainUser)
+        case .friendsListItem(let friend):
+            let cell = tableView.dequeueReusableCell(withIdentifier: AddFriendsTableViewCell.reuseIdentifier, for: indexPath) as! AddFriendsTableViewCell
+            cell.configure(user: friend.user, mainUser: mainUser)
             cell.updateRequestsDelegate = updateRequestsDelegate
             cell.selectionStyle = .none
             return cell
@@ -186,22 +163,22 @@ extension RequestsVC {
     
     private func createSnapshot() {
         var snapshot = Snapshot()
-        snapshot.appendSections([Section.requestsListSection])
-        snapshot.appendItems(filteredRequests.map({ Item.requestsListItem($0) }), toSection: .requestsListSection)
+        snapshot.appendSections([Section.friendsListSection])
+        snapshot.appendItems(filteredFriends.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
         
         datasource.apply(snapshot, animatingDifferences: false)
     }
 }
 
 // MARK: - Extension (UITableViewDelegate)
-extension RequestsVC: UITableViewDelegate {
+extension AddFriendsVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.friends_cell_height
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchBar.text!.isEmpty {
-            let request = filteredRequests[indexPath.row].user
+            let request = filteredFriends[indexPath.row].user
             let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
             profileVC.updateRequestsDelegate = self
             profileVC.updateFeedDelegate = updateFeedDelegate
@@ -211,7 +188,7 @@ extension RequestsVC: UITableViewDelegate {
 }
 
 // MARK: - Other Extensions
-extension RequestsVC: UISearchBarDelegate, UpdateRequestsDelegate {
+extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
     // MARK: - UpdateRequestsDelegate
     func updateRequests() {
         var oldSnapshot = datasource.snapshot()
@@ -224,14 +201,14 @@ extension RequestsVC: UISearchBarDelegate, UpdateRequestsDelegate {
     
     // MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredRequests = []
+        filteredFriends = []
         
         if searchText.isEmpty {
-            filteredRequests = requestsData
+            filteredFriends = friendsData
         } else {
-            for name in requestsData {
+            for name in friendsData {
                 if name.user.getUserName().lowercased().contains(searchText.lowercased()) || name.user.getFullName().lowercased().contains(searchText.lowercased()) {
-                    filteredRequests.append(name)
+                    filteredFriends.append(name)
                 }
             }
         }

@@ -32,6 +32,19 @@ class FriendsVC: UIViewController {
         return btn
     }()
     
+    private lazy var addFriendsButton: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.image = UIImage(systemName: "person.crop.circle.fill.badge.plus")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     private lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .grouped)
         tv.register(FriendsTableViewCell.self, forCellReuseIdentifier: FriendsTableViewCell.reuseIdentifier)
@@ -91,6 +104,8 @@ class FriendsVC: UIViewController {
         navigationItem.titleView = titleLabel
         backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        addFriendsButton.addTarget(self, action: #selector(pushAddFriendsVC), for: .touchUpInside)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addFriendsButton)
     }
     
     private func setupConstraints() {
@@ -123,6 +138,12 @@ class FriendsVC: UIViewController {
     // MARK: - Button Helpers
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func pushAddFriendsVC() {
+        let addFriendsVC = AddFriendsVC(mainUser: user, users: Database.getAddFriendsUsers(user: user))
+        addFriendsVC.updateRequestsDelegate = self
+        navigationController?.pushViewController(addFriendsVC, animated: true)
     }
 }
 
@@ -213,11 +234,13 @@ extension FriendsVC: UITableViewDelegate {
         if indexPath.section == 0 && searchBar.text!.isEmpty {
             let requestsVC = RequestsVC(mainUser: user, requests: requestsData)
             requestsVC.updateRequestsDelegate = self
+            requestsVC.updateFeedDelegate = updateFeedDelegate
             navigationController?.pushViewController(requestsVC, animated: true)
         } else {
             let friend = filteredFriends[indexPath.row].friend
             let profileVC = OtherUserProfileVC(user: friend, mainUser: user)
             profileVC.updateFeedDelegate = updateFeedDelegate
+            profileVC.updateRequestsDelegate = self
             navigationController?.pushViewController(profileVC, animated: true)
         }
     }

@@ -17,6 +17,13 @@ class Database {
         Database.users.append(user)
     }
     
+    static func getAddFriendsUsers(user: User) -> [User] {
+        var users = Database.users.filter( { !$0.isFriendsWith(user: user) })
+        users = users.filter( { $0 !== user })
+        users = users.filter( { !user.isBlocked(user: $0) } )
+        return users
+    }
+    
     // MARK: - Helpers
     static func containsUsername(username: String, user: User) -> Bool {
         for i in Database.users {

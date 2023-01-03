@@ -75,6 +75,7 @@ class OtherUserProfileVC: UIViewController {
     private var memsData = [Month]()
     private var booksData = [Bookmarks]()
     var updateFeedDelegate: UpdateFeedDelegate!
+    var updateRequestsDelegate: UpdateRequestsDelegate?
     
     // MARK: - viewDidLoad, init, setupBackground, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -332,6 +333,9 @@ extension OtherUserProfileVC {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OtherProfileHeaderCell.reuseIdentifier, for: indexPath) as! OtherProfileHeaderCell
             cell.updateProfileDelegate = self
+            if updateRequestsDelegate != nil {
+                cell.updateRequestsDelegate = updateRequestsDelegate
+            }
             cell.configure(user: user, mainUser: mainUser, mode: traitCollection.userInterfaceStyle, parentVC: self)
             return cell
         case .memsCell(let data):

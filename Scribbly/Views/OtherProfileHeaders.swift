@@ -74,6 +74,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     private var parentVC: UIViewController!
     private var change = [NSLayoutConstraint]()
     var updateProfileDelegate: UpdateProfileDelegate!
+    var updateRequestsDelegate: UpdateRequestsDelegate?
     
     static let reuseIdentifier = "OtherProfileHeaderCellReuse"
     
@@ -166,6 +167,9 @@ class OtherProfileHeaderCell: UICollectionViewCell {
             followButton.configuration?.background.strokeColor = Constants.secondary_text
             followButton.configuration?.background.strokeWidth = 0.5
             followButton.configuration?.baseForegroundColor = Constants.secondary_text
+        } else if user.hasRequested(user: mainUser) {
+            // Other person requested
+            text = AttributedString("accept")
         }
         
         text.font = Constants.getFont(size: 14, weight: .medium)
@@ -230,6 +234,9 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.mainUser.removeFriend(user: self.user)
                 self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
                 self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
             }
             let alertController = UIAlertController(title: nil, message: "You won't be able to see their posts after you unfollow them.", preferredStyle: .actionSheet)
             alertController.addAction(unfollow)
@@ -238,11 +245,16 @@ class OtherProfileHeaderCell: UICollectionViewCell {
             parentVC.present(alertController, animated: true)
         } else if mainUser.hasRequested(user: user) {
             mainUser.unsendRequest(user: user)
+        } else if user.hasRequested(user: mainUser) {
+            mainUser.acceptRequest(user: user)
         } else {
             mainUser.sendRequest(user: user)
         }
         configure(user: user, mainUser: mainUser, mode: mode, parentVC: parentVC)
         updateProfileDelegate.updateProfile()
+        if updateRequestsDelegate != nil {
+            updateRequestsDelegate?.updateRequests()
+        }
     }
     
     @objc private func blockAction() {
@@ -257,6 +269,9 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.followButton.isHidden = false
                 self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
                 self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
             }
             
             let alertController = UIAlertController(title: nil, message: "Are you sure you want to do this?", preferredStyle: .actionSheet)
@@ -269,6 +284,9 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.mainUser.blockUser(user: self.user)
                 self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
                 self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
             }
             let alertController = UIAlertController(title: nil, message: "Are you sure you want to do this?", preferredStyle: .actionSheet)
             alertController.addAction(block)
