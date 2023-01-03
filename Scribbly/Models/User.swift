@@ -18,6 +18,8 @@ class User {
     private var blocked: [User]
     
     private var pfp: UIImage
+    private var firstName: String
+    private var lastName: String
     private var fullName: String
     private var userName: String
     private var bio: String
@@ -208,8 +210,16 @@ class User {
         userName = name
     }
     
-    func setFullName(name: String) {
-        fullName = name
+    func updateFullName() {
+        fullName = firstName + " " + lastName
+    }
+    
+    func setFirstName(name: String) {
+        firstName = name
+    }
+    
+    func setLastName(name: String) {
+        lastName = name
     }
     
     func setPFP(image: UIImage) {
@@ -221,15 +231,11 @@ class User {
     }
     
     func getLastName() -> String {
-        var space = fullName.firstIndex(of: " ")!
-        space = fullName.index(space, offsetBy: 1)
-        return String(fullName[space...])
+        return lastName
     }
     
     func getFirstName() -> String {
-        var space = fullName.firstIndex(of: " ")!
-        space = fullName.index(space, offsetBy: -1)
-        return String(fullName[...space])
+        return firstName
     }
     
     func addFriend(friend: User) {
@@ -284,9 +290,11 @@ class User {
     }
     
     // MARK: - init
-    init(pfp: UIImage, fullName: String, userName: String, bio: String, email: String, accountStart: Date) {
+    init(pfp: UIImage, firstName: String, lastName: String, userName: String, bio: String, email: String, accountStart: Date) {
         self.pfp = pfp
-        self.fullName = fullName
+        self.firstName = firstName
+        self.lastName = lastName
+        self.fullName = firstName + " " + lastName
         self.userName = userName
         self.bio = bio
         self.email = email

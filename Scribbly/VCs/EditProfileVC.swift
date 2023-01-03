@@ -381,7 +381,9 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     @objc func confirmChanges() {
         if validFirstName() && validLastName() && validEmail() && validUserName() {
-            mainUser.setFullName(name: firstNameTextField.text! + " " + lastNameTextField.text!)
+            mainUser.setFirstName(name: firstNameTextField.text!)
+            mainUser.setLastName(name: lastNameTextField.text!)
+            mainUser.updateFullName()
             mainUser.setUserName(name: userNameTextField.text!)
             mainUser.setEmail(text: emailTextField.text!)
             mainUser.setBio(text: bioTextField.text!)
