@@ -100,7 +100,7 @@ class HomeVC: UIViewController {
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
         let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
         let katherine_post = Post(user: katherine, drawing: UIImage(named: "katherine_drawing")!, caption: "This is so beautiful❤️", time: Date())
-        
+
         for i in 1...25 {
             let date = String(i) + " December 2022"
             let post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: date))
@@ -229,8 +229,7 @@ class HomeVC: UIViewController {
     }
     
     @objc private func pushMainUserProfileVC() {
-        let profileVC = MainUserProfileVC()
-        profileVC.mainUser = user
+        let profileVC = MainUserProfileVC(mainUser: user)
         profileVC.updateFeedDelegate = self
         profileVC.updatePFPDelegate = self
         navigationController?.pushViewController(profileVC, animated: true)
@@ -278,6 +277,7 @@ extension HomeVC: UICollectionViewDataSource {
             let post = posts[indexPath.row]
             cell.configure(mainUser: user, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
             cell.layer.cornerRadius = Constants.post_cell_corner
+            cell.captionView.updateFeedDelegate = self
             cell.enlargeDrawingDelegate = self
             return cell
         } else {

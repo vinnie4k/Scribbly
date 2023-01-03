@@ -136,8 +136,16 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
         self.text.text = comment.getText()
         displayName.text = comment.getUser().getUserName()
         userPFP.setImage(comment.getUser().getPFP(), for: .normal)
-        userPFP.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
+        userPFP.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         replyButton.addTarget(self, action: #selector(sendReply), for: .touchUpInside)
+        
+        if mainUser.isBlocked(user: comment.getUser()) {
+            self.text.text = "This comment has been removed."
+            displayName.text = ""
+            userPFP.alpha = 0
+            replyButton.alpha = 0
+            self.isUserInteractionEnabled = false
+        }
     }
     
     private func setupConstraints() {
@@ -187,9 +195,11 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
         commentDelegate.sendReplyComment(comment: comment)
     }
     
-    @objc private func pushMainUserProfileVC() {
-        let profileVC = MainUserProfileVC()
-        parentVC.navigationController?.pushViewController(profileVC, animated: true)
+    @objc private func pushProfileVC() {
+        if comment.getUser() !== mainUser {
+            let profileVC = OtherUserProfileVC(user: comment.getUser(), mainUser: mainUser)
+            parentVC.navigationController?.pushViewController(profileVC, animated: true)
+        }
     }
 }
 
@@ -236,6 +246,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     private var parentVC: UIViewController!
     private var comment: Comment!
     private var reply: Reply!
+    private var mainUser: User!
     var replyDelegate: CommentDelegate!
     
     // MARK: - init, configure, and setupConstraints
@@ -254,16 +265,25 @@ class CommentCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(parentVC: UIViewController, comment: Comment, reply: Reply) {
+    func configure(parentVC: UIViewController, comment: Comment, reply: Reply, mainUser: User) {
         self.parentVC = parentVC
         self.comment = comment
         self.reply = reply
+        self.mainUser = mainUser
         
         self.text.attributedText = reply.getText()
         displayName.text = reply.getReplyUser().getUserName()
         userPFP.setImage(reply.getReplyUser().getPFP(), for: .normal)
         userPFP.addTarget(self, action: #selector(pushProfileVC), for: .touchUpInside)
         replyButton.addTarget(self, action: #selector(sendReply), for: .touchUpInside)
+        
+        if mainUser.isBlocked(user: comment.getUser()) {
+            self.text.attributedText = NSAttributedString(string: "This comment has been removed.")
+            displayName.text = ""
+            userPFP.alpha = 0
+            replyButton.alpha = 0
+            self.isUserInteractionEnabled = false
+        }
     }
     
     private func setupConstraints() {
@@ -292,7 +312,9 @@ class CommentCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func pushProfileVC() {
-        let profileVC = MainUserProfileVC()
-        parentVC.navigationController?.pushViewController(profileVC, animated: true)
+        if reply.getReplyUser() !== mainUser {
+            let profileVC = OtherUserProfileVC(user: reply.getReplyUser(), mainUser: mainUser)
+            parentVC.navigationController?.pushViewController(profileVC, animated: true)
+        }
     }
 }

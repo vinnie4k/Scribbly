@@ -59,6 +59,7 @@ class FriendsVC: UIViewController {
     private var requestsData = [User]()
     private var user: User
     private var filteredFriends = [Friend]()
+    var updateFeedDelegate: UpdateFeedDelegate!
 
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -209,10 +210,15 @@ extension FriendsVC: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
+        if indexPath.section == 0 && searchBar.text!.isEmpty {
             let requestsVC = RequestsVC(mainUser: user, requests: requestsData)
             requestsVC.updateRequestsDelegate = self
             navigationController?.pushViewController(requestsVC, animated: true)
+        } else {
+            let friend = filteredFriends[indexPath.row].friend
+            let profileVC = OtherUserProfileVC(user: friend, mainUser: user)
+            profileVC.updateFeedDelegate = updateFeedDelegate
+            navigationController?.pushViewController(profileVC, animated: true)
         }
     }
 }
@@ -250,7 +256,7 @@ extension FriendsVC: UpdateRequestsDelegate, UISearchBarDelegate {
             }
             var snapshot = Snapshot()
             snapshot.appendSections([Section.friendsListSection])
-            snapshot.appendItems(filteredFriends.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)            
+            snapshot.appendItems(filteredFriends.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
             datasource.apply(snapshot, animatingDifferences: false)
         }
     }

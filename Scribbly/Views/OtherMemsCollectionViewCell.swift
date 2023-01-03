@@ -1,16 +1,14 @@
 //
-//  MemsCollectionViewCell.swift
+//  OtherMemsCollectionViewCell.swift
 //  Scribbly
 //
-//  Created by Vin Bui on 12/25/22.
+//  Created by Vin Bui on 1/2/23.
 //
-
-// TODO: ALREADY REFACTORED
 
 import UIKit
 
-// MARK: MemsTinyPostView
-class MemsTinyPostView: UIView {
+// MARK: OtherMemsTinyPostView
+class OtherMemsTinyPostView: UIView {
     // MARK: - Properties (view)
     private let dateLabel: UILabel = {
         let lbl = UILabel()
@@ -27,19 +25,13 @@ class MemsTinyPostView: UIView {
         img.layer.cornerRadius = Constants.mems_cell_corner
         img.translatesAutoresizingMaskIntoConstraints = false
 
-        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(showStats))
+        let tap_gesture = UITapGestureRecognizer(target: self, action: #selector(enlargeDrawing))
         img.addGestureRecognizer(tap_gesture)
         img.isUserInteractionEnabled = true
 
         return img
     }()
-
-    private let hiddenImage: UIImageView = {
-        let img = UIImageView()
-        img.translatesAutoresizingMaskIntoConstraints = false
-        return img
-    }()
-
+    
     // MARK: - Properties (data)
     private var parentVC: UIViewController!
     private var post: Post? = nil
@@ -49,7 +41,7 @@ class MemsTinyPostView: UIView {
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         layer.cornerRadius = Constants.mems_cell_corner
         
         backgroundColor = Constants.secondary_dark
@@ -59,8 +51,7 @@ class MemsTinyPostView: UIView {
         
         addSubview(drawing)
         addSubview(dateLabel)
-        addSubview(hiddenImage)
-
+        
         setupConstraints()
     }
     
@@ -71,12 +62,11 @@ class MemsTinyPostView: UIView {
     func configure(post: Post?, text: String, mode: UIUserInterfaceStyle) {
         self.post = post
         self.mode = mode
-
+        
         if post != nil {
             drawing.image = post?.getDrawing()
         }
         dateLabel.text = text
-        determineBlur()
     }
     
     private func setupConstraints() {
@@ -87,39 +77,20 @@ class MemsTinyPostView: UIView {
             drawing.bottomAnchor.constraint(equalTo: self.bottomAnchor),
 
             dateLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            dateLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-
-            hiddenImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            hiddenImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
     }
     
-    // MARK: - Helper Functions
-    private func determineBlur() {
-        if post != nil {
-            if post!.isHidden() {
-                drawing.applyBlurEffect()
-                dateLabel.text = ""
-                hiddenImage.image = UIImage(named: "hidden_dark")
-                if mode == .light {
-                    hiddenImage.image = UIImage(named: "hidden_light")
-                }
-            } else {
-                hiddenImage.image = nil
-            }
-        }
-    }
-    
     // MARK: - Button Helpers
-    @objc private func showStats() {
+    @objc private func enlargeDrawing() {
         if post != nil {
-            postInfoDelegate?.showMemsInfo(post: post!)
+            postInfoDelegate?.showBooksInfo(post: post!)
         }
     }
 }
 
-// MARK: MemsCollectionViewCell
-class MemsCollectionViewCell: UICollectionViewCell {
+// MARK: OtherMemsCollectionViewCell
+class OtherMemsCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (view)
     private let monthLabel: UILabel = {
         let lbl = UILabel()
@@ -149,7 +120,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     private var stackGrid: UIStackView!
     
     // MARK: - Properties (data)
-    static let reuseIdentifier = "MemsCollectionViewCellReuse"
+    static let reuseIdentifier = "OtherMemsCollectionViewCellReuse"
     private var data: [String]!
     private var user: User!
     var postInfoDelegate: PostInfoDelegate!
@@ -158,11 +129,8 @@ class MemsCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.secondary_light
-        }
-                
+        backgroundColor = .systemBackground
+        
         addSubview(monthLabel)
         addSubview(dayOfWeekStack)
                 
@@ -176,6 +144,11 @@ class MemsCollectionViewCell: UICollectionViewCell {
     func configure(data: [String], user: User) {
         self.data = data
         self.user = user
+        
+        backgroundColor = Constants.secondary_dark
+        if traitCollection.userInterfaceStyle == .light {
+            backgroundColor = Constants.secondary_light
+        }
         
         monthLabel.text = data[0].lowercased()
         stackGrid = createOuterStack(info: data, spacing: CGFloat(5))
@@ -198,7 +171,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
             
             dayOfWeekStack.topAnchor.constraint(equalTo: monthLabel.bottomAnchor, constant: 5),
             dayOfWeekStack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.mems_day_of_week_side),
-            dayOfWeekStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side),
+            dayOfWeekStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.mems_day_of_week_side)
         ])
     }
     
@@ -230,13 +203,23 @@ class MemsCollectionViewCell: UICollectionViewCell {
         innerStack.translatesAutoresizingMaskIntoConstraints = false
         
         for text in info {
-            let tinyView = MemsTinyPostView()
+            let tinyView = OtherMemsTinyPostView()
             
             if (text != "") {
                 let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + data[0])
                 let post = user.getPostFromDate(selected_date: date)
-                tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
-                tinyView.postInfoDelegate = postInfoDelegate
+                // if the user has this post hidden, then don't include it
+                if post != nil {
+                    if post!.isHidden() {
+                        tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
+                    } else {
+                        tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                        tinyView.postInfoDelegate = postInfoDelegate
+                    }
+                } else {
+                    // post == nil
+                    tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                }
             } else {
                 tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
             }

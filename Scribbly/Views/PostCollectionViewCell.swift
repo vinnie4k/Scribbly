@@ -168,7 +168,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         return stack
     }()
     
-    private lazy var captionView: CaptionView = {
+    lazy var captionView: CaptionView = {
         let view = CaptionView()        
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -205,7 +205,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         
         setMode(mode: mode)
         
-        captionView.configure(caption: post.getCaption(), postUser: post.getUser(), parentVC: parentVC)
+        captionView.configure(caption: post.getCaption(), postUser: post.getUser(), mainUser: mainUser, parentVC: parentVC)
         drawing.image = post.getDrawing()
         
         if post.containsLikedUser(user: mainUser) {
@@ -351,6 +351,9 @@ class CaptionView: UIView {
         
     // MARK: - Properties (data)
     private var parentVC: UIViewController!
+    private var postUser: User!
+    private var mainUser: User!
+    var updateFeedDelegate: UpdateFeedDelegate!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -377,8 +380,10 @@ class CaptionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(caption: String, postUser: User, parentVC: UIViewController) {
+    func configure(caption: String, postUser: User, mainUser: User, parentVC: UIViewController) {
         self.parentVC = parentVC
+        self.postUser = postUser
+        self.mainUser = mainUser
         
         self.caption.text = caption
         displayName.text = postUser.getUserName()
@@ -403,7 +408,8 @@ class CaptionView: UIView {
     
     // MARK: - Button Helpers
     @objc private func pushProfileVC() {
-        let profileVC = MainUserProfileVC()
+        let profileVC = OtherUserProfileVC(user: postUser, mainUser: mainUser)
+        profileVC.updateFeedDelegate = updateFeedDelegate
         parentVC?.navigationController?.pushViewController(profileVC, animated: true)
     }
 }

@@ -173,6 +173,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     private var parentVC: UIViewController!
     var updatePFPDelegate: UpdatePFPDelegate!
     var updateProfileDelegate: UpdateProfileDelegate!
+    var updateFeedDelegate: UpdateFeedDelegate!
     
     static let reuseIdentifier = "ProfileHeaderViewReuse"
     
@@ -244,6 +245,7 @@ class ProfileHeaderCell: UICollectionViewCell {
     // MARK: - Button Helpers
     @objc func pushFriendsVC() {
         let friendsVC = FriendsVC(user: user)
+        friendsVC.updateFeedDelegate = updateFeedDelegate
         parentVC.navigationController?.pushViewController(friendsVC, animated: true)
     }
     

@@ -27,6 +27,9 @@
 		2E9D43622962574400B6474C /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D43612962574400B6474C /* FriendsTableViewCell.swift */; };
 		2E9D4364296294BA00B6474C /* RequestsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D4363296294BA00B6474C /* RequestsVC.swift */; };
 		2E9D43662962975200B6474C /* RequestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D43652962975200B6474C /* RequestTableViewCell.swift */; };
+		2E9D436829635B7800B6474C /* OtherUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D436729635B7800B6474C /* OtherUserProfileVC.swift */; };
+		2E9D436A29636C7700B6474C /* OtherProfileHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D436929636C7700B6474C /* OtherProfileHeaders.swift */; };
+		2E9D436C29636F0F00B6474C /* OtherMemsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D436B29636F0F00B6474C /* OtherMemsCollectionViewCell.swift */; };
 		2ECBE29E2958204D00DFA64F /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29D2958204D00DFA64F /* PostInfoView.swift */; };
 		2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */; };
 		2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */; };
@@ -62,6 +65,9 @@
 		2E9D43612962574400B6474C /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
 		2E9D4363296294BA00B6474C /* RequestsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsVC.swift; sourceTree = "<group>"; };
 		2E9D43652962975200B6474C /* RequestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTableViewCell.swift; sourceTree = "<group>"; };
+		2E9D436729635B7800B6474C /* OtherUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileVC.swift; sourceTree = "<group>"; };
+		2E9D436929636C7700B6474C /* OtherProfileHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherProfileHeaders.swift; sourceTree = "<group>"; };
+		2E9D436B29636F0F00B6474C /* OtherMemsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherMemsCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ECBE29D2958204D00DFA64F /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
 		2ECBE29F29590F2400DFA64F /* MainUserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileVC.swift; sourceTree = "<group>"; };
 		2ECBE2A12959131E00DFA64F /* ProfileHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaders.swift; sourceTree = "<group>"; };
@@ -163,6 +169,7 @@
 				2E31122529611C63009D2752 /* FriendsVC.swift */,
 				2E31122729612335009D2752 /* EditProfileVC.swift */,
 				2E9D4363296294BA00B6474C /* RequestsVC.swift */,
+				2E9D436729635B7800B6474C /* OtherUserProfileVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -181,6 +188,8 @@
 				2E31122929612787009D2752 /* EditProfilePictureView.swift */,
 				2E9D43612962574400B6474C /* FriendsTableViewCell.swift */,
 				2E9D43652962975200B6474C /* RequestTableViewCell.swift */,
+				2E9D436929636C7700B6474C /* OtherProfileHeaders.swift */,
+				2E9D436B29636F0F00B6474C /* OtherMemsCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -316,6 +325,7 @@
 				2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */,
 				2E0C0886294F15290021C2D9 /* AppDelegate.swift in Sources */,
 				2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */,
+				2E9D436A29636C7700B6474C /* OtherProfileHeaders.swift in Sources */,
 				2E9D4364296294BA00B6474C /* RequestsVC.swift in Sources */,
 				2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */,
 				2E0C0888294F15290021C2D9 /* SceneDelegate.swift in Sources */,
@@ -324,8 +334,10 @@
 				2E9D4360296220C400B6474C /* Database.swift in Sources */,
 				2E9D43662962975200B6474C /* RequestTableViewCell.swift in Sources */,
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
+				2E9D436C29636F0F00B6474C /* OtherMemsCollectionViewCell.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
+				2E9D436829635B7800B6474C /* OtherUserProfileVC.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */,
 				2E31122A29612787009D2752 /* EditProfilePictureView.swift in Sources */,
 				2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */,

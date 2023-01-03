@@ -472,7 +472,7 @@ extension CommentVC: UICollectionViewDataSource {
                     cell.backgroundColor = Constants.primary_dark
                 }
                 cell.layer.cornerRadius = Constants.comment_cell_corner
-                cell.configure(parentVC: self, comment: comment, reply: rep)
+                cell.configure(parentVC: self, comment: comment, reply: rep, mainUser: mainUser)
                 cell.replyDelegate = self
                 return cell
             }

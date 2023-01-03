@@ -15,6 +15,7 @@ class User {
     private let accountStart: Date
     private var friends: [User]
     private var requests: [User]
+    private var blocked: [User]
     
     private var pfp: UIImage
     private var fullName: String
@@ -25,6 +26,29 @@ class User {
     private var bookmarkedPosts: [Post]
     
     // MARK: - Helper Functions
+    func removeBookmarksFromUser(user: User) {
+        bookmarkedPosts = bookmarkedPosts.filter{ $0.getUser() !== user }
+    }
+    
+    func getBookmarksFromUser(user: User) -> [Post] {
+        var result: [Post] = []
+        for post in bookmarkedPosts {
+            if post.getUser() === user {
+                result.insert(post, at: 0)
+            }
+        }
+        return result
+    }
+    
+    func isBlocked(user: User) -> Bool {
+        for i in blocked {
+            if i === user {
+                return true
+            }
+        }
+        return false
+    }
+    
     func hasRequested(user: User) -> Bool {
         for i in user.getRequests() {
             if i === self {
@@ -122,6 +146,27 @@ class User {
     }
     
     // MARK: - Getters and Setters
+    func unblockUser(user: User) {
+        var found = false
+        for i in 0..<blocked.count {
+            if !found && blocked[i] === user {
+                blocked.remove(at: i)
+                found = true
+            }
+        }
+    }
+    
+    func blockUser(user: User) {
+        blocked.insert(user, at: 0)
+        removeBookmarksFromUser(user: user)
+        if isFriendsWith(user: user) {
+            removeFriend(user: user)
+        }
+        if hasRequested(user: user) {
+            unsendRequest(user: user)
+        }
+    }
+    
     func removeRequest(user: User) {
         var found = false
         for i in 0..<requests.count {
@@ -250,5 +295,6 @@ class User {
         self.accountStart = accountStart
         self.friends = []
         self.requests = []
+        self.blocked = []
     }
 }
