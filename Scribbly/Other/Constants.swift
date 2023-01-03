@@ -171,4 +171,13 @@ struct Constants {
     static let friends_follow_btn_width = CGFloat(96)
     static let friends_cell_height = CGFloat(80)
     static let friends_request_pfp_radius = CGFloat(20)
+    
+    // MARK: - TimerVC and UploadPostVC
+    static let timer_prompt_top = CGFloat(50)
+    static let timer_btn_bot = CGFloat(50)
+    static let timer_btn_side = CGFloat(20)
+    static let upload_corner = CGFloat(30)
+    static let upload_side_padding = CGFloat(30)
+    static let upload_top = CGFloat(20)
+    static let upload_caption_top = CGFloat(15)
 }

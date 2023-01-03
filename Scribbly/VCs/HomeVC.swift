@@ -96,7 +96,7 @@ class HomeVC: UIViewController {
         let karen = User(pfp: UIImage(named: "piano")!, firstName: "karen", lastName: "sabile", userName: "karensabile", bio: "my music taste is top tier", email: "karensabile@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
         let katherine = User(pfp: UIImage(named: "katherine_pfp")!, firstName: "katherine", lastName: "chang", userName: "strokeslover101", bio: "Slay!!", email: "katherinechang@gmail.com", accountStart: Date())
         
-        let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: Date())
+        let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing2")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
         let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
         let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
         let katherine_post = Post(user: katherine, drawing: UIImage(named: "katherine_drawing")!, caption: "This is so beautiful❤️", time: Date())
@@ -119,7 +119,7 @@ class HomeVC: UIViewController {
         user.addFriend(friend: katherine)
         
         for _ in 1...30 {
-            let newPost = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing1")!, caption: "hey", time: Date())
+            let newPost = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "hey", time: Date())
             caitlyn.addPost(post: newPost)
             user.addBookmarkPost(post: newPost)
         }
@@ -145,7 +145,7 @@ class HomeVC: UIViewController {
         // Friend requests
         let liam = User(pfp: UIImage(named: "liam_pfp")!, firstName: "liam", lastName: "du", userName: "liamdu", bio: "i eat cheese", email: "liamdu@gmail.com", accountStart: Date())
         Database.addUser(user: liam)
-        let liam_post = Post(user: liam, drawing: UIImage(named: "bird_drawing2")!, caption: "yo", time: Date())
+        let liam_post = Post(user: liam, drawing: UIImage(named: "piano")!, caption: "yo", time: Date())
         liam.addPost(post: liam_post)
 //        karen.sendRequest(user: user)
 //        katherine.sendRequest(user: user)
@@ -167,6 +167,11 @@ class HomeVC: UIViewController {
         // TODO: START REMOVE
         createTests()
         // TODO: END REMOVE
+        
+        if !user.postedForToday() {
+            let timerVC = TimerVC(mainUser: user)
+            navigationController?.pushViewController(timerVC, animated: false)
+        }
         
         setupPostsData()
         setupGradient()

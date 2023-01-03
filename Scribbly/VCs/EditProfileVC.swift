@@ -215,7 +215,6 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
-    
     init(mainUser: User) {
         self.mainUser = mainUser
         super.init(nibName: nil, bundle: nil)

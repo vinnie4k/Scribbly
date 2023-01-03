@@ -16,7 +16,6 @@ class User {
     private var friends: [User]
     private var requests: [User]
     private var blocked: [User]
-    
     private var pfp: UIImage
     private var firstName: String
     private var lastName: String
@@ -28,6 +27,16 @@ class User {
     private var bookmarkedPosts: [Post]
     
     // MARK: - Helper Functions
+    func postedForToday() -> Bool {
+        if posts.count == 0 { // No posts yet
+            return false
+        }
+        if (Calendar.current.isDate(getTodaysPost().getTime(), inSameDayAs: Date())) {
+            return true
+        }
+        return false
+    }
+    
     func removeBookmarksFromUser(user: User) {
         bookmarkedPosts = bookmarkedPosts.filter{ $0.getUser() !== user }
     }

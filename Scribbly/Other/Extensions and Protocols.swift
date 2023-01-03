@@ -10,6 +10,10 @@
 import UIKit
 
 // MARK: - Protocols
+protocol DismissTimerDelegate {
+    func dismissTimerVC()
+}
+
 protocol UpdateRequestsDelegate {
     func updateRequests()
 }

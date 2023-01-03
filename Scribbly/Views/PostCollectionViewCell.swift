@@ -46,7 +46,7 @@ class PromptHeaderView: UICollectionReusableView {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "PromptHeaderViewReuse"
-    var postInfoDelegate: PostInfoDelegate!
+    var postInfoDelegate: PostInfoDelegate?
     private var post: Post!
 
     // MARK: - init, configure, and setupConstraints
@@ -64,10 +64,20 @@ class PromptHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(prompt: String, post: Post) {
-        self.prompt.text = prompt
-        self.userPost.image = post.getDrawing()
+    func configure(prompt: String, post: Post?) {
         self.post = post
+        self.prompt.text = prompt
+
+//        if post == nil {
+//            self.userPost.image = UIImage(named: "nopost_dark")
+//            if traitCollection.userInterfaceStyle == .light {
+//                self.userPost.image = UIImage(named: "nopost_light")
+//            }
+//        } else {
+//            self.userPost.image = post!.getDrawing()
+//        }
+        
+        self.userPost.image = post!.getDrawing()
     }
     
     private func setupConstraints() {
@@ -87,7 +97,9 @@ class PromptHeaderView: UICollectionReusableView {
     
     // MARK: - Button Helpers
     @objc private func showStats() {
-        postInfoDelegate.showPostInfo(post: post!)
+        if postInfoDelegate != nil {
+            postInfoDelegate!.showPostInfo(post: post!)
+        }
     }
 }
 

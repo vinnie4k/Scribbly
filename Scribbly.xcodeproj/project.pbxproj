@@ -14,6 +14,7 @@
 		2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C0899294F16C90021C2D9 /* HomeVC.swift */; };
 		2E0C089D294F17A10021C2D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089C294F17A10021C2D9 /* User.swift */; };
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
+		2E11443F2964D86C00054D51 /* UploadPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E11443E2964D86C00054D51 /* UploadPostVC.swift */; };
 		2E2A67B429649C5000AE6DA2 /* AddFriendsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A67B329649C5000AE6DA2 /* AddFriendsVC.swift */; };
 		2E2A67B629649C9900AE6DA2 /* AddFriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A67B529649C9900AE6DA2 /* AddFriendsTableViewCell.swift */; };
 		2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */; };
@@ -39,6 +40,7 @@
 		2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment and Reply.swift */; };
 		2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentCells.swift */; };
 		2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EED0C852952D09F009BA4CE /* CommentVC.swift */; };
+		2EF0A5672964A95500B2E799 /* TimerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF0A5662964A95500B2E799 /* TimerVC.swift */; };
 		95F9EA770B5CCB2FEEC95B2E /* Pods_Scribbly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +56,7 @@
 		2E0C0899294F16C90021C2D9 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		2E0C089C294F17A10021C2D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		2E11443E2964D86C00054D51 /* UploadPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostVC.swift; sourceTree = "<group>"; };
 		2E2A67B329649C5000AE6DA2 /* AddFriendsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsVC.swift; sourceTree = "<group>"; };
 		2E2A67B529649C9900AE6DA2 /* AddFriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsTableViewCell.swift; sourceTree = "<group>"; };
 		2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -79,6 +82,7 @@
 		2ED4F1142953669B00E66E5F /* Comment and Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comment and Reply.swift"; sourceTree = "<group>"; };
 		2ED4F1162953711A00E66E5F /* CommentCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCells.swift; sourceTree = "<group>"; };
 		2EED0C852952D09F009BA4CE /* CommentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentVC.swift; sourceTree = "<group>"; };
+		2EF0A5662964A95500B2E799 /* TimerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerVC.swift; sourceTree = "<group>"; };
 		7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Scribbly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -175,6 +179,8 @@
 				2E9D4363296294BA00B6474C /* RequestsVC.swift */,
 				2E9D436729635B7800B6474C /* OtherUserProfileVC.swift */,
 				2E2A67B329649C5000AE6DA2 /* AddFriendsVC.swift */,
+				2EF0A5662964A95500B2E799 /* TimerVC.swift */,
+				2E11443E2964D86C00054D51 /* UploadPostVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -340,6 +346,7 @@
 				2ECBE2A029590F2400DFA64F /* MainUserProfileVC.swift in Sources */,
 				2E9D4360296220C400B6474C /* Database.swift in Sources */,
 				2E9D43662962975200B6474C /* RequestTableViewCell.swift in Sources */,
+				2E11443F2964D86C00054D51 /* UploadPostVC.swift in Sources */,
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
 				2E9D436C29636F0F00B6474C /* OtherMemsCollectionViewCell.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
@@ -350,6 +357,7 @@
 				2E2A67B429649C5000AE6DA2 /* AddFriendsVC.swift in Sources */,
 				2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */,
 				2E9D43622962574400B6474C /* FriendsTableViewCell.swift in Sources */,
+				2EF0A5672964A95500B2E799 /* TimerVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,
 				2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */,
