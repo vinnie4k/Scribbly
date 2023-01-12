@@ -8,6 +8,7 @@
 // TODO: ALREADY REFACTORED
 
 import UIKit
+import FirebaseAuth
 
 // MARK: HomeVC
 class HomeVC: UIViewController {
@@ -40,7 +41,7 @@ class HomeVC: UIViewController {
     private lazy var profileButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
-        btn.setImage(user.getPFP(), for: .normal)
+        btn.backgroundColor = Constants.secondary_text
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.profile_button_radius
         btn.layer.masksToBounds = true
@@ -56,6 +57,7 @@ class HomeVC: UIViewController {
         cv.contentInset = UIEdgeInsets(top: Constants.post_cv_top_padding, left: 0, bottom: Constants.post_cv_bot_padding, right: 0)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.addSubview(refreshControl)
+        cv.alwaysBounceVertical = true
         return cv
     }()
     
@@ -88,96 +90,155 @@ class HomeVC: UIViewController {
         return refresh
     }()
     
-    // TODO: START REMOVE
-    private lazy var user: User = User(pfp: UIImage(named: "vinnie_pfp")!, firstName: "vin", lastName: "bui", userName: "vinnie", bio: "I hate school", email: "vinbui@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "10 October 2022"))
+    private let logoLoading: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "scribbly"
+        lbl.font = Constants.getFont(size: 40, weight: .semibold)
+        lbl.textColor = .label
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
     
-    private func createTests() {
-        let caitlyn = User(pfp: UIImage(named: "cakey_pfp")!, firstName: "caitlyn", lastName: "jin", userName: "cakeymecake", bio: "I love drawing", email: "caitlynjin@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
-        let karen = User(pfp: UIImage(named: "piano")!, firstName: "karen", lastName: "sabile", userName: "karensabile", bio: "my music taste is top tier", email: "karensabile@gmail.com", accountStart: CalendarHelper().getDateFromDayMonthYear(str: "25 December 2022"))
-        let katherine = User(pfp: UIImage(named: "katherine_pfp")!, firstName: "katherine", lastName: "chang", userName: "strokeslover101", bio: "Slay!!", email: "katherinechang@gmail.com", accountStart: Date())
-        
-        let vin_post = Post(user: user, drawing: UIImage(named: "bird_drawing2")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: "12 November 2022"))
-        let caitlyn_post = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "better than vin's", time: Date())
-        let karen_post = Post(user: karen, drawing: UIImage(named: "piano")!, caption: "naur", time: Date())
-        let katherine_post = Post(user: katherine, drawing: UIImage(named: "katherine_drawing")!, caption: "This is so beautiful❤️", time: Date())
-
-        for i in 1...25 {
-            let date = String(i) + " December 2022"
-            let post = Post(user: user, drawing: UIImage(named: "bird_drawing1")!, caption: "i drew this in middle school", time: CalendarHelper().getDateFromDayMonthYear(str: date))
-            post.addComment(comment_user: caitlyn, text: "This sucks")
-            post.addComment(comment_user: user, text: "This does not suck")
-            user.addPost(post: post)
-        }
-        
-        Database.addUser(user: user)
-        Database.addUser(user: caitlyn)
-        Database.addUser(user: karen)
-        Database.addUser(user: katherine)
-        
-        user.addFriend(friend: caitlyn)
-        user.addFriend(friend: karen)
-        user.addFriend(friend: katherine)
-        
-        for _ in 1...30 {
-            let newPost = Post(user: caitlyn, drawing: UIImage(named: "bird_drawing2")!, caption: "hey", time: Date())
-            caitlyn.addPost(post: newPost)
-            user.addBookmarkPost(post: newPost)
-        }
-        
-        caitlyn.addFriend(friend: user)
-        karen.addFriend(friend: user)
-        katherine.addFriend(friend: user)
-        
-        user.addPost(post: vin_post)
-        vin_post.setHidden(bool: true)
-        caitlyn.addPost(post: caitlyn_post)
-        katherine.addPost(post: katherine_post)
-        
-        karen.addPost(post: karen_post)
-        
-        vin_post.addComment(comment_user: caitlyn, text: "This sucks")
-        vin_post.addComment(comment_user: katherine, text: "So bad 😭")
-        vin_post.addComment(comment_user: user, text: "This does not suck")
-        vin_post.addComment(comment_user: user, text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        vin_post.getComments()[0].addReply(text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", prev: nil, replyUser: user)
-        vin_post.getComments()[0].addReply(text: "Are you okay...", prev: vin_post.getComments()[0].getReplies()[0], replyUser: caitlyn)
-        
-        // Friend requests
-        let liam = User(pfp: UIImage(named: "liam_pfp")!, firstName: "liam", lastName: "du", userName: "liamdu", bio: "i eat cheese", email: "liamdu@gmail.com", accountStart: Date())
-        Database.addUser(user: liam)
-        let liam_post = Post(user: liam, drawing: UIImage(named: "piano")!, caption: "yo", time: Date())
-        liam.addPost(post: liam_post)
-//        karen.sendRequest(user: user)
-//        katherine.sendRequest(user: user)
-        liam.sendRequest(user: user)
-    }
-    // TODO: END REMOVE
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
+    private let noFriendsLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.font = Constants.getFont(size: 24, weight: .regular)
+        lbl.text = "add friends through your profile"
+        lbl.numberOfLines = 2
+        lbl.textColor = Constants.secondary_text
+        lbl.textAlignment = .center
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
     
     // MARK: - Properties (data)
+    private var mainUser: User!
     private var posts: [Post] = []
+    private var prompt: String = ""
+    private var mainUserPost: UIImage?
+    private var initialPopup: Bool
     
-    // MARK: - viewDidLoad and setupConstraints
+    // MARK: - Backend Helpers
+    private func validateLogin() {
+        if FirebaseAuth.Auth.auth().currentUser == nil {
+            let landingVC = LandingVC()
+            let nav = UINavigationController(rootViewController: landingVC)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: false)
+        }
+    }
+    
+    private func getPrompt() {
+        let format = DateFormatter()
+        format.dateFormat = "M-d-yy"
+        
+        DatabaseManager.getTodaysPrompt(with: format.string(from: Date()), completion: { [weak self] myPrompt in
+            guard let `self` = self else { return }
+            self.prompt = myPrompt
+        })
+    }
+    
+    private func refreshHomePage() {
+        // Update friends
+        DatabaseManager.getFriends(with: mainUser, completion: { [weak self] _ in
+            guard let `self` = self else { return }
+            if self.mainUser.friends == nil || self.mainUser.getFriends().count == 0 {
+                self.noFriendsLabel.isHidden = false
+                self.posts = []
+                self.postCV.reloadData()
+                self.refreshControl.endRefreshing()
+            } else {
+                DatabaseManager.getFeedData(with: self.mainUser.getFriends(), completion: { [weak self] posts in
+                    guard let `self` = self else { return }
+                    self.noFriendsLabel.isHidden = true
+                    self.posts = posts
+                    self.postCV.reloadData()
+                    self.refreshControl.endRefreshing()
+                })
+            }
+        })
+        
+        // Update post stats
+        if let todaysPost = mainUser.getTodaysPost() {
+            DatabaseManager.updatePostStats(with: todaysPost, completion: { [weak self] success in
+                guard let `self` = self else { return }
+                if success {
+                    self.postCV.reloadData()
+                }
+            })
+        }
+    }
+    
+    // MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        testCreateUser2()
+//        testCreateUser()
+        validateLogin()
+    }
+    
+    // MARK: - viewDidLoad, initialStartup, loadHomePage, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-
-        view.addSubview(postCV)
-        view.addSubview(drawViewLarge)
         
-        // TODO: START REMOVE
-        createTests()
-        // TODO: END REMOVE
-        
-        if !user.postedForToday() {
-            let timerVC = TimerVC(mainUser: user)
-            navigationController?.pushViewController(timerVC, animated: false)
+        startLoading()
+        initialStartup()
+    }
+    
+    private func initialStartup() {
+        if FirebaseAuth.Auth.auth().currentUser == nil {
+            let landingVC = LandingVC()
+            let nav = UINavigationController(rootViewController: landingVC)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: false)
+        } else {
+            self.getPrompt()
+            DatabaseManager.getStartup(completion: { [weak self] user, posts in
+                guard let `self` = self else { return }
+                
+                if let user = user {
+                    self.mainUser = user
+                    self.profileButton.setImage(user.getPFP(), for: .normal)
+                    
+                    if user.todaysPost == "" {
+                        let timerVC = TimerVC(mainUser: user, prompt: self.prompt, initialPopup: self.initialPopup)
+                        timerVC.updateFeedDelegate = self
+                        self.navigationController?.pushViewController(timerVC, animated: false)
+                    }
+                    
+                    self.posts = posts
+                    self.loadHomePage()
+                } else {
+                    // Go to user account creation
+                    let firstNameVC = FirstNameVC()
+                    self.navigationController?.pushViewController(firstNameVC, animated: false)
+                }
+            })
         }
-        
-        setupPostsData()
+    }
+    
+    private func loadHomePage() {
+        view.addSubview(postCV)
+        view.addSubview(noFriendsLabel)
+        view.addSubview(drawViewLarge)
+                
+        if mainUser.friends != nil {
+            noFriendsLabel.isHidden = true
+        }
         setupGradient()
         setupNavBar()
         setupCollectionView()
         setupConstraints()
+        stopLoading()
     }
     
     private func setupConstraints() {
@@ -196,17 +257,43 @@ class HomeVC: UIViewController {
             drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
             drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            noFriendsLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.no_friends_side),
+            noFriendsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            noFriendsLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
-    // MARK: - Setup Data
-    private func setupPostsData() {
-        posts = [Post]()
-        posts = user.updateFeed()
+    // MARK: - init
+    init(initialPopup: Bool) {
+        self.initialPopup = initialPopup
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - Helper Functions
+    private func startLoading() {
+        view.addSubview(logoLoading)
+        view.addSubview(spinner)
+        spinner.startAnimating()
+        NSLayoutConstraint.activate([
+            logoLoading.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoLoading.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.topAnchor.constraint(equalTo: logoLoading.bottomAnchor, constant: 30)
+        ])
+    }
+    
+    private func stopLoading() {
+        logoLoading.alpha = 0
+        spinner.stopAnimating()
+    }
+    
     private func setupNavBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)
@@ -234,16 +321,14 @@ class HomeVC: UIViewController {
     }
     
     @objc private func pushMainUserProfileVC() {
-        let profileVC = MainUserProfileVC(mainUser: user)
+        let profileVC = MainUserProfileVC(mainUser: mainUser)
         profileVC.updateFeedDelegate = self
         profileVC.updatePFPDelegate = self
         navigationController?.pushViewController(profileVC, animated: true)
     }
     
     @objc private func refreshFeed() {
-        setupPostsData()
-        postCV.reloadData()
-        refreshControl.endRefreshing()
+        refreshHomePage()
     }
 }
 
@@ -262,10 +347,8 @@ extension HomeVC: UICollectionViewDataSource {
         if kind == UICollectionView.elementKindSectionHeader {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PromptHeaderView.reuseIdentifier, for: indexPath) as? PromptHeaderView {
                 header.backgroundColor = .systemBackground
-                if (user.getPosts().count != 0) {
-                    header.configure(prompt: "bird", post: user.getTodaysPost())
-                    header.postInfoDelegate = self
-                }
+                header.configure(prompt: prompt, post: mainUser.getTodaysPost())
+                header.postInfoDelegate = self
                 return header
             }
         }
@@ -280,7 +363,7 @@ extension HomeVC: UICollectionViewDataSource {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.reuseIdentifier, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
-            cell.configure(mainUser: user, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
+            cell.configure(mainUser: mainUser, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
             cell.layer.cornerRadius = Constants.post_cell_corner
             cell.captionView.updateFeedDelegate = self
             cell.enlargeDrawingDelegate = self
@@ -371,12 +454,66 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
     
     // MARK: - UpdateFeedDelegate
     func updateFeed() {
-        setupPostsData()
-        postCV.reloadData()
+        refreshHomePage()
     }
     
     // MARK: - UpdatePFPDelegate
     func updatePFP() {
-        profileButton.setImage(user.getPFP(), for: .normal)
+        guard let mainUser = mainUser else { return }
+        self.profileButton.setImage(mainUser.getPFP(), for: .normal)
     }
+}
+
+// MARK: - TESTING EXTENSION
+extension HomeVC {
+    private func testCreateUser() {
+        let testEmail = "b.vinhan01@gmail.com"
+        let testPassword = "password"
+        
+        FirebaseAuth.Auth.auth().createUser(withEmail: testEmail, password: testPassword) { authResult, error in
+            guard let userID = authResult?.user.uid else { return }
+            
+            let format = DateFormatter()
+            format.dateFormat = "d MMMM yyyy HH:mm:ss"
+            let date = format.string(from: Date())
+            
+            let safeEmail = testEmail.replacingOccurrences(of: ".", with: "-").replacingOccurrences(of: "@", with: "-")
+            
+            let user = User(id: userID, userName: "vinnie", firstName: "vin", lastName: "bui", pfp: "\(safeEmail)_profile_picture.jpg", accountStart: date, bio: "", friends: [:], requests: [:], blocked: [:], posts: [:], bookmarkedPosts: [:], todaysPost: "")
+            
+            DatabaseManager.addUser(with: user, completion: { success in
+                if success {
+                    print("User was created successfully.")
+                } else {
+                    print("Unable to create user.")
+                }
+            })
+        }
+    }
+    
+    private func testCreateUser2() {
+        let testEmail = "caitlynjin@gmail.com"
+        let testPassword = "password"
+        
+        FirebaseAuth.Auth.auth().createUser(withEmail: testEmail, password: testPassword) { authResult, error in
+            guard let userID = authResult?.user.uid else { return }
+            
+            let format = DateFormatter()
+            format.dateFormat = "d MMMM yyyy HH:mm:ss"
+            let date = format.string(from: Date())
+            
+            let safeEmail = testEmail.replacingOccurrences(of: ".", with: "-").replacingOccurrences(of: "@", with: "-")
+            
+            let user = User(id: userID, userName: "cakeymecake", firstName: "caitlyn", lastName: "jin", pfp: "images/\(safeEmail)_profile_picture.jpg", accountStart: date, bio: "minecraft", friends: [:], requests: [:], blocked: [:], posts: [:], bookmarkedPosts: [:], todaysPost: "")
+            
+            DatabaseManager.addUser(with: user, completion: { success in
+                if success {
+                    print("User was created successfully.")
+                } else {
+                    print("Unable to create user.")
+                }
+            })
+        }
+    }
+    
 }

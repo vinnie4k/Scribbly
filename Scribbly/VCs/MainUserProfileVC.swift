@@ -84,14 +84,22 @@ class MainUserProfileVC: UIViewController {
         return cv
     }()
     
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
     // MARK: - Properties (data)
     private var mainUser: User!
     private var memsData = [Month]()
     private var booksData = [Bookmarks]()
     private var datasource: Datasource!
     private var updateMems: Bool = true
-    var updateFeedDelegate: UpdateFeedDelegate!
-    var updatePFPDelegate: UpdatePFPDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updatePFPDelegate: UpdatePFPDelegate!
     
     // MARK: - viewDidLoad, init, setupBackground, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -108,6 +116,7 @@ class MainUserProfileVC: UIViewController {
         
         view.addSubview(collectionView)
         view.addSubview(drawViewLarge)
+        view.addSubview(spinner)
         
 //        setupGradient()
         setupBooksData()
@@ -150,6 +159,7 @@ class MainUserProfileVC: UIViewController {
         backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settingsButton)
+        settingsButton.addTarget(self, action: #selector(pushSettingsVC), for: .touchUpInside)
     }
     
     private func setupConstraints() {
@@ -162,17 +172,19 @@ class MainUserProfileVC: UIViewController {
             drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
             drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100)
         ])
     }
     
     // MARK: - Data Helper Functions
     private func setupBooksData() {
-        booksData = [Bookmarks]()   // Must reset first
-        for books in mainUser.getBookmarks() {
-            booksData.append(Bookmarks(post: books))
+        booksData = []   // Must reset first
+        for i in mainUser.getBookmarks() {
+            self.booksData.insert(Bookmarks(post: i), at: 0)
         }
-        booksData.reverse()
     }
     
     /**
@@ -182,19 +194,17 @@ class MainUserProfileVC: UIViewController {
      ["","","","","1","2",...]
      */
     private func setupMemsData() {
-        memsData = [Month]()   // Must reset first
-        
-        let months = mainUser.monthsFromStart()
-        for month in months {
+        memsData = []   // Must reset first
+        for month in mainUser.monthsFromStart() {
             var accum = [String]()
             accum.append(month)
             
             let date = CalendarHelper().getDateFromDayMonthYear(str: "1 " + month)
-            let days = getDaysAsString(selected_date: date)
+            let days = self.getDaysAsString(selected_date: date)
             for day in days {
                 accum.append(day)
             }
-            memsData.append(Month(array: accum))
+            self.memsData.append(Month(array: accum))
         }
     }
     
@@ -240,6 +250,11 @@ class MainUserProfileVC: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc private func pushSettingsVC() {
+        let settingsVC = SettingsVC()
+        navigationController?.pushViewController(settingsVC, animated: true)
+    }
+    
     @objc private func reduceImage() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.drawViewLarge.alpha = 0.0
@@ -258,10 +273,10 @@ extension MainUserProfileVC {
             return self.sectionFor(index: index, environment: env)
         }
     }
-
+    
     func sectionFor(index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let section = datasource.snapshot().sectionIdentifiers[index]
-
+        
         switch section {
         case .profileHeader:
             return createProfileHeaderSection()
@@ -275,14 +290,14 @@ extension MainUserProfileVC {
     func createBooksSection() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4), heightDimension: .fractionalHeight(1.0)))
         item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-
+        
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(1/4)), subitems: [item])
         
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.mems_book_height)), elementKind: MemsBookHeaderView.reuseIdentifier, alignment: .top)
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0)
-
+        
         header.pinToVisibleBounds = true
         section.boundarySupplementaryItems = [header]
         
@@ -298,7 +313,7 @@ extension MainUserProfileVC {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0)
-
+        
         header.pinToVisibleBounds = true
         section.boundarySupplementaryItems = [header]
         
@@ -308,7 +323,7 @@ extension MainUserProfileVC {
     func createProfileHeaderSection() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.prof_head_height)), subitems: [item])
-
+        
         return NSCollectionLayoutSection(group: group)
     }
     
@@ -321,7 +336,7 @@ extension MainUserProfileVC {
         case memsSection
         case booksSection
     }
-
+    
     enum Item: Hashable {
         case profileHeaderCell
         case memsCell(Month)
@@ -337,7 +352,7 @@ extension MainUserProfileVC {
         }
         
         static func == (lhs: MainUserProfileVC.Bookmarks, rhs: MainUserProfileVC.Bookmarks) -> Bool {
-            lhs.post === rhs.post
+            lhs.post.id == rhs.post.id
         }
     }
     
@@ -349,14 +364,13 @@ extension MainUserProfileVC {
             hasher.combine(id)
         }
     }
-        
+    
     private func cell(collectionView: UICollectionView, indexPath: IndexPath, item: Item) -> UICollectionViewCell {
         switch item {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
             cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle, parentVC: self)
             cell.updatePFPDelegate = updatePFPDelegate
-            cell.updateProfileDelegate = self
             cell.updateFeedDelegate = updateFeedDelegate
             return cell
         case .memsCell (let data):
@@ -388,7 +402,8 @@ extension MainUserProfileVC {
     }
     
     private func configureDatasource() {
-        datasource = Datasource(collectionView: collectionView, cellProvider: cell(collectionView:indexPath:item:))
+        datasource = Datasource(collectionView: collectionView, cellProvider: { [unowned self] collectionView, indexPath, item in return self.cell(collectionView: collectionView, indexPath: indexPath, item: item)})
+        delayedSnapshot()
         datasource.apply(snapshot(), animatingDifferences: false)
         datasource.supplementaryViewProvider = { [unowned self] collectionView, kind, indexPath in
             return self.supplementary(collectionView: collectionView, kind: kind, indexPath: indexPath)
@@ -397,15 +412,28 @@ extension MainUserProfileVC {
     
     func snapshot() -> Snapshot {
         var snapshot = Snapshot()
-        snapshot.appendSections([.profileHeader, .memsSection])
+        snapshot.appendSections([.profileHeader])
         snapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
-        snapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
         return snapshot
+    }
+    
+    private func delayedSnapshot() {
+        spinner.startAnimating()
+        
+        var snapshot = Snapshot()
+        DatabaseManager.loadOldPosts(with: mainUser.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            snapshot.appendSections([.profileHeader, .memsSection])
+            snapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
+            snapshot.appendItems(self.memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
+            self.datasource.applySnapshotUsingReloadData(snapshot)
+            self.spinner.stopAnimating()
+        })
     }
 }
 
 // MARK: - Delegation and Other Extensions
-extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate, UpdateProfileDelegate {
+extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
     // MARK: - PostInfoDelegate
     func showPostInfo(post: Post) {
         return  // Do nothing here
@@ -467,11 +495,6 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate, UpdateProfile
             updateMems = false
         }
         datasource.apply(newSnapshot, animatingDifferences: true)
-    }
-    
-    // MARK: - UpdateProfileDelegate
-    func updateProfile() {
-        collectionView.reloadData()
     }
     
     // MARK: - Extra Helpers

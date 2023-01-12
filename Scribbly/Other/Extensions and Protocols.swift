@@ -10,45 +10,49 @@
 import UIKit
 
 // MARK: - Protocols
-protocol DismissTimerDelegate {
+protocol DismissTutorialDelegate: AnyObject {
+    func dismissTutorial()
+}
+
+protocol DismissTimerDelegate: AnyObject {
     func dismissTimerVC()
 }
 
-protocol UpdateRequestsDelegate {
+protocol UpdateRequestsDelegate: AnyObject {
     func updateRequests()
 }
 
-protocol UpdateProfileDelegate {
+protocol UpdateProfileDelegate: AnyObject {
     func updateProfile()
 }
 
-protocol UpdatePFPDelegate {
+protocol UpdatePFPDelegate: AnyObject {
     func updatePFP()
 }
 
-protocol UpdateFeedDelegate {
+protocol UpdateFeedDelegate: AnyObject {
     func updateFeed()
 }
 
-protocol SwitchViewDelegate {
+protocol SwitchViewDelegate: AnyObject {
     func switchView(pos: Int)
 }
 
-protocol ReloadStatsDelegate {
+protocol ReloadStatsDelegate: AnyObject {
     func reloadStats()
 }
 
-protocol PostInfoDelegate {
+protocol PostInfoDelegate: AnyObject {
     func showPostInfo(post: Post)
     func showMemsInfo(post: Post)
     func showBooksInfo(post: Post)
 }
 
-protocol EnlargeDrawingDelegate {
+protocol EnlargeDrawingDelegate: AnyObject {
     func enlargeDrawing(drawing: UIImage)
 }
 
-protocol CommentDelegate {
+protocol CommentDelegate: AnyObject {
     func sendReplyComment(comment: Comment)
     func sendReplyReply(comment: Comment, reply: Reply)
     func deleteComment(comment: Comment)
@@ -223,6 +227,14 @@ extension UITextField {
         self.layer.addSublayer(bottomLine)
     }
     
+    func addUnderlineOnboard(color: UIColor, width: Int) {
+        let bottomLine = CALayer()
+        bottomLine.frame = CGRect(x: 0, y: 50, width: width, height: 1)
+        bottomLine.backgroundColor = color.cgColor
+        self.borderStyle = UITextField.BorderStyle.none
+        self.layer.addSublayer(bottomLine)
+    }
+    
     func addInvalid() {
         let img = UIImageView(image: UIImage(named: "caution_sign"))
         img.translatesAutoresizingMaskIntoConstraints = false
@@ -237,5 +249,12 @@ extension UITextField {
         for i in self.subviews {
             i.removeFromSuperview()
         }
+    }
+}
+
+// MARK: - Dictionary Helpers
+extension Dictionary where Value: Equatable {
+    func allKeys(forValue val: Value) -> [Key] {
+        return self.filter { $1 == val }.map { $0.0 }
     }
 }

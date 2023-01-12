@@ -51,8 +51,8 @@ class AddFriendsTableViewCell: UITableViewCell {
     // MARK: - Properties (data)
     static let reuseIdentifier = "AddFriendsTableViewCellReuse"
     private var mainUser: User!
-    private var user: User!
-    var updateRequestsDelegate: UpdateRequestsDelegate!
+    private weak var user: User!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate!
     
     // MARK: - init, configure, and setupConstraints
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -76,9 +76,9 @@ class AddFriendsTableViewCell: UITableViewCell {
         
         var text: AttributedString
         
-        if mainUser.hasRequested(user: user) {
+        if user.hasRequested(user: mainUser) {
             text = AttributedString("requested")
-        } else if user.hasRequested(user: mainUser) {
+        } else if mainUser.hasRequested(user: user) {
             text = AttributedString("accept")
         } else {
             text = AttributedString("follow")
@@ -113,19 +113,33 @@ class AddFriendsTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc func sendRequest() {
-        if mainUser.hasRequested(user: user) {
-            mainUser.unsendRequest(user: user)
+        if user.hasRequested(user: mainUser) {
+            // Currently says "requested"
+            // mainUser has already sent a request. Change to follow and remove the request.
+            user.removeRequest(user: mainUser)
             followButton.configuration?.title = "follow"
             updateRequestsDelegate.updateRequests()
-        } else if user.hasRequested(user: mainUser) {
-            mainUser.acceptRequest(user: user)
-            followButton.configuration?.title = "accepted"
-            followButton.isUserInteractionEnabled = false
-            updateRequestsDelegate.updateRequests()
+        } else if mainUser.hasRequested(user: user) {
+            // Curently says "accept"
+            // The other user has sent a request to mainUser. Change to accepted and remove the request.
+            mainUser.removeRequest(user: user)
+            mainUser.addFriend(friend: user)
+            user.addFriend(friend: mainUser)
+            
+            DispatchQueue.main.async {
+                self.followButton.configuration?.title = "accepted"
+                self.followButton.isUserInteractionEnabled = false
+                self.updateRequestsDelegate.updateRequests()
+            }
         } else {
-            mainUser.sendRequest(user: user)
-            followButton.configuration?.title = "requested"
-            updateRequestsDelegate.updateRequests()
+            // Currently says "follow"
+            // Send a request from mainUser to the other user
+            user.addRequest(user: mainUser)
+            DispatchQueue.main.async {
+                self.followButton.configuration?.title = "requested"
+                self.updateRequestsDelegate.updateRequests()
+            }
         }
+
     }
 }

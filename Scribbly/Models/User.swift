@@ -10,125 +10,122 @@
 import UIKit
 
 // MARK: User Model Class
-class User {
+class User: Codable, Equatable, Identifiable {
     // MARK: - Properties
-    private let accountStart: Date
-    private var friends: [User]
-    private var requests: [User]
-    private var blocked: [User]
-    private var pfp: UIImage
-    private var firstName: String
-    private var lastName: String
-    private var fullName: String
-    private var userName: String
-    private var bio: String
-    private var email: String
-    private var posts: [Post]
-    private var bookmarkedPosts: [Post]
+    var id: String
+    var userName: String
+    var firstName: String
+    var lastName: String
+    var pfp: String         // URL
+    var accountStart: String // format: d MMM yyyy HH:mm:ss Z (ex: 5 Jan 2023 03:24:00 -0600)
+
+    var bio: String
+    var friends: [String : String]?          // Array of user IDs
+    var requests: [String : String]?         // Array of user IDs
+    var blocked: [String : String]?          // Array of user IDs
+    var posts: [String : String]?            // Array of post IDs
+    var bookmarkedPosts: [String : String]?  // Array of post IDs
+
+    var todaysPost: String          // Post ID
     
+    // MARK: - Equatable
+    static func == (lhs: User, rhs: User) -> Bool {
+        lhs.id == rhs.id
+    }
+
     // MARK: - Helper Functions
-    func postedForToday() -> Bool {
-        if posts.count == 0 { // No posts yet
-            return false
-        }
-        if (Calendar.current.isDate(getTodaysPost().getTime(), inSameDayAs: Date())) {
-            return true
-        }
-        return false
-    }
-    
     func removeBookmarksFromUser(user: User) {
-        bookmarkedPosts = bookmarkedPosts.filter{ $0.getUser() !== user }
+        let posts = getBookmarksFromUser(user: user)
+        for post in posts {
+            removeBookmarkPost(post: post)
+            post.removeBookmarkUser(user: self)
+        }
     }
-    
+
     func getBookmarksFromUser(user: User) -> [Post] {
+        if bookmarkedPosts == nil { return [] }
         var result: [Post] = []
-        for post in bookmarkedPosts {
-            if post.getUser() === user {
-                result.insert(post, at: 0)
+        for postID in bookmarkedPosts!.values.map({$0}) {
+            let post = PostMap.map[postID]
+            if post?.user == user.id {
+                result.insert(post!, at: 0)
             }
         }
         return result
     }
-    
+
     func isBlocked(user: User) -> Bool {
-        for i in blocked {
-            if i === user {
-                return true
+        if let blocked = blocked {
+            for userID in blocked.values.map({$0}) {
+                if userID == user.id {
+                    return true
+                }
             }
         }
         return false
     }
-    
+
     func hasRequested(user: User) -> Bool {
-        for i in user.getRequests() {
-            if i === self {
-                return true
+        if let requests = requests {
+            for userID in requests.values.map({$0}) {
+                if userID == user.id {
+                    return true
+                }
             }
         }
         return false
     }
-    
+
     func isFriendsWith(user: User) -> Bool {
-        for i in friends {
-            if i === user {
-                return true
+        if let friends = friends {
+            for userID in friends.values.map({$0}) {
+                if userID == user.id {
+                    return true
+                }
             }
         }
         return false
     }
-    
-    func unsendRequest(user: User) {
-        user.removeRequest(user: self)
-    }
-    
-    func acceptRequest(user: User) {
-        var found = false
-        for i in 0..<requests.count {
-            if !found && requests[i] === user {
-                friends.append(user)
-                requests.remove(at: i)
-                user.addFriend(friend: self)
-                found = true
-            }
-        }
-    }
-    
-    func sendRequest(user: User) {
-        user.addRequest(user: self)
-    }
-    
-    func defaultPFP() {
-        pfp = UIImage(systemName: "person.circle.fill")!.withTintColor(UIColor.gray, renderingMode: .alwaysOriginal)
-    }
-    
+
     func updateFeed() -> [Post] {
         var result = [Post]()
-        for i in friends {
-            result.append(i.getTodaysPost())
+        if let friends = friends {
+            for userID in friends.values.map({$0}) {
+                let user = UserMap.map[userID]!
+                result.append(user.getTodaysPost()!)
+            }
         }
         return result
     }
-    
+
     func getPostFromDate(selected_date: Date) -> Post? {
-        for i in posts {
-            if (Calendar.current.isDate(i.getTime(), inSameDayAs: selected_date)) {
-                return i
+        guard let posts = posts else { return nil }
+//        let arr = Array(posts.values.map({$0}))
+        
+        let arr = posts.values.map({$0})
+        for postID in arr {
+            if let post = PostMap.map[postID] {
+                if (Calendar.current.isDate(post.getTime(), inSameDayAs: selected_date)) {
+                    return post
+                }
             }
         }
         return nil
     }
-    
+
     /**
      Returns a list of the months from the start date to today's date in reverse order
      For example, if today is December 2022 and the start date is October 2022, monthsFromStart()
      returns ["December 2022", "November 2022", "October 2022"]
      */
     func monthsFromStart() -> [String] {
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        let accountStart = format.date(from: accountStart)!
+        
         let calendar = Calendar(identifier: .gregorian)
-        
         let firstOfMonth = CalendarHelper().firstOfMonth(date: accountStart)
-        
+
         let components = calendar.dateComponents(Set([.month]), from: firstOfMonth, to: Date())
 
         var allDates: [String] = []
@@ -146,172 +143,216 @@ class User {
         allDates.reverse()
         return allDates
     }
-    
+
     func isBookmarked(post: Post) -> Bool {
-        for i in bookmarkedPosts {
-            if i === post {
-                return true
+        if let bookmarkedPosts = bookmarkedPosts {
+            for postID in bookmarkedPosts.values.map({$0}) {
+                if postID == post.id {
+                    return true
+                }
             }
         }
         return false
     }
-    
+
     // MARK: - Getters and Setters
     func unblockUser(user: User) {
-        var found = false
-        for i in 0..<blocked.count {
-            if !found && blocked[i] === user {
-                blocked.remove(at: i)
-                found = true
+        DatabaseManager.removeBlock(with: user.id, userID: self.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let keys = self.blocked?.allKeys(forValue: user.id) {
+                    self.blocked?.removeValue(forKey: keys[0])
+                }
             }
-        }
+        })
     }
-    
+
     func blockUser(user: User) {
-        blocked.insert(user, at: 0)
+        if blocked == nil {
+            blocked = [:]
+        }
+        
+        DatabaseManager.addBlock(with: user, userID: self.id, completion: { [weak self] success, key in
+            guard let `self` = self else { return }
+            if success {
+                self.blocked![key] = user.id
+            }
+        })
+        
+        user.removeFriend(user: self)
+        self.removeFriend(user: user)
+        user.removeRequest(user: self)
+        self.removeRequest(user: user)
+        
         removeBookmarksFromUser(user: user)
-        if isFriendsWith(user: user) {
-            removeFriend(user: user)
-        }
-        if hasRequested(user: user) {
-            unsendRequest(user: user)
-        }
     }
-    
+
     func removeRequest(user: User) {
-        var found = false
-        for i in 0..<requests.count {
-            if !found && requests[i] === user {
-                requests.remove(at: i)
-                found = true
+        DatabaseManager.removeRequest(with: user.id, userID: self.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let keys = self.requests?.allKeys(forValue: user.id) {
+                    self.requests?.removeValue(forKey: keys[0])
+                }
             }
-        }
+        })
     }
-    
+
     func removeFriend(user: User) {
-        var found = false
-        for i in 0..<friends.count {
-            if !found && friends[i] === user {
-                friends.remove(at: i)
-                user.removeFriend(user: self)
-                found = true
+        DatabaseManager.removeFriend(with: user.id, userID: self.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let keys = self.friends?.allKeys(forValue: user.id) {
+                    self.friends?.removeValue(forKey: keys[0])
+                }
             }
-        }
+        })
     }
-    
+
     func addRequest(user: User) {
-        requests.append(user)
+        if requests == nil {
+            requests = [:]
+        }
+        
+        DatabaseManager.addRequest(with: user, userID: self.id, completion: { [weak self] success, key in
+            guard let `self` = self else { return }
+            if success {
+                self.requests![key] = user.id
+            }
+        })
     }
-    
+
     func getRequests() -> [User] {
-        return requests
+        if requests == nil { return [] }
+        
+        var accum: [User] = []
+        for userID in requests!.values.map({$0}) {
+            accum.append(UserMap.map[userID]!)
+        }
+        return accum
     }
-    
-    func setBio(text: String) {
-        bio = text
-    }
-    
-    func setEmail(text: String) {
-        email = text
-    }
-    
-    func setUserName(name: String) {
-        userName = name
-    }
-    
-    func updateFullName() {
-        fullName = firstName + " " + lastName
-    }
-    
-    func setFirstName(name: String) {
-        firstName = name
-    }
-    
-    func setLastName(name: String) {
-        lastName = name
-    }
-    
-    func setPFP(image: UIImage) {
+
+    func setPFP(image: String) {
         pfp = image
     }
-    
-    func getEmail() -> String {
-        return email
-    }
-    
+
     func getLastName() -> String {
         return lastName
     }
-    
+
     func getFirstName() -> String {
         return firstName
     }
-    
+
     func addFriend(friend: User) {
-        friends.append(friend)
+        if friends == nil {
+            friends = [:]
+        }
+        DatabaseManager.addFriend(with: friend, userID: self.id, completion: { [weak self] success, key in
+            guard let `self` = self else { return }
+            if success {
+                self.friends![key] = friend.id
+            }
+        })
     }
-    
+
     func getFriends() -> [User] {
-        return friends
+        if friends == nil { return [] }
+        
+        var accum: [User] = []
+        for userID in friends!.values.map({$0}) {
+            accum.append(UserMap.map[userID]!)
+        }
+        return accum
     }
-    
+
     func getBio() -> String {
         return bio
     }
-    
+
     func getFullName() -> String {
-        return fullName
+        return firstName + " " + lastName
     }
-    
+
     func getBookmarks() -> [Post] {
-        return bookmarkedPosts
-    }
-    
-    func removeBookmarkPost(post: Post) {
-        if let index = bookmarkedPosts.firstIndex(where: {$0 === post}) {
-            bookmarkedPosts.remove(at: index)
+        if bookmarkedPosts == nil { return [] }
+        var accum: [Post] = []
+        for postID in bookmarkedPosts!.values.map({$0}) {
+            accum.append(PostMap.map[postID]!)
         }
+        return accum
     }
-    
+
+    func removeBookmarkPost(post: Post) {
+        DatabaseManager.removeBookmarkedPost(with: post.id, userID: self.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                if let keys = self.bookmarkedPosts?.allKeys(forValue: post.id) {
+                    self.bookmarkedPosts?.removeValue(forKey: keys[0])
+                }
+            }
+        })
+    }
+
     func addBookmarkPost(post: Post) {
-        bookmarkedPosts.append(post)
+        if bookmarkedPosts == nil {
+            bookmarkedPosts = [:]
+        }
+        
+        DatabaseManager.addBookmarkedPost(with: post.id, userID: self.id, completion: { [weak self] success, key in
+            guard let `self` = self else { return }
+            if success {
+                self.bookmarkedPosts![key] = post.id
+            }
+        })
     }
-    
+
     func getPFP() -> UIImage {
-        return pfp
+        return ImageMap.map[pfp]!
     }
-    
+
     func getUserName() -> String {
         return userName
     }
-    
+
     func getPosts() -> [Post] {
-        return posts
+        if posts == nil { return [] }
+        var accum: [Post] = []
+        
+        let posts = posts?.values.map({$0})
+        
+        for postID in posts! {
+            accum.append(PostMap.map[postID]!)
+        }
+        return accum
     }
-    
-    func getTodaysPost() -> Post {
-        // TODO: maybe only return if it matches today's date?
-        return posts[posts.count - 1]
+
+    func getTodaysPost() -> Post? {
+        return PostMap.map[todaysPost]
     }
-    
-    func addPost(post: Post) {
-        posts.append(post)
+
+    func addPost(key: String, post: Post) {
+        if posts == nil {
+            posts = [:]
+        }
+        posts![key] = post.id
     }
-    
-    // MARK: - init
-    init(pfp: UIImage, firstName: String, lastName: String, userName: String, bio: String, email: String, accountStart: Date) {
-        self.pfp = pfp
+
+    // MARK: - init and addToCache
+    init(id: String, userName: String, firstName: String, lastName: String, pfp: String, accountStart: String, bio: String, friends: [String:String]?, requests: [String:String]?, blocked: [String:String]?, posts: [String:String]?, bookmarkedPosts: [String:String]?, todaysPost: String) {
+        self.id = id
+        self.userName = userName
         self.firstName = firstName
         self.lastName = lastName
-        self.fullName = firstName + " " + lastName
-        self.userName = userName
-        self.bio = bio
-        self.email = email
-        self.posts = []
-        self.bookmarkedPosts = []
+        self.pfp = pfp
         self.accountStart = accountStart
-        self.friends = []
-        self.requests = []
-        self.blocked = []
+        self.bio = bio
+        self.friends = friends
+        self.requests = requests
+        self.blocked = blocked
+        self.posts = posts
+        self.bookmarkedPosts = bookmarkedPosts
+        self.todaysPost = todaysPost
     }
+
 }

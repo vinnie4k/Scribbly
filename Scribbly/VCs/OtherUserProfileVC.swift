@@ -67,6 +67,14 @@ class OtherUserProfileVC: UIViewController {
         return cv
     }()
     
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
     // MARK: - Properties (data)
     private var user: User!
     private var mainUser: User!
@@ -74,8 +82,8 @@ class OtherUserProfileVC: UIViewController {
     private var updateMems: Bool = true
     private var memsData = [Month]()
     private var booksData = [Bookmarks]()
-    var updateFeedDelegate: UpdateFeedDelegate!
-    var updateRequestsDelegate: UpdateRequestsDelegate?
+    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
     
     // MARK: - viewDidLoad, init, setupBackground, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -85,6 +93,7 @@ class OtherUserProfileVC: UIViewController {
         
         view.addSubview(collectionView)
         view.addSubview(drawViewLarge)
+        view.addSubview(spinner)
         
 //        setupGradient()
         setupBooksData()
@@ -139,7 +148,10 @@ class OtherUserProfileVC: UIViewController {
             drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
             drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100)
         ])
     }
     
@@ -370,7 +382,8 @@ extension OtherUserProfileVC {
     }
     
     private func configureDatasource() {
-        datasource = Datasource(collectionView: collectionView, cellProvider: cell(collectionView:indexPath:item:))
+        datasource = Datasource(collectionView: collectionView, cellProvider: { [unowned self] collectionView, indexPath, item in return self.cell(collectionView: collectionView, indexPath: indexPath, item: item)})
+        delayedSnapshot()
         createSnapshot()
         datasource.supplementaryViewProvider = { [unowned self] collectionView, kind, indexPath in
             return self.supplementary(collectionView: collectionView, kind: kind, indexPath: indexPath)
@@ -379,15 +392,30 @@ extension OtherUserProfileVC {
     
     private func createSnapshot() {
         var snapshot = Snapshot()
-        if !mainUser.isFriendsWith(user: user) {
-            snapshot.appendSections([Section.profileHeader])
-            snapshot.appendItems([Item.profileHeaderCell], toSection: .profileHeader)
-        } else {
-            snapshot.appendSections([Section.profileHeader, Section.memsSection])
-            snapshot.appendItems([Item.profileHeaderCell], toSection: .profileHeader)
-            snapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
-        }
+        snapshot.appendSections([.profileHeader])
+        snapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
         datasource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func delayedSnapshot() {
+        spinner.startAnimating()
+        
+        var snapshot = Snapshot()
+        DatabaseManager.loadOldPosts(with: user.id, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            
+            if self.mainUser.isFriendsWith(user: self.user) || self.user.isFriendsWith(user: self.mainUser) {
+                snapshot.appendSections([.profileHeader, .memsSection])
+                snapshot.appendItems([Item.profileHeaderCell], toSection: .profileHeader)
+                snapshot.appendItems(self.memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
+            } else {
+                snapshot.appendSections([Section.profileHeader])
+                snapshot.appendItems([Item.profileHeaderCell], toSection: .profileHeader)
+            }
+            
+            self.datasource.applySnapshotUsingReloadData(snapshot)
+            self.spinner.stopAnimating()
+        })
     }
 }
 
@@ -400,13 +428,13 @@ extension OtherUserProfileVC: SwitchViewDelegate, PostInfoDelegate, UpdateProfil
             newSnapshot.appendSections([.profileHeader, .memsSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
             newSnapshot.appendItems(memsData.map({ Item.memsCell($0) }), toSection: .memsSection)
-            
+
             updateMems = true
         } else if pos == 1 {
             newSnapshot.appendSections([.profileHeader, .booksSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)
             newSnapshot.appendItems(booksData.map({ Item.booksCell($0) }), toSection: .booksSection)
-            
+
             updateMems = false
         }
         datasource.apply(newSnapshot, animatingDifferences: true)
@@ -451,7 +479,7 @@ extension OtherUserProfileVC: SwitchViewDelegate, PostInfoDelegate, UpdateProfil
         setupBooksData()
 
         var newSnapshot = Snapshot()
-        
+
         if updateMems {
             newSnapshot.appendSections([.profileHeader, .memsSection])
             newSnapshot.appendItems([.profileHeaderCell], toSection: .profileHeader)

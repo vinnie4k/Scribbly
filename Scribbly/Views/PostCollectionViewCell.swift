@@ -68,16 +68,14 @@ class PromptHeaderView: UICollectionReusableView {
         self.post = post
         self.prompt.text = prompt
 
-//        if post == nil {
-//            self.userPost.image = UIImage(named: "nopost_dark")
-//            if traitCollection.userInterfaceStyle == .light {
-//                self.userPost.image = UIImage(named: "nopost_light")
-//            }
-//        } else {
-//            self.userPost.image = post!.getDrawing()
-//        }
-        
-        self.userPost.image = post!.getDrawing()
+        if post == nil {
+            self.userPost.image = UIImage(named: "nopost_dark")
+            if traitCollection.userInterfaceStyle == .light {
+                self.userPost.image = UIImage(named: "nopost_light")
+            }
+        } else {
+            self.userPost.image = post!.getDrawing()
+        }
     }
     
     private func setupConstraints() {
@@ -217,8 +215,8 @@ class PostCollectionViewCell: UICollectionViewCell {
         
         setMode(mode: mode)
         
-        captionView.configure(caption: post.getCaption(), postUser: post.getUser(), mainUser: mainUser, parentVC: parentVC)
-        drawing.image = post.getDrawing()
+        captionView.configure(caption: post.caption, postUser: post.getUser(), mainUser: mainUser, parentVC: parentVC)
+        drawing.image = ImageMap.map[post.drawing]
         
         if post.containsLikedUser(user: mainUser) {
             likeButton.configuration?.image = UIImage(named: "heart_filled")

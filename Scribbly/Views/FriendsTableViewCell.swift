@@ -50,10 +50,11 @@ class FriendsTableViewCell: UITableViewCell {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "FriendsTableViewCellReuse"
-    private var user: User!
+    private weak var user: User!
     private var isFollowed: Bool!
     private var isRequested: Bool!
     private var mainUser: User!
+    private weak var parentVC: UIViewController!
     
     // MARK: - init, configure, and setupConstraints
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -73,21 +74,25 @@ class FriendsTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(user: User, mainUser: User) {
+    func configure(user: User, mainUser: User, parentVC: UIViewController) {
         self.user = user
         self.mainUser = mainUser
+        self.parentVC = parentVC
         
         var text: AttributedString
 
-        if mainUser.isFriendsWith(user: user) {
+        if mainUser.isFriendsWith(user: user) || user.isFriendsWith(user: mainUser) {
+            // Already friends, have the option to unfollow.
             self.isFollowed = true
             self.isRequested = false
             text = AttributedString("unfollow")
-        } else if mainUser.hasRequested(user: user) {
+        } else if user.hasRequested(user: mainUser) {
+            // mainUser sent a request to the other user
             self.isFollowed = false
             self.isRequested = true
             text = AttributedString("requested")
         } else {
+            // Currently not friends (unfollowed). Have the option to follow and send a request
             self.isFollowed = false
             self.isRequested = false
             text = AttributedString("follow")
@@ -124,18 +129,37 @@ class FriendsTableViewCell: UITableViewCell {
     @objc func changeFollow() {
         if isFollowed {
             // Tapped on unfollow
-            mainUser.removeFriend(user: user)
-            followButton.configuration?.title = "follow"
-            isFollowed = false
+            let unfollowAction = UIAlertAction(title: "Unfollow", style: .destructive, handler: { action in
+                self.mainUser.removeFriend(user: self.user)
+                self.user.removeFriend(user: self.mainUser)
+                
+                DispatchQueue.main.async {
+                    self.followButton.configuration?.title = "follow"
+                    self.isFollowed = false
+                }
+            })
+            
+            let alertController = UIAlertController(title: nil, message: "You won't be able to see their posts after you unfollow them.", preferredStyle: .actionSheet)
+            alertController.addAction(unfollowAction)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                                             
+            parentVC.present(alertController, animated: true)
+            
         } else if isRequested {
-            mainUser.unsendRequest(user: user)
-            followButton.configuration?.title = "follow"
-            isRequested = false
+            user.removeRequest(user: mainUser)
+            
+            DispatchQueue.main.async {
+                self.followButton.configuration?.title = "follow"
+                self.isRequested = false
+            }
         } else {
-            // Tapped on follow
-            mainUser.sendRequest(user: user)
-            followButton.configuration?.title = "requested"
-            isRequested = true
+            // Tapped on follow, add mainUser in the request list of the other user
+            user.addRequest(user: mainUser)
+            
+            DispatchQueue.main.async {
+                self.followButton.configuration?.title = "requested"
+                self.isRequested = true
+            }
         }
     }
 }
@@ -207,7 +231,7 @@ class FollowRequestViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(requests: [User], mode: UIUserInterfaceStyle) {        
+    func configure(requests: [User], mode: UIUserInterfaceStyle) {
         leftProfileImage.backgroundColor = Constants.button_dark
         rightProfileImage.backgroundColor = Constants.primary_dark
         

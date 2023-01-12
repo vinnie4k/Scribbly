@@ -38,6 +38,8 @@ class RequestsVC: UIViewController {
         tv.sectionHeaderTopPadding = 0
         tv.separatorStyle = .none
         tv.delegate = self
+        tv.addSubview(noRequestLabel)
+        tv.addSubview(refreshControl)
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -62,15 +64,21 @@ class RequestsVC: UIViewController {
         return bar
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshTV), for: .valueChanged)
+        return refresh
+    }()
+    
     // MARK: - Properties (data)
     private var datasource: Datasource!
     private var requestsData = [Request]()
     private var mainUser: User
-    var updateRequestsDelegate: UpdateRequestsDelegate!
     private var filteredRequests = [Request]()
-    var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate!
     
-    // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
+    // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -78,21 +86,12 @@ class RequestsVC: UIViewController {
         
         view.addSubview(searchBar)
         view.addSubview(tableView)
-        view.addSubview(noRequestLabel)
         
 //        setupGradient()
+        determineLabel()
         setupNavBar()
         configureDatasource()
         setupConstraints()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if requestsData.isEmpty {
-            noRequestLabel.alpha = 1
-        } else {
-            noRequestLabel.alpha = 0
-        }
     }
     
     init(mainUser: User, requests: [User]) {
@@ -122,22 +121,45 @@ class RequestsVC: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
             
-            noRequestLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
+            noRequestLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 125),
             noRequestLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
     // MARK: - Setup Data
     func setupRequestsData(requests: [User]) {
+        requestsData = []
         for i in requests {
             requestsData.append(Request(user: i))
         }
         filteredRequests = requestsData
     }
     
+    private func determineLabel() {
+        if filteredRequests.isEmpty {
+            noRequestLabel.alpha = 1
+        } else {
+            noRequestLabel.alpha = 0
+        }
+    }
+    
     // MARK: - Button Helpers
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func refreshTV() {
+        DatabaseManager.getRequests(with: mainUser.id, completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.setupRequestsData(requests: users.reversed())
+            self.createSnapshot()
+            self.determineLabel()
+            self.refreshControl.endRefreshing()
+        })
+        
+//        DispatchQueue.main.async {
+//            self.updateRequestsDelegate.updateRequests()
+//        }
     }
 }
 
@@ -172,15 +194,15 @@ extension RequestsVC {
         switch item {
         case .requestsListItem(let request):
             let cell = tableView.dequeueReusableCell(withIdentifier: RequestTableViewCell.reuseIdentifier, for: indexPath) as! RequestTableViewCell
-            cell.configure(user: request.user, mainUser: mainUser)
             cell.updateRequestsDelegate = updateRequestsDelegate
+            cell.configure(user: request.user, mainUser: mainUser)
             cell.selectionStyle = .none
             return cell
         }
     }
     
     private func configureDatasource() {
-        datasource = Datasource(tableView: tableView, cellProvider: cell(tableView:indexPath:item:))
+        datasource = Datasource(tableView: tableView, cellProvider: { [unowned self] tableView, indexPath, item in return self.cell(tableView: tableView, indexPath: indexPath, item: item)})
         createSnapshot()
     }
     
@@ -203,7 +225,7 @@ extension RequestsVC: UITableViewDelegate {
         if searchBar.text!.isEmpty {
             let request = filteredRequests[indexPath.row].user
             let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
-            profileVC.updateRequestsDelegate = self
+            profileVC.updateRequestsDelegate = updateRequestsDelegate
             profileVC.updateFeedDelegate = updateFeedDelegate
             navigationController?.pushViewController(profileVC, animated: true)
         }
@@ -211,17 +233,7 @@ extension RequestsVC: UITableViewDelegate {
 }
 
 // MARK: - Other Extensions
-extension RequestsVC: UISearchBarDelegate, UpdateRequestsDelegate {
-    // MARK: - UpdateRequestsDelegate
-    func updateRequests() {
-        var oldSnapshot = datasource.snapshot()
-        oldSnapshot.deleteAllItems()
-        datasource.apply(oldSnapshot, animatingDifferences: false)
-        createSnapshot()
-        
-        updateRequestsDelegate.updateRequests() // Update friends list as well
-    }
-    
+extension RequestsVC: UISearchBarDelegate {
     // MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filteredRequests = []

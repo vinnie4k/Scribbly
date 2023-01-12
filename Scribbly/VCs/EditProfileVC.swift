@@ -81,6 +81,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         txtField.tintColor = .label
         txtField.addUnderline(color: Constants.secondary_text, width: Int(UIScreen.main.bounds.width - 2 * Constants.edit_prof_side_padding))
         txtField.delegate = self
+        txtField.autocorrectionType = .no
         txtField.translatesAutoresizingMaskIntoConstraints = false
         return txtField
     }()
@@ -104,6 +105,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         txtField.tintColor = .label
         txtField.addUnderline(color: Constants.secondary_text, width: Int(UIScreen.main.bounds.width - 2 * Constants.edit_prof_side_padding))
         txtField.delegate = self
+        txtField.autocorrectionType = .no
         txtField.translatesAutoresizingMaskIntoConstraints = false
         return txtField
     }()
@@ -127,6 +129,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         txtField.tintColor = .label
         txtField.addUnderline(color: Constants.secondary_text, width: Int(UIScreen.main.bounds.width - 2 * Constants.edit_prof_side_padding))
         txtField.delegate = self
+        txtField.autocorrectionType = .no
         txtField.translatesAutoresizingMaskIntoConstraints = false
         return txtField
     }()
@@ -150,37 +153,23 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         txtField.tintColor = .label
         txtField.addUnderline(color: Constants.secondary_text, width: Int(UIScreen.main.bounds.width - 2 * Constants.edit_prof_side_padding))
         txtField.delegate = self
+        txtField.autocorrectionType = .no
         txtField.translatesAutoresizingMaskIntoConstraints = false
         return txtField
     }()
     
-    private let emailLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "email"
-        lbl.font = Constants.getFont(size: 14, weight: .medium)
-        lbl.textColor = Constants.secondary_text
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    
-    private lazy var emailTextField: UITextField = {
-        let txtField = UITextField()
-        txtField.text = mainUser.getEmail().lowercased()
-        txtField.autocapitalizationType = .none
-        txtField.placeholder = "email"
-        txtField.textColor = .label
-        txtField.font = Constants.getFont(size: 14, weight: .regular)
-        txtField.tintColor = .label
-        txtField.addUnderline(color: Constants.secondary_text, width: Int(UIScreen.main.bounds.width - 2 * Constants.edit_prof_side_padding))
-        txtField.delegate = self
-        txtField.translatesAutoresizingMaskIntoConstraints = false
-        return txtField
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
     }()
     
     // MARK: - Properties (data)
     private var mainUser: User
-    var updatePFPDelegate: UpdatePFPDelegate!
-    var updateProfileDelegate: UpdateProfileDelegate!
+    weak var updatePFPDelegate: UpdatePFPDelegate!
+    weak var updateProfileDelegate: UpdateProfileDelegate!
     
     // MARK: - viewDidLoad, viewWillAppear, init, and setupConstraints
     override func viewDidLoad() {
@@ -199,8 +188,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         view.addSubview(userNameTextField)
         view.addSubview(bioLabel)
         view.addSubview(bioTextField)
-        view.addSubview(emailLabel)
-        view.addSubview(emailTextField)
+        view.addSubview(spinner)
         
         setupNavBar()
         setupConstraints()
@@ -212,7 +200,6 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         lastNameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         userNameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         bioTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     init(mainUser: User) {
@@ -261,13 +248,8 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
             bioTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.edit_prof_side_padding),
             bioTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.edit_prof_side_padding),
             
-            emailLabel.topAnchor.constraint(equalTo: bioTextField.bottomAnchor, constant: Constants.edit_prof_label_top),
-            emailLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.edit_prof_side_padding),
-            emailLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.edit_prof_side_padding),
-            
-            emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: Constants.edit_prof_txtfield_top),
-            emailTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.edit_prof_side_padding),
-            emailTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.edit_prof_side_padding),
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -305,12 +287,6 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         } else {
             userNameTextField.removeInvalid()
         }
-        
-        if !validEmail() {
-            emailTextField.addInvalid()
-        } else {
-            emailTextField.removeInvalid()
-        }
     }
     
     private func validFirstName() -> Bool {
@@ -329,15 +305,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     private func validUserName() -> Bool {
         let text = userNameTextField.text!
-        if text.isEmpty || text.firstIndex(of: " ") != nil || Database.containsUsername(username: text, user: mainUser) {
-            return false
-        }
-        return true
-    }
-    
-    private func validEmail() -> Bool {
-        let text = emailTextField.text!
-        if text.isEmpty || text.firstIndex(of: "@") == nil || Database.containsEmail(email: text, user: mainUser) {
+        if text.isEmpty || text.firstIndex(of: " ") != nil || text.count < 6 || text.count > 20 {
             return false
         }
         return true
@@ -379,21 +347,91 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc func confirmChanges() {
-        if validFirstName() && validLastName() && validEmail() && validUserName() {
-            mainUser.setFirstName(name: firstNameTextField.text!)
-            mainUser.setLastName(name: lastNameTextField.text!)
-            mainUser.updateFullName()
-            mainUser.setUserName(name: userNameTextField.text!)
-            mainUser.setEmail(text: emailTextField.text!)
-            mainUser.setBio(text: bioTextField.text!)
-            updatePFPDelegate.updatePFP()
-            updateProfileDelegate.updateProfile()
-            navigationController?.popViewController(animated: true)
+        if validFirstName() && validLastName() && validUserName() {
+            spinner.startAnimating()
+            var userGood = true
+            var good = true
+            let group = DispatchGroup()
+            
+            if firstNameTextField.text! != mainUser.firstName {
+                group.enter()
+                setFirstName(completion: { success in
+                    if !success { good = false }
+                    group.leave()
+                })
+            }
+            
+            if lastNameTextField.text! != mainUser.lastName {
+                group.enter()
+                setLastName(completion: { success in
+                    if !success { good = false }
+                    group.leave()
+                })
+            }
+            
+            if bioTextField.text! != mainUser.bio {
+                group.enter()
+                setBio(completion: { success in
+                    if !success { good = false }
+                    group.leave()
+                })
+            }
+            
+            if userNameTextField.text! != mainUser.userName {
+                group.enter()
+                setUsername(completion: { success in
+                    if !success { good = false; userGood = false }
+                    group.leave()
+                })
+            }
+            
+            group.notify(queue: .main) { [weak self] in
+                guard let `self` = self else { return }
+                if good {
+                    self.updatePFPDelegate.updatePFP()
+                    self.updateProfileDelegate.updateProfile()
+                    self.navigationController?.popViewController(animated: true)
+                } else if !userGood {
+                    let alert = UIAlertController(title: "That username has been taken", message: nil, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                    self.present(alert, animated: true)
+                } else {
+                    let alert = UIAlertController(title: "Invalid Changes", message: nil, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                    self.present(alert, animated: true)
+                }
+                self.spinner.stopAnimating()
+            }
         } else {
             let alert = UIAlertController(title: "Invalid Changes", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
             present(alert, animated: true)
         }
+    }
+    
+    // MARK: - Backend Helpers
+    private func setFirstName(completion: @escaping (Bool) -> Void) {
+        DatabaseManager.changeFirstName(with: mainUser, text: firstNameTextField.text!, completion: { success in
+            if success { completion(true) } else { completion(false) }
+        })
+    }
+    
+    private func setLastName(completion: @escaping (Bool) -> Void) {
+        DatabaseManager.changeLastName(with: mainUser, text: lastNameTextField.text!, completion: { success in
+            if success { completion(true) } else { completion(false) }
+        })
+    }
+    
+    private func setBio(completion: @escaping (Bool) -> Void) {
+        DatabaseManager.changeBio(with: mainUser, text: bioTextField.text!, completion: { success in
+            if success { completion(true) } else { completion(false) }
+        })
+    }
+    
+    private func setUsername(completion: @escaping (Bool) -> Void) {
+        DatabaseManager.changeUsername(with: mainUser, text: userNameTextField.text!, completion: { success in
+            if success { completion(true) } else { completion(false) }
+        })
     }
 }
 
@@ -449,10 +487,25 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
             item.loadObject(ofClass: UIImage.self) { (image, error) in
                 DispatchQueue.main.async {
                     if let image = image as? UIImage {
-                        self.mainUser.setPFP(image: image)
-                        self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-                        self.updatePFPDelegate.updatePFP()
-                        self.updateProfileDelegate.updateProfile()
+                        guard let data = image.jpegData(compressionQuality: 0.3) else { return }
+                        let fileName = "images/pfp/\(self.mainUser.id)_pfp.jpg"
+                        self.spinner.startAnimating()
+                        StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
+                            guard let `self` = self else { return }
+                            switch result {
+                            case .success(_):
+                                ImageMap.map[fileName] = image
+                                self.mainUser.pfp = fileName
+                                self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+                                print(ImageMap.map)
+                                self.updatePFPDelegate.updatePFP()
+                                self.updateProfileDelegate.updateProfile()
+                            case .failure(let error):
+                                print("Storage manager error: \(error)")
+                                self.uploadError()
+                            }
+                            self.spinner.stopAnimating()
+                        })
                     }
                 }
             }
@@ -498,20 +551,46 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
     func imagePickerController(_ picker: UIImagePickerController,
                                       didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[.originalImage] as? UIImage {
-            self.mainUser.setPFP(image: image)
-            self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-            self.updatePFPDelegate.updatePFP()
-            self.updateProfileDelegate.updateProfile()
+            guard let data = image.jpegData(compressionQuality: 0.3) else { return }
+            let fileName = "images/pfp/\(self.mainUser.id)_pfp.jpg"
+            self.spinner.startAnimating()
+            StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
+                guard let `self` = self else { return }
+                switch result {
+                case .success(_):
+                    ImageMap.map[fileName] = image
+                    self.mainUser.pfp = fileName
+                    self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+                    self.updatePFPDelegate.updatePFP()
+                    self.updateProfileDelegate.updateProfile()
+                case .failure(let error):
+                    print("Storage manager error: \(error)")
+                    self.uploadError()
+                }
+                self.spinner.stopAnimating()
+            })
         }
         picker.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Delete Profile Picture
     private func deleteProfilePicture() {
-        self.mainUser.defaultPFP()
-        self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-        self.updatePFPDelegate.updatePFP()
-        self.updateProfileDelegate.updateProfile()
+        spinner.startAnimating()
+        DatabaseManager.setDefaultPFP(with: mainUser, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                self.mainUser.pfp = "images/pfp/scribbly_default_pfp.png"
+                ImageMap.map[self.mainUser.pfp] = UIImage(named: "default_pfp")
+                self.editProfilePictureView.profileImage.image = UIImage(named: "default_pfp")
+                self.updatePFPDelegate.updatePFP()
+                self.updateProfileDelegate.updateProfile()
+            } else {
+                let alert = UIAlertController(title: "Error", message: "Unable to change your profile picture", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                self.present(alert, animated: true)
+            }
+            self.spinner.stopAnimating()
+        })
     }
     
     // MARK: - Helpers
@@ -521,5 +600,11 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
             alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
             self.present(alert, animated: true)
         }
+    }
+    
+    private func uploadError() {
+        let alert = UIAlertController(title: "Error", message: "Unable to upload your profile picture", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+        present(alert, animated: true)
     }
 }

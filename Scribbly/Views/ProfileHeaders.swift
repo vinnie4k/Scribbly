@@ -36,7 +36,7 @@ class MemsBookHeaderView: UICollectionReusableView {
     
     // MARK: - Properties (data)
     private var mode: UIUserInterfaceStyle?
-    var switchViewDelegate: SwitchViewDelegate?
+    weak var switchViewDelegate: SwitchViewDelegate?
     
     static let reuseIdentifier = "MemsBookHeaderViewReuseMems"
     
@@ -170,10 +170,9 @@ class ProfileHeaderCell: UICollectionViewCell {
     // MARK: - Properties (data)
     private var user: User!
     private var mode: UIUserInterfaceStyle!
-    private var parentVC: UIViewController!
-    var updatePFPDelegate: UpdatePFPDelegate!
-    var updateProfileDelegate: UpdateProfileDelegate!
-    var updateFeedDelegate: UpdateFeedDelegate!
+    private weak var parentVC: UIViewController!
+    weak var updatePFPDelegate: UpdatePFPDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate!
     
     static let reuseIdentifier = "ProfileHeaderViewReuse"
     
@@ -210,10 +209,10 @@ class ProfileHeaderCell: UICollectionViewCell {
             editButton.configuration?.baseBackgroundColor = Constants.button_light
         }
        
-        profileImage.image = user.getPFP()
-        fullnameLabel.text = user.getFullName().lowercased()
-        usernameLabel.text = "@" + user.getUserName().lowercased()
-        bioLabel.text = user.getBio().lowercased()
+        profileImage.image = ImageMap.map[user.pfp]
+        fullnameLabel.text = user.getFullName()
+        usernameLabel.text = "@" + user.getUserName()
+        bioLabel.text = user.bio
     }
     
     private func setupConstraints() {
@@ -252,7 +251,17 @@ class ProfileHeaderCell: UICollectionViewCell {
     @objc func pushEditProfileVC() {
         let editProfileVC = EditProfileVC(mainUser: self.user)
         editProfileVC.updatePFPDelegate = updatePFPDelegate
-        editProfileVC.updateProfileDelegate = updateProfileDelegate
+        editProfileVC.updateProfileDelegate = self
         parentVC.navigationController?.pushViewController(editProfileVC, animated: true)
+    }
+}
+
+// MARK: - Extensions for delegation
+extension ProfileHeaderCell: UpdateProfileDelegate {
+    func updateProfile() {
+        profileImage.image = user.getPFP()
+        fullnameLabel.text = user.getFullName()
+        bioLabel.text = user.getBio()
+        usernameLabel.text = user.getUserName()
     }
 }

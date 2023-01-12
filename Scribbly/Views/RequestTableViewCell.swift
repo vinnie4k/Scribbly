@@ -51,9 +51,9 @@ class RequestTableViewCell: UITableViewCell {
     // MARK: - Properties (data)
     static let reuseIdentifier = "RequestTableViewCellReuse"
     private var mainUser: User!
-    private var user: User!
+    private weak var user: User!
     private var isAccepted: Bool!
-    var updateRequestsDelegate: UpdateRequestsDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -76,8 +76,8 @@ class RequestTableViewCell: UITableViewCell {
         self.mainUser = mainUser
         
         var text: AttributedString
-
-        if mainUser.isFriendsWith(user: user) {
+        
+        if user.isFriendsWith(user: mainUser) || mainUser.isFriendsWith(user: user) {
             self.isAccepted = true
             text = AttributedString("accepted")
         } else {
@@ -115,10 +115,15 @@ class RequestTableViewCell: UITableViewCell {
     // MARK: - Button Helpers
     @objc func acceptRequest() {
         if !isAccepted {
-            mainUser.acceptRequest(user: user)
-            acceptButton.configuration?.title = "accepted"
-            isAccepted = true
-            updateRequestsDelegate.updateRequests()
+            mainUser.removeRequest(user: user)
+            mainUser.addFriend(friend: user)
+            user.addFriend(friend: mainUser)
+            
+            DispatchQueue.main.async {
+                self.acceptButton.configuration?.title = "accepted"
+                self.isAccepted = true
+                self.updateRequestsDelegate?.updateRequests()
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ class DrawingHeaderView: UICollectionReusableView {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "DrawingHeaderViewReuse"
-    var enlargeDrawingDelegate: EnlargeDrawingDelegate!
+    weak var enlargeDrawingDelegate: EnlargeDrawingDelegate!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -104,10 +104,10 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "CommentHeaderViewReuse"
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var comment: Comment!
     private var mainUser: User!
-    var commentDelegate: CommentDelegate!
+    weak var commentDelegate: CommentDelegate!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -243,11 +243,11 @@ class CommentCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "CommentCollectionViewCellReuse"
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var comment: Comment!
     private var reply: Reply!
     private var mainUser: User!
-    var replyDelegate: CommentDelegate!
+    weak var replyDelegate: CommentDelegate!
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

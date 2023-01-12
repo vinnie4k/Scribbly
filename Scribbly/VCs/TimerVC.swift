@@ -19,9 +19,22 @@ class TimerVC: UIViewController {
         return lbl
     }()
     
+    private lazy var questionButton: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.image = UIImage(systemName: "questionmark.circle")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     private lazy var profileButton: UIButton = {
         let btn = UIButton()
-//        btn.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(pushSettingsVC), for: .touchUpInside)
         btn.setImage(mainUser.getPFP(), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.profile_button_radius
@@ -41,7 +54,6 @@ class TimerVC: UIViewController {
     
     private let prompt: UILabel = {
         let lbl = UILabel()
-        lbl.text = "bird"
         lbl.textColor = .label
         lbl.font = Constants.getFont(size: 40, weight: .bold)
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -54,6 +66,7 @@ class TimerVC: UIViewController {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.baseForegroundColor = .white
+        config.background.cornerRadius = Constants.landing_button_corner
         config.baseBackgroundColor = Constants.primary_dark
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         btn.configuration = config
@@ -72,6 +85,7 @@ class TimerVC: UIViewController {
         
         config.baseBackgroundColor = Constants.button_dark
         config.buttonSize = .large
+        config.background.cornerRadius = Constants.landing_button_corner
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         btn.configuration = config
@@ -92,11 +106,26 @@ class TimerVC: UIViewController {
     
     private let timerLabel: UILabel = {
         let lbl = UILabel()
-        lbl.text = "00:10"
+        lbl.text = "10:00"
         lbl.font = Constants.getFont(size: 96, weight: .semibold)
         lbl.textColor = .label
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
+    }()
+    
+    private lazy var drawViewLarge: UIView = {
+        let view = UIView()
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        
+        let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.2)
+        customBlurEffectView.frame = view.bounds
+        customBlurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        customBlurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(customBlurEffectView)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
+        return view
     }()
     
     private var timer = Timer()
@@ -108,7 +137,10 @@ class TimerVC: UIViewController {
     private var isPaused: Bool = false
     private var isFinished: Bool = false
     
-    private var seconds = 10   // 10 minutes
+    private var seconds = 600   // 10 minutes
+    private var initialPopup: Bool
+    
+    weak var updateFeedDelegate: UpdateFeedDelegate?
     
     // MARK: - viewDidLoad, init, configure, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -123,14 +155,23 @@ class TimerVC: UIViewController {
         view.addSubview(prompt)
         view.addSubview(stack)
         view.addSubview(timerLabel)
+        view.addSubview(drawViewLarge)
         
         configure()
         setupNavBar()
         setupConstraints()
+        
+        if initialPopup {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.tutorialView()
+            }
+        }
     }
     
-    init(mainUser: User) {
+    init(mainUser: User, prompt: String, initialPopup: Bool) {
         self.mainUser = mainUser
+        self.prompt.text = prompt
+        self.initialPopup = initialPopup
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -164,6 +205,8 @@ class TimerVC: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)
         navigationItem.titleView = logo
         navigationItem.setHidesBackButton(true, animated: false)
+        questionButton.addTarget(self, action: #selector(tutorialView), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: questionButton)
     }
     
     private func setupConstraints() {
@@ -182,11 +225,39 @@ class TimerVC: UIViewController {
             
             stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.timer_btn_bot),
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.timer_btn_side),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.timer_btn_side)
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.timer_btn_side),
+            
+            drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
+            drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
     
     // MARK: - Button Helpers
+    @objc private func tutorialView() {
+        let view = TutorialView()
+        view.dismissTutorialDelegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        drawViewLarge.addSubview(view)
+
+        NSLayoutConstraint.activate([
+            view.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
+            view.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.tutorial_side),
+            view.centerXAnchor.constraint(equalTo: drawViewLarge.centerXAnchor),
+        ])
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.drawViewLarge.alpha = 1.0
+        }, completion: nil)
+    }
+    
+    @objc private func pushSettingsVC() {
+        let settingsVC = SettingsVC()
+        navigationController?.pushViewController(settingsVC, animated: true)
+    }
+    
     @objc private func popVC() {
         dismiss(animated: true)
     }
@@ -247,8 +318,16 @@ class TimerVC: UIViewController {
 }
 
 // MARK: - Extensions for delegation
-extension TimerVC: DismissTimerDelegate {
+extension TimerVC: DismissTimerDelegate, DismissTutorialDelegate {
     func dismissTimerVC() {
         navigationController?.popViewController(animated: true)
+        updateFeedDelegate?.updateFeed()
+    }
+    
+    func dismissTutorial() {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.drawViewLarge.alpha = 0.0
+        }, completion: nil)
+        drawViewLarge.subviews[1].removeFromSuperview()
     }
 }

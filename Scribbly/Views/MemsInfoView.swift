@@ -44,7 +44,7 @@ class MemsInfoView: UIView, ReloadStatsDelegate {
     // MARK: - Properties (data)
     private var post: Post!
     private var mode: UIUserInterfaceStyle!
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

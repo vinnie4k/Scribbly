@@ -42,6 +42,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         cv.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         cv.backgroundColor = bgColor
         cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.addSubview(refreshControl)
+        cv.alwaysBounceVertical = true
         return cv
     }()
     
@@ -154,6 +156,20 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         return view
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshComments), for: .valueChanged)
+        return refresh
+    }()
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
     // MARK: - Properties (data)
     private let post: Post
     private let mainUser: User
@@ -161,11 +177,31 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private var change: [NSLayoutConstraint]
     private var prevComment: Comment? = nil
     private var prevReply: Reply? = nil
-    var reloadStatsDelegate: ReloadStatsDelegate!
+    weak var reloadStatsDelegate: ReloadStatsDelegate!
+    private var comments: [Comment]
+    
+    // MARK: - Backend Helpers
+    @objc private func refreshComments() {
+        DatabaseManager.getComments(with: post.id, completion: { [weak self] dict in
+            guard let `self` = self else { return }
+            self.post.comments = dict
+            self.comments = self.post.getComments()
+            self.replyCV.reloadData()
+            self.reloadStatsDelegate?.reloadStats()
+            self.refreshControl.endRefreshing()
+        })
+    }
+    
+    private func loadComments() {
+       self.replyCV.reloadData()
+       self.reloadStatsDelegate?.reloadStats()
+       self.spinner.stopAnimating()
+    }
     
     // MARK: - viewDidLoad, viewWillDisappear, init, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         bgColor = Constants.secondary_dark
         if (traitCollection.userInterfaceStyle == .light) {
             bgColor = Constants.secondary_light
@@ -181,6 +217,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         view.addSubview(replyCV)
         view.addSubview(textInputView)
         view.addSubview(drawViewLarge)
+        view.addSubview(spinner)
     
         setupCollectionView()
         setupNavBar()
@@ -199,6 +236,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         self.mainUser = mainUser
         self.bgColor = nil
         self.change = []
+        self.comments = post.getComments()
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -219,7 +258,10 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             drawViewLarge.topAnchor.constraint(equalTo: view.topAnchor),
             drawViewLarge.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             drawViewLarge.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            drawViewLarge.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
         addConstr(lst: [
@@ -241,9 +283,18 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     
     func deleteComment(comment: Comment) {
         // For delegation
-        post.removeComment(comment: comment)
-        replyCV.reloadData()
-        reloadStatsDelegate?.reloadStats()
+        spinner.startAnimating()
+        DatabaseManager.removeComment(with: comment, completion: { [weak self] success, key in
+            guard let `self` = self else { return }
+            if success {
+                self.post.removeComment(key: key)
+                self.comments = self.post.getComments()
+                self.loadComments()
+            } else {
+                self.spinner.stopAnimating()
+                self.deleteError()
+            }
+        })
     }
     
     func sendReplyReply(comment: Comment, reply: Reply) {
@@ -263,39 +314,110 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     @objc private func sendComment() {
+        spinner.startAnimating()
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        
         if let text = textField.text, !text.isEmpty {
             if prevComment != nil, prevReply != nil {
                 let username = "@" + (prevReply?.getReplyUser().getUserName())! + " "
+                let commentKey = post.comments?.allKeys(forValue: prevComment!)[0]
                 
                 if text.contains(username) {
                     let length = (prevReply?.getReplyUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prevComment?.addReply(text: String(rep), prev: prevReply, replyUser: mainUser)
+                    
+                    let reply = Reply(id: UUID().uuidString, prevReply: prevReply!.id, user: mainUser.id, text: username + String(rep), time: format.string(from: Date()))
+                    DatabaseManager.addReply(with: reply, comment: prevComment!, key: commentKey!, completion: { [weak self] success, key in
+                        guard let `self` = self else { return }
+                        if success {
+                            self.prevComment?.addReply(key: key, reply: reply)
+                            self.refreshComments()
+                            self.spinner.stopAnimating()
+                        } else {
+                            self.spinner.stopAnimating()
+                            self.uploadError()
+                        }
+                    })
+                    
                 } else {
-                    prevComment?.addReply(text: text, prev: prevReply, replyUser: mainUser)
+                    let reply = Reply(id: UUID().uuidString, prevReply: prevReply!.id, user: mainUser.id, text: username + text, time: format.string(from: Date()))
+                    DatabaseManager.addReply(with: reply, comment: prevComment!, key: commentKey!, completion: { [weak self] success, key in
+                        guard let `self` = self else { return }
+                        if success {
+                            self.prevComment?.addReply(key: key, reply: reply)
+                            self.refreshComments()
+                            self.spinner.stopAnimating()
+                        } else {
+                            self.spinner.stopAnimating()
+                            self.uploadError()
+                        }
+                    })
                 }
                 prevComment = nil  // Set back to nil
                 prevReply = nil    // Set back to nil
             } else if prevComment != nil {
                 let username = "@" + (prevComment?.getUser().getUserName())! + " "
+                let commentKey = post.comments?.allKeys(forValue: prevComment!)[0]
                 
                 if text.contains(username) {
                     let length = (prevComment?.getUser().getUserName().count)! + 2
                     let index = text.index(text.startIndex, offsetBy: length)
                     let rep = text[index...]
-                    prevComment?.addReply(text: String(rep), prev: nil, replyUser: mainUser)
+                    
+                    let reply = Reply(id: UUID().uuidString, prevReply: "", user: mainUser.id, text: username + String(rep), time: format.string(from: Date()))
+                    DatabaseManager.addReply(with: reply, comment: prevComment!, key: commentKey!, completion: { [weak self] success, key in
+                        guard let `self` = self else { return }
+                        if success {
+                            self.prevComment?.addReply(key: key, reply: reply)
+                            self.refreshComments()
+                            self.spinner.stopAnimating()
+                        } else {
+                            self.spinner.stopAnimating()
+                            self.uploadError()
+                        }
+                    })
+                    
                 } else {
-                    prevComment?.addReply(text: text, prev: nil, replyUser: mainUser)
+                    let reply = Reply(id: UUID().uuidString, prevReply: "", user: mainUser.id, text: username + text, time: format.string(from: Date()))
+                    DatabaseManager.addReply(with: reply, comment: prevComment!, key: commentKey!, completion: { [weak self] success, key in
+                        guard let `self` = self else { return }
+                        if success {
+                            self.prevComment?.addReply(key: key, reply: reply)
+                            self.refreshComments()
+                            self.spinner.stopAnimating()
+                        } else {
+                            self.spinner.stopAnimating()
+                            self.uploadError()
+                        }
+                    })
                 }
                 prevComment = nil  // Set back to nil
             } else {
-                post.addComment(comment_user: mainUser, text: text)
+                let format = DateFormatter()
+                format.dateFormat = "d MMMM yyyy HH:mm:ss"
+                
+                let cmt = Comment(id: UUID().uuidString, post: post.id, user: mainUser.id, text: text, time: format.string(from: Date()), replies: [:])
+                DatabaseManager.addComment(with: cmt, completion: { [weak self] success, key in
+                    guard let `self` = self else { return }
+                    if success {
+                        self.post.addComment(key: key, comment: cmt)
+                        self.comments = self.post.getComments()
+                        self.loadComments()
+                        self.spinner.stopAnimating()
+                    } else {
+                        self.spinner.stopAnimating()
+                        self.uploadError()
+                    }
+                })
+                
             }
-            hideKeyboard()
-            textField.text = ""
-            replyCV.reloadData()
-            reloadStatsDelegate?.reloadStats()
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                self.hideKeyboard()
+                self.textField.text = ""
+            }
         }
     }
     
@@ -323,6 +445,18 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     // MARK: - Helper Functions
+    private func uploadError() {
+        let alert = UIAlertController(title: "Error", message: "Unable to post the comment. Please try again.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+        present(alert, animated: true)
+    }
+    
+    private func deleteError() {
+        let alert = UIAlertController(title: "Error", message: "Unable to delete the comment. Please try again.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+        present(alert, animated: true)
+    }
+    
     private func changeCommentView(pop: Bool) {
         if (pop) { // Keyboard pops up
             if (traitCollection.userInterfaceStyle == .dark) {
@@ -401,7 +535,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
 extension CommentVC: UICollectionViewDataSource {
     // MARK: - Sections
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return post.getComments().count + 1
+        return comments.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -421,7 +555,7 @@ extension CommentVC: UICollectionViewDataSource {
                     header.backgroundColor = Constants.primary_dark
                 }
                 header.layer.cornerRadius = Constants.comment_cell_corner
-                let comment = post.getComments()[indexPath.section - 1]
+                let comment = comments[indexPath.section - 1]
                 header.configure(parentVC: self, comment: comment, mainUser: mainUser)
                 header.commentDelegate = self
                 return header
@@ -444,7 +578,7 @@ extension CommentVC: UICollectionViewDataSource {
         }
         var height: CGFloat = 999
         let padding: CGFloat = 65
-        let text = post.getComments()[section - 1].getText()
+        let text = comments[section - 1].getText()
         height = estimateFrameForText(text: text).height + padding
         return CGSize(width: Constants.comment_cell_text_width, height: height)
     }
@@ -458,13 +592,13 @@ extension CommentVC: UICollectionViewDataSource {
         if section == 0 {
             return 0
         }
-        return post.getComments()[section - 1].getReplies().count
+        return comments[section - 1].getReplies().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section != 0 {
             if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCollectionViewCell.reuseIdentifier, for: indexPath) as? CommentCollectionViewCell {
-                let comment = post.getComments()[indexPath.section - 1]
+                let comment = comments[indexPath.section - 1]
                 let rep = comment.getReplies()[indexPath.row]
                 if (traitCollection.userInterfaceStyle == .light) {
                     cell.backgroundColor = Constants.primary_light
@@ -490,7 +624,7 @@ extension CommentVC: UICollectionViewDelegateFlowLayout {
             // PLEASE DO NOT TOUCH THIS
             var height: CGFloat = 999
             let padding: CGFloat = 65
-            let rep = post.getComments()[indexPath.section - 1].getReplies()[indexPath.row].getText()
+            let rep = comments[indexPath.section - 1].getReplies()[indexPath.row].getText()
             height = estimateFrameForText(text: rep.string).height + padding
             return CGSize(width: Constants.comment_cell_reply_box_width, height: height)
         }
@@ -503,7 +637,7 @@ extension CommentVC: UICollectionViewDelegate {
                                  contextMenuConfigurationForItemAt indexPath: IndexPath,
                                  point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            let comment = self.post.getComments()[indexPath.section - 1]
+            let comment = self.comments[indexPath.section - 1]
             let rep = comment.getReplies()[indexPath.row]
             
             let copyAction =
@@ -516,10 +650,20 @@ extension CommentVC: UICollectionViewDelegate {
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),
                              attributes: .destructive) { [self] action in
-
-                        comment.removeReply(reply: rep)
-                        self.reloadStatsDelegate?.reloadStats()
-                        self.replyCV.reloadData()
+                        
+                        spinner.startAnimating()
+                        let commentKey = post.comments?.allKeys(forValue: comment)[0]
+                        DatabaseManager.removeReply(with: rep, comment: comment, key: commentKey!, completion: { [weak self] success, key in
+                            guard let `self` = self else { return }
+                            if success {
+                                comment.removeReply(key: key)
+                                self.comments = self.post.getComments()
+                                self.loadComments()
+                            } else {
+                                self.spinner.stopAnimating()
+                                self.deleteError()
+                            }
+                        })
                     }
                 return UIMenu(title: "", children: [copyAction, deleteAction])
             }

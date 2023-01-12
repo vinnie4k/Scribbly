@@ -33,10 +33,10 @@ class OtherMemsTinyPostView: UIView {
     }()
     
     // MARK: - Properties (data)
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var post: Post? = nil
     private var mode: UIUserInterfaceStyle!
-    var postInfoDelegate: PostInfoDelegate?
+    weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -64,7 +64,7 @@ class OtherMemsTinyPostView: UIView {
         self.mode = mode
         
         if post != nil {
-            drawing.image = post?.getDrawing()
+            drawing.image = post!.getDrawing()
         }
         dateLabel.text = text
     }
@@ -123,7 +123,7 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "OtherMemsCollectionViewCellReuse"
     private var data: [String]!
     private var user: User!
-    var postInfoDelegate: PostInfoDelegate!
+    weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

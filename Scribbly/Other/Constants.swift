@@ -46,6 +46,7 @@ struct Constants {
     static let user_post_side_padding = CGFloat(15)
     static let user_post_width = CGFloat(60)
     static let user_post_height = CGFloat(60)
+    static let no_friends_side = CGFloat(75)
     
     // MARK: - PostCollectionView
     static let post_cv_top_padding = CGFloat(15)
@@ -180,4 +181,28 @@ struct Constants {
     static let upload_side_padding = CGFloat(30)
     static let upload_top = CGFloat(20)
     static let upload_caption_top = CGFloat(15)
+    
+    // MARK: - Landing Page and Onboarding
+    static let landing_button_corner = CGFloat(15)
+    static let landing_top = CGFloat(50)
+    static let landing_bot = CGFloat(50)
+    static let landing_btn_side = CGFloat(20)
+    static let login_side_padding = CGFloat(25)
+    static let login_top = CGFloat(40)
+    static let login_bot = CGFloat(60)
+    static let onboard_confirm_corner = CGFloat(8)
+    static let onboard_confirm_height = CGFloat(60)
+    static let onboard_pfp_radius = CGFloat(75)
+    static let onboard_dots_bot = CGFloat(50)
+    
+    // MARK: - Tutorial View
+    static let tutorial_top = CGFloat(30)
+    static let tutorial_side = CGFloat(25)
+    static let tutorial_spacing = CGFloat(10)
+    static let tutorial_height = CGFloat(600)
+    static let tutorial_corner = CGFloat(20)
+    
+    // MARK: - Settings Page
+    static let settings_bot = CGFloat(60)
+    static let settings_side_padding = CGFloat(30)
 }

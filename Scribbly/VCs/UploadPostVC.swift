@@ -87,6 +87,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
         text.font = Constants.getFont(size: 16, weight: .bold)
         config.attributedTitle = text
         
+        config.background.cornerRadius = Constants.landing_button_corner
         config.baseBackgroundColor = Constants.button_dark
         config.buttonSize = .large
         config.baseForegroundColor = .white
@@ -100,8 +101,8 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     private var mainUser: User
     private var hasUploaded: Bool = false
     private var change: [NSLayoutConstraint] = []
-    var dismissTimerDelegate: DismissTimerDelegate!
-    
+    weak var dismissTimerDelegate: DismissTimerDelegate!
+
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -166,16 +167,51 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     
     @objc private func postDrawing() {
         if hasUploaded {
-            let post = Post(user: mainUser, drawing: uploadImageView.image!, caption: captionTextField.text!, time: Date())
-            mainUser.addPost(post: post)
+            let postID = UUID().uuidString
+            let fileName = "images/posts/\(postID).jpg"
             
-            navigationController?.popViewController(animated: false)
-            dismissTimerDelegate.dismissTimerVC()
+            guard let image = uploadImageView.image, let data = image.jpegData(compressionQuality: 0.3) else { return }
+            
+            StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
+                guard let `self` = self else { return }
+                switch result {
+                case .success(let downloadURL):
+                    ImageMap.map[fileName] = image
+                    let format = DateFormatter()
+                    format.dateFormat = "d MMMM yyyy HH:mm:ss"
+                    
+                    let post = Post(id: postID, user: self.mainUser.id, drawing: fileName, caption: self.captionTextField.text!, time: format.string(from: Date()), comments: [:], likedUsers: [:], bookmarkedUsers: [:], hidden: false)
+                    
+                    DatabaseManager.addPost(with: post, userID: self.mainUser.id, completion: { [weak self] success, key in
+                        guard let `self` = self else { return }
+                        if success {
+                            self.mainUser.addPost(key: key, post: post)
+                            self.mainUser.todaysPost = post.id
+                            self.navigationController?.popViewController(animated: false)
+                            self.dismissTimerDelegate.dismissTimerVC()
+                        } else {
+                            self.uploadError()
+                        }
+                    })
+                    print(downloadURL)
+                    
+                case .failure(let error):
+                    print("Storage manager error: \(error)")
+                    self.uploadError()
+                }
+            })
         } else {
             let alert = UIAlertController(title: "Please upload your drawing by tapping on the view above", message: "", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
             present(alert, animated: true)
         }
+    }
+    
+    // MARK: - Error Helpers
+    private func uploadError() {
+        let alert = UIAlertController(title: "Error", message: "Unable to upload the image. Please try again.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+        present(alert, animated: true)
     }
 }
 

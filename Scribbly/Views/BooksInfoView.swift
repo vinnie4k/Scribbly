@@ -46,7 +46,7 @@ class BooksInfoView: UIView {
     // MARK: - Properties (data)
     private var post: Post!
     private var mode: UIUserInterfaceStyle!
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var mainUser: User!
     
     // MARK: - init, configure, and setupConstraints
@@ -69,7 +69,7 @@ class BooksInfoView: UIView {
         self.mode = mode
         self.parentVC = parentVC
         self.mainUser = mainUser
-        
+    
         drawing.image = post.getDrawing()
         captionView.configure(post: post, mode: mode, mainUser: mainUser, parentVC: parentVC)
         booksButtonView.configure(post: post, mode: mode, parentVC: parentVC, mainUser: mainUser)
@@ -146,7 +146,7 @@ class BooksCaptionView: UIView {
     private var post: Post!
     private var mode: UIUserInterfaceStyle!
     private var mainUser: User!
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -267,7 +267,7 @@ class BooksButtonView: UIStackView {
     // MARK: - Properties (data)
     private var post: Post!
     private var mode: UIUserInterfaceStyle!
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var mainUser: User!
     
     // MARK: - init, configure, and setupConstraints

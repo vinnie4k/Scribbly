@@ -10,88 +10,106 @@
 import Foundation
 
 // MARK: Comment Model Class
-class Comment {
+class Comment: Codable, Equatable, Identifiable {
     // MARK: - Properties
-    private var post: Post
-    private var user: User
-    private var text: String
-    private var replies: [Reply]
+    var id: String
+    var post: String        // Post ID
+    var user: String        // User ID
+    var text: String
+    var time: String    // Format: 6 January 2023 19:53:10
+    var replies: [String:Reply]?  // Array of reply IDs
     
+    // MARK: - Equatable
+    static func == (lhs: Comment, rhs: Comment) -> Bool {
+        lhs.id == rhs.id
+    }
+
     // MARK: - Getters and Setters
-    func removeReply(reply: Reply) {
-        if let index = replies.firstIndex(where: {$0 === reply}) {
-            replies.remove(at: index)
-        }
+    func removeReply(key: String) {
+        replies?.removeValue(forKey: key)
     }
-    
-    func addReply(text: String, prev: Reply?, replyUser: User) {
-        if let prev = prev {
-            let bold = "@" + prev.getReplyUser().getUserName()
-            let attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .bold)]
-            let bold_text = NSMutableAttributedString(string: bold, attributes: attrs)
-            
-            let normal_attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .regular)]
-            let normal_text = NSMutableAttributedString(string: " " + text, attributes: normal_attrs)
-            bold_text.append(normal_text)
-            
-            let rep = Reply(text: bold_text, prev: prev, replyUser: replyUser)
-            replies.append(rep)
-        } else {
-            let bold = "@" + user.getUserName()
-            let bold_attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .bold)]
-            let bold_text = NSMutableAttributedString(string: bold, attributes: bold_attrs)
 
-            let normal_attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .regular)]
-            let normal_text = NSMutableAttributedString(string: " " + text, attributes: normal_attrs)
-
-            bold_text.append(normal_text)
-
-            let rep = Reply(text: bold_text, prev: nil, replyUser: replyUser)
-            replies.append(rep)
+    func addReply(key: String, reply: Reply) {
+        if replies == nil {
+            replies = [:]
         }
+        self.replies![key] = reply
     }
-    
+
     func getUser() -> User {
-        return user
+        return UserMap.map[user]!
     }
-    
+
     func getText() -> String {
         return text
     }
-    
+
     func getReplies() -> [Reply] {
-        return replies
+        if replies == nil {
+            return []
+        }
+        
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        
+        return replies!.values.sorted(by: {
+            format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedAscending
+        })
     }
-    
+
     // MARK: - init
-    init(post: Post, text: String, user: User) {
+    init(id: String, post: String, user: String, text: String, time: String, replies: [String:Reply]?) {
+        self.id = id
         self.post = post
-        self.text = text
-        self.replies = []
         self.user = user
+        self.text = text
+        self.time = time
+        self.replies = replies
     }
 }
 
 // MARK: Reply Model Class
-class Reply {
+class Reply: Codable, Equatable, Identifiable {
     // MARK: - Properties
-    private var text: NSMutableAttributedString
-    private var prev: Reply?
-    private var replyUser: User
+    var id: String
+    var prevReply: String   // empty if this is a reply to a comment, non-empty if reply to another reply
+    var user: String      // id of the person replying
+    var text: String
+    var time: String
     
+    // MARK: - Equatable
+    static func == (lhs: Reply, rhs: Reply) -> Bool {
+        lhs.id == rhs.id
+    }
+
     // MARK: - Getters and Setters
     func getReplyUser() -> User {
-        return replyUser
+        return UserMap.map[user]!
     }
     
     func getText() -> NSMutableAttributedString {
-        return text
+        let space = text.firstIndex(of: " ")
+        let username = text[...space!]
+        
+        let afterSpace = text.index(space!, offsetBy: 1)
+        let response = text[afterSpace...]
+        
+        let attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .bold)]
+        let bold_text = NSMutableAttributedString(string: String(username), attributes: attrs)
+
+        let normal_attrs = [NSAttributedString.Key.font : Constants.getFont(size: 16, weight: .regular)]
+        let normal_text = NSMutableAttributedString(string: String(response), attributes: normal_attrs)
+        
+        bold_text.append(normal_text)
+        return bold_text
     }
-    
+
     // MARK: - init
-    init(text: NSMutableAttributedString, prev: Reply?, replyUser: User) {
+    init(id: String, prevReply: String, user: String, text: String, time: String) {
+        self.id = id
+        self.prevReply = prevReply
+        self.user = user
         self.text = text
-        self.prev = prev
-        self.replyUser = replyUser
+        self.time = time
     }
 }

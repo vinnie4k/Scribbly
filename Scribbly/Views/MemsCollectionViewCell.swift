@@ -41,10 +41,10 @@ class MemsTinyPostView: UIView {
     }()
 
     // MARK: - Properties (data)
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var post: Post? = nil
     private var mode: UIUserInterfaceStyle!
-    var postInfoDelegate: PostInfoDelegate?
+    weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -73,7 +73,7 @@ class MemsTinyPostView: UIView {
         self.mode = mode
 
         if post != nil {
-            drawing.image = post?.getDrawing()
+            drawing.image = post!.getDrawing()
         }
         dateLabel.text = text
         determineBlur()
@@ -152,7 +152,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "MemsCollectionViewCellReuse"
     private var data: [String]!
     private var user: User!
-    var postInfoDelegate: PostInfoDelegate!
+    weak var postInfoDelegate: PostInfoDelegate!
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -234,9 +234,9 @@ class MemsCollectionViewCell: UICollectionViewCell {
             
             if (text != "") {
                 let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + data[0])
-                let post = user.getPostFromDate(selected_date: date)
-                tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
-                tinyView.postInfoDelegate = postInfoDelegate
+                let post = self.user.getPostFromDate(selected_date: date)
+                tinyView.configure(post: post, text: text, mode: self.traitCollection.userInterfaceStyle)
+                tinyView.postInfoDelegate = self.postInfoDelegate
             } else {
                 tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
             }

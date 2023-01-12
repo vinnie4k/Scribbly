@@ -71,10 +71,15 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     private var user: User!
     private var mainUser: User!
     private var mode: UIUserInterfaceStyle!
-    private var parentVC: UIViewController!
+    private weak var parentVC: UIViewController!
     private var change = [NSLayoutConstraint]()
-    var updateProfileDelegate: UpdateProfileDelegate!
-    var updateRequestsDelegate: UpdateRequestsDelegate?
+    weak var updateProfileDelegate: UpdateProfileDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
+    
+    private var isBlocked: Bool!
+    private var isFollowed: Bool!
+    private var isRequested: Bool!
+    private var otherRequested: Bool!
     
     static let reuseIdentifier = "OtherProfileHeaderCellReuse"
     
@@ -118,10 +123,39 @@ class OtherProfileHeaderCell: UICollectionViewCell {
         bioLabel.text = user.getBio().lowercased()
         
         if mainUser.isBlocked(user: user) {
+            // mainUser has the other user blocked
+            self.isFollowed = false
+            self.isBlocked = true
+            self.isRequested = false
+            self.otherRequested = false
             configureBlocked()
-        } else if mainUser.isFriendsWith(user: user) {
+        } else if mainUser.isFriendsWith(user: user) || user.isFriendsWith(user: mainUser) {
+            // mainUser and the other user are friends
+            self.isFollowed = true
+            self.isBlocked = false
+            self.isRequested = false
+            self.otherRequested = false
             configureFollowing()
-        } else if !mainUser.isFriendsWith(user: user) {
+        } else if user.hasRequested(user: mainUser) {
+            // mainUser sent a request to the other user
+            self.isFollowed = false
+            self.isBlocked = false
+            self.isRequested = true
+            self.otherRequested = false
+            configureNotFollowing()
+        } else if mainUser.hasRequested(user: user){
+            // the other user sent a reqest to mainUser
+            self.isFollowed = false
+            self.isBlocked = false
+            self.isRequested = false
+            self.otherRequested = true
+            configureNotFollowing()
+        } else {
+            // Not following and not requested
+            self.isFollowed = false
+            self.isBlocked = false
+            self.isRequested = false
+            self.otherRequested = false
             configureNotFollowing()
         }
     }
@@ -157,17 +191,22 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     // MARK: - Helper Functions
     private func configureNotFollowing() {
         var text = AttributedString("follow")
+        followButton.configuration?.baseBackgroundColor = Constants.button_dark
         followButton.configuration?.baseForegroundColor = .label
         followButton.configuration?.background.strokeWidth = 0
-
-        // Not following but requested
-        if mainUser.hasRequested(user: user) {
+            
+        if mode == .light {
+            followButton.configuration?.baseBackgroundColor = Constants.button_light
+        }
+        
+        // Not following but mainUser sent a request to the other user
+        if isRequested {
             text = AttributedString("requested")
             followButton.configuration?.baseBackgroundColor = .systemBackground
             followButton.configuration?.background.strokeColor = Constants.secondary_text
             followButton.configuration?.background.strokeWidth = 0.5
             followButton.configuration?.baseForegroundColor = Constants.secondary_text
-        } else if user.hasRequested(user: mainUser) {
+        } else if otherRequested {
             // Other person requested
             text = AttributedString("accept")
         }
@@ -229,13 +268,23 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc private func followAction() {
-        if mainUser.isFriendsWith(user: user) {
+        if isFollowed {
+            // Already friends, have the option to unfollow
             let unfollow = UIAlertAction(title: "Unfollow", style: .destructive) { (action) in
                 self.mainUser.removeFriend(user: self.user)
-                self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
-                self.updateProfileDelegate.updateProfile()
-                if self.updateRequestsDelegate != nil {
-                    self.updateRequestsDelegate?.updateRequests()
+                self.user.removeFriend(user: self.mainUser)
+                
+                DispatchQueue.main.async {
+                    self.isFollowed = false
+                    self.isRequested = false
+                    self.isBlocked = false
+                    self.otherRequested = false
+                    
+                    self.configureNotFollowing()
+                    self.updateProfileDelegate.updateProfile()
+                    if self.updateRequestsDelegate != nil {
+                        self.updateRequestsDelegate?.updateRequests()
+                    }
                 }
             }
             let alertController = UIAlertController(title: nil, message: "You won't be able to see their posts after you unfollow them.", preferredStyle: .actionSheet)
@@ -243,34 +292,79 @@ class OtherProfileHeaderCell: UICollectionViewCell {
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             
             parentVC.present(alertController, animated: true)
-        } else if mainUser.hasRequested(user: user) {
-            mainUser.unsendRequest(user: user)
-        } else if user.hasRequested(user: mainUser) {
-            mainUser.acceptRequest(user: user)
+        } else if isRequested {
+            // mainUser sent a request to the other user, then cancel the request
+            user.removeRequest(user: mainUser)
+            
+            DispatchQueue.main.async {
+                self.isFollowed = false
+                self.isRequested = false
+                self.isBlocked = false
+                self.otherRequested = false
+                
+                self.configureNotFollowing()
+                self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
+            }
+        } else if otherRequested {
+            // the other user sent a request to mainUser, add them as a friend
+            mainUser.removeRequest(user: user)
+            mainUser.addFriend(friend: user)
+            user.addFriend(friend: mainUser)
+            
+            DispatchQueue.main.async {
+                self.isBlocked = false
+                self.isRequested = false
+                self.isFollowed = true
+                self.otherRequested = false
+                
+                self.configureFollowing()
+                self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
+            }
         } else {
-            mainUser.sendRequest(user: user)
-        }
-        configure(user: user, mainUser: mainUser, mode: mode, parentVC: parentVC)
-        updateProfileDelegate.updateProfile()
-        if updateRequestsDelegate != nil {
-            updateRequestsDelegate?.updateRequests()
+            // send a request to the other user, currently says "follow"
+            user.addRequest(user: mainUser)
+            
+            DispatchQueue.main.async {
+                self.isBlocked = false
+                self.isRequested = true
+                self.otherRequested = false
+                self.isFollowed = false
+                
+                self.configureNotFollowing()
+                self.updateProfileDelegate.updateProfile()
+                if self.updateRequestsDelegate != nil {
+                    self.updateRequestsDelegate?.updateRequests()
+                }
+            }
         }
     }
     
     @objc private func blockAction() {
-        if mainUser.isBlocked(user: user) {
+        if isBlocked {
             let unblock = UIAlertAction(title: "Unblock", style: .destructive) { (action) in
                 self.mainUser.unblockUser(user: self.user)
-                self.addConstr(lst: [
-                    self.blockButton.topAnchor.constraint(equalTo: self.bioLabel.bottomAnchor, constant: Constants.prof_btn_top),
-                    self.blockButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.prof_btn_side),
-                    self.blockButton.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
-                ])
-                self.followButton.isHidden = false
-                self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
-                self.updateProfileDelegate.updateProfile()
-                if self.updateRequestsDelegate != nil {
-                    self.updateRequestsDelegate?.updateRequests()
+                
+                DispatchQueue.main.async {
+                    self.addConstr(lst: [
+                        self.blockButton.topAnchor.constraint(equalTo: self.bioLabel.bottomAnchor, constant: Constants.prof_btn_top),
+                        self.blockButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.prof_btn_side),
+                        self.blockButton.widthAnchor.constraint(equalToConstant: Constants.prof_btn_width),
+                    ])
+                    
+                    self.isBlocked = false
+                    self.followButton.isHidden = false
+                    
+                    self.configureNotFollowing()
+                    self.updateProfileDelegate.updateProfile()
+                    if self.updateRequestsDelegate != nil {
+                        self.updateRequestsDelegate?.updateRequests()
+                    }
                 }
             }
             
@@ -279,13 +373,18 @@ class OtherProfileHeaderCell: UICollectionViewCell {
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             
             parentVC.present(alertController, animated: true)
-        } else if !mainUser.isBlocked(user: user) {
+        } else if !isBlocked {
             let block = UIAlertAction(title: "Block", style: .destructive) { (action) in
                 self.mainUser.blockUser(user: self.user)
-                self.configure(user: self.user, mainUser: self.mainUser, mode: self.mode, parentVC: self.parentVC)
-                self.updateProfileDelegate.updateProfile()
-                if self.updateRequestsDelegate != nil {
-                    self.updateRequestsDelegate?.updateRequests()
+                
+                DispatchQueue.main.async {
+                    self.isBlocked = true
+                    
+                    self.configureBlocked()
+                    self.updateProfileDelegate.updateProfile()
+                    if self.updateRequestsDelegate != nil {
+                        self.updateRequestsDelegate?.updateRequests()
+                    }
                 }
             }
             let alertController = UIAlertController(title: nil, message: "Are you sure you want to do this?", preferredStyle: .actionSheet)

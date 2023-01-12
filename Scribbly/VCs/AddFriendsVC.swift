@@ -34,10 +34,12 @@ class AddFriendsVC: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tv = UITableView()
+        tv.backgroundColor = .systemBackground
         tv.register(AddFriendsTableViewCell.self, forCellReuseIdentifier: AddFriendsTableViewCell.reuseIdentifier)
         tv.sectionHeaderTopPadding = 0
         tv.separatorStyle = .none
         tv.delegate = self
+        tv.addSubview(refreshControl)
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -45,20 +47,34 @@ class AddFriendsVC: UIViewController {
     private lazy var searchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.backgroundImage = UIImage()
-        bar.placeholder = "search for a user"
+        bar.placeholder = "search by username"
         bar.tintColor = .label
         bar.translatesAutoresizingMaskIntoConstraints = false
         bar.delegate = self
         return bar
     }()
     
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshTV), for: .valueChanged)
+        return refresh
+    }()
+    
     // MARK: - Properties (data)
     private var datasource: Datasource!
     private var friendsData = [Friend]()
     private var mainUser: User
-    var updateRequestsDelegate: UpdateRequestsDelegate!
-    private var filteredFriends = [Friend]()
-    var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate!
+    var searchTask: DispatchWorkItem?
     
     // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -68,6 +84,7 @@ class AddFriendsVC: UIViewController {
         
         view.addSubview(searchBar)
         view.addSubview(tableView)
+        view.addSubview(spinner)
         
 //        setupGradient()
         setupNavBar()
@@ -75,10 +92,10 @@ class AddFriendsVC: UIViewController {
         setupConstraints()
     }
     
-    init(mainUser: User, users: [User]) {
+    init(mainUser: User) {
         self.mainUser = mainUser
         super.init(nibName: nil, bundle: nil)
-        setupFriendsData(users: users)
+        setupFriendsData(users: [])
     }
     
     required init?(coder: NSCoder) {
@@ -100,21 +117,35 @@ class AddFriendsVC: UIViewController {
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 5),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
     // MARK: - Setup Data
     func setupFriendsData(users: [User]) {
+        friendsData = []
         for i in users {
-            friendsData.append(Friend(user: i))
+            if i.id != mainUser.id && (!mainUser.isFriendsWith(user: i) || !i.isFriendsWith(user: mainUser)) && !mainUser.isBlocked(user: i) && !i.isBlocked(user: mainUser) {
+                friendsData.append(Friend(user: i))
+            }
         }
-        filteredFriends = friendsData
     }
     
     // MARK: - Button Helpers
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func refreshTV() {
+        DatabaseManager.getFriends(with: mainUser, completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.setupFriendsData(users: users)
+            self.createSnapshot()
+            self.refreshControl.endRefreshing()
+        })
     }
 }
 
@@ -157,14 +188,14 @@ extension AddFriendsVC {
     }
     
     private func configureDatasource() {
-        datasource = Datasource(tableView: tableView, cellProvider: cell(tableView:indexPath:item:))
+        datasource = Datasource(tableView: tableView, cellProvider: { [unowned self] tableView, indexPath, item in return self.cell(tableView: tableView, indexPath: indexPath, item: item)})
         createSnapshot()
     }
     
     private func createSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections([Section.friendsListSection])
-        snapshot.appendItems(filteredFriends.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
+        snapshot.appendItems(friendsData.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
         
         datasource.apply(snapshot, animatingDifferences: false)
     }
@@ -177,45 +208,39 @@ extension AddFriendsVC: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchBar.text!.isEmpty {
-            let request = filteredFriends[indexPath.row].user
-            let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
-            profileVC.updateRequestsDelegate = self
-            profileVC.updateFeedDelegate = updateFeedDelegate
-            navigationController?.pushViewController(profileVC, animated: true)
-        }
+        let request = friendsData[indexPath.row].user
+        let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
+        profileVC.updateRequestsDelegate = updateRequestsDelegate
+        profileVC.updateFeedDelegate = updateFeedDelegate
+        navigationController?.pushViewController(profileVC, animated: true)
     }
 }
 
 // MARK: - Other Extensions
-extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
-    // MARK: - UpdateRequestsDelegate
-    func updateRequests() {
-        var oldSnapshot = datasource.snapshot()
-        oldSnapshot.deleteAllItems()
-        datasource.apply(oldSnapshot, animatingDifferences: false)
-        createSnapshot()
-        
-        updateRequestsDelegate.updateRequests() // Update friends list as well
-    }
-    
+extension AddFriendsVC: UISearchBarDelegate {
     // MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredFriends = []
+        // Cancel previous task if any
+        searchTask?.cancel()
         
-        if searchText.isEmpty {
-            filteredFriends = friendsData
-        } else {
-            for name in friendsData {
-                if name.user.getUserName().lowercased().contains(searchText.lowercased()) || name.user.getFullName().lowercased().contains(searchText.lowercased()) {
-                    filteredFriends.append(name)
-                }
-            }
+        var oldSnapshot = self.datasource.snapshot()
+        oldSnapshot.deleteAllItems()
+        self.datasource.apply(oldSnapshot, animatingDifferences: false)
+        self.spinner.startAnimating()
+        
+        // Replace previous task with a new one
+        let task = DispatchWorkItem { [weak self] in
+            guard let `self` = self else { return }
+            DatabaseManager.searchUsers(with: searchText.lowercased(), completion: { [weak self] users in
+                guard let `self` = self else { return }
+                self.setupFriendsData(users: users)
+                self.createSnapshot()
+                self.spinner.stopAnimating()
+            })
         }
         
-        var oldSnapshot = datasource.snapshot()
-        oldSnapshot.deleteAllItems()
-        datasource.apply(oldSnapshot, animatingDifferences: false)
-        createSnapshot()
+        searchTask = task
+        // Execute task in 0.75 second, depends on network speed
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.75, execute: task)
     }
 }

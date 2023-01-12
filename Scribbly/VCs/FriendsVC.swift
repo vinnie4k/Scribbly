@@ -47,11 +47,13 @@ class FriendsVC: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .grouped)
+        tv.backgroundColor = .systemBackground
         tv.register(FriendsTableViewCell.self, forCellReuseIdentifier: FriendsTableViewCell.reuseIdentifier)
         tv.register(FollowRequestViewCell.self, forCellReuseIdentifier: FollowRequestViewCell.reuseIdentifier)
         tv.sectionHeaderTopPadding = 0
         tv.separatorStyle = .none
         tv.delegate = self
+        tv.addSubview(refreshControl)
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -66,13 +68,27 @@ class FriendsVC: UIViewController {
         return bar
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshTV), for: .valueChanged)
+        return refresh
+    }()
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
     // MARK: - Properties (data)
     private var datasource: Datasource!
     private var friendsData = [Friend]()
     private var requestsData = [User]()
     private var user: User
     private var filteredFriends = [Friend]()
-    var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate!
 
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -82,11 +98,12 @@ class FriendsVC: UIViewController {
         
         view.addSubview(searchBar)
         view.addSubview(tableView)
-        
+        view.addSubview(spinner)
+                
 //        setupGradient()
+        spinner.startAnimating()
         setupNavBar()
-        setupRequestsData()
-        setupFriendsData()
+        setupData()
         configureDatasource()
         setupConstraints()
     }
@@ -117,31 +134,52 @@ class FriendsVC: UIViewController {
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
     // MARK: - Setup Data
-    private func setupRequestsData() {
-        requestsData = [User]()
-        requestsData = user.getRequests().reversed()
-    }
-    
-    private func setupFriendsData() {
-        friendsData = [Friend]()
-        for i in user.getFriends() {
-            friendsData.insert(Friend(friend: i), at: 0)
-        }
-        filteredFriends = friendsData
+    private func setupData() {
+        requestsData = []
+        friendsData = []
+        
+        DatabaseManager.getRequests(with: user.id, completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.requestsData = users.reversed()
+            
+            DatabaseManager.getFriends(with: self.user, completion: { [weak self] users in
+                guard let `self` = self else {return }
+                
+                for i in users {
+                    self.friendsData.insert(Friend(friend: i), at: 0)
+                }
+                self.filteredFriends = self.friendsData
+                
+                var oldSnapshot = self.datasource.snapshot()
+                oldSnapshot.deleteAllItems()
+                self.datasource.apply(oldSnapshot, animatingDifferences: false)
+                
+                self.createSnapshot()
+                self.refreshControl.endRefreshing()
+                self.spinner.stopAnimating()
+            })
+        })
     }
     
     // MARK: - Button Helpers
+    @objc private func refreshTV() {
+        updateRequests()
+    }
+    
     @objc private func popVC() {
         navigationController?.popViewController(animated: true)
     }
     
     @objc private func pushAddFriendsVC() {
-        let addFriendsVC = AddFriendsVC(mainUser: user, users: Database.getAddFriendsUsers(user: user))
+        let addFriendsVC = AddFriendsVC(mainUser: user)
         addFriendsVC.updateRequestsDelegate = self
         navigationController?.pushViewController(addFriendsVC, animated: true)
     }
@@ -185,14 +223,14 @@ extension FriendsVC {
             return cell
         case .friendsListItem (let friend):
             let cell = tableView.dequeueReusableCell(withIdentifier: FriendsTableViewCell.reuseIdentifier, for: indexPath) as! FriendsTableViewCell
-            cell.configure(user: friend.friend, mainUser: user)
+            cell.configure(user: friend.friend, mainUser: user, parentVC: self)
             cell.selectionStyle = .none
             return cell
         }
     }
     
     private func configureDatasource() {
-        datasource = Datasource(tableView: tableView, cellProvider: cell(tableView:indexPath:item:))
+        datasource = Datasource(tableView: tableView, cellProvider: { [unowned self] tableView, indexPath, item in return self.cell(tableView: tableView, indexPath: indexPath, item: item)})
         createSnapshot()
     }
     
@@ -250,14 +288,7 @@ extension FriendsVC: UITableViewDelegate {
 extension FriendsVC: UpdateRequestsDelegate, UISearchBarDelegate {
     // MARK: - UpdateRequestsDelegate
     func updateRequests() {
-        setupFriendsData()
-        setupRequestsData()
-        
-        var oldSnapshot = datasource.snapshot()
-        oldSnapshot.deleteAllItems()
-        datasource.apply(oldSnapshot)
-        
-        createSnapshot()
+        setupData()
     }
     
     // MARK: - UISearchBarDelegate
