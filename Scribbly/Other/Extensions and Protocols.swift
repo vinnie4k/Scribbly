@@ -258,3 +258,19 @@ extension Dictionary where Value: Equatable {
         return self.filter { $1 == val }.map { $0.0 }
     }
 }
+
+// MARK: - StackView Helpers
+class SeparatorView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = Constants.secondary_text.withAlphaComponent(0.3)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIView.noIntrinsicMetric, height:0.3)
+    }
+}

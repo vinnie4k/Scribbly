@@ -13,22 +13,6 @@ import FirebaseAuth
 // MARK: HomeVC
 class HomeVC: UIViewController {
     // MARK: - Properties (view)
-    private lazy var searchButton: UIButton = {
-        let btn = UIButton()
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .large
-        if (traitCollection.userInterfaceStyle == .light) {
-            config.image = UIImage(named: "search_light")
-        } else if (traitCollection.userInterfaceStyle == .dark) {
-            config.image = UIImage(named: "search_dark")
-        }
-        config.baseBackgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-        btn.configuration = config
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
-    
     private let logo: UILabel = {
         let lbl = UILabel()
         lbl.text = "scribbly"
@@ -246,9 +230,6 @@ class HomeVC: UIViewController {
             profileButton.widthAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             profileButton.heightAnchor.constraint(equalToConstant: 2 * Constants.profile_button_radius),
             
-            searchButton.widthAnchor.constraint(equalToConstant: Constants.search_button_width),
-            searchButton.heightAnchor.constraint(equalToConstant: Constants.search_button_height),
-            
             postCV.topAnchor.constraint(equalTo: view.topAnchor),
             postCV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.post_cv_side_padding),
             postCV.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.post_cv_side_padding),
@@ -295,7 +276,6 @@ class HomeVC: UIViewController {
     }
     
     private func setupNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)
         navigationItem.titleView = logo
         

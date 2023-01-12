@@ -254,7 +254,7 @@ class TimerVC: UIViewController {
     }
     
     @objc private func pushSettingsVC() {
-        let settingsVC = SettingsVC()
+        let settingsVC = SettingsVC(mainUser: mainUser)
         navigationController?.pushViewController(settingsVC, animated: true)
     }
     

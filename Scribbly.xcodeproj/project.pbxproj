@@ -39,6 +39,9 @@
 		2E3BC6D4296E7AAA008F5679 /* SuggestionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BC6D3296E7AAA008F5679 /* SuggestionsVC.swift */; };
 		2E3BC6D6296E7EC4008F5679 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BC6D5296E7EC4008F5679 /* TutorialView.swift */; };
 		2E553EB4295595A300A40575 /* Extensions and Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E553EB3295595A300A40575 /* Extensions and Protocols.swift */; };
+		2E5DDAB5296FC9B50027CEAC /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB4296FC9B50027CEAC /* SettingsView.swift */; };
+		2E5DDAB7296FE4520027CEAC /* BlockedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */; };
+		2E5DDAB9296FE4BF0027CEAC /* BlockedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB8296FE4BF0027CEAC /* BlockedTableViewCell.swift */; };
 		2E5E617D296F4B0B007DAA16 /* UsernameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5E617C296F4B0B007DAA16 /* UsernameVC.swift */; };
 		2E68C0F42967CF9000CBEFFF /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E68C0F32967CF9000CBEFFF /* Mappings.swift */; };
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
@@ -97,6 +100,9 @@
 		2E3BC6D3296E7AAA008F5679 /* SuggestionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsVC.swift; sourceTree = "<group>"; };
 		2E3BC6D5296E7EC4008F5679 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
 		2E553EB3295595A300A40575 /* Extensions and Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions and Protocols.swift"; sourceTree = "<group>"; };
+		2E5DDAB4296FC9B50027CEAC /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedVC.swift; sourceTree = "<group>"; };
+		2E5DDAB8296FE4BF0027CEAC /* BlockedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedTableViewCell.swift; sourceTree = "<group>"; };
 		2E5E617C296F4B0B007DAA16 /* UsernameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameVC.swift; sourceTree = "<group>"; };
 		2E68C0F32967CF9000CBEFFF /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
 		2E70868C295B9E97003D6E87 /* MemsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsInfoView.swift; sourceTree = "<group>"; };
@@ -249,6 +255,7 @@
 				2EF0A5662964A95500B2E799 /* TimerVC.swift */,
 				2E11443E2964D86C00054D51 /* UploadPostVC.swift */,
 				2E02DB2529664A3D00B375E4 /* SettingsVC.swift */,
+				2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -270,6 +277,8 @@
 				2E9D436929636C7700B6474C /* OtherProfileHeaders.swift */,
 				2E9D436B29636F0F00B6474C /* OtherMemsCollectionViewCell.swift */,
 				2E2A67B529649C9900AE6DA2 /* AddFriendsTableViewCell.swift */,
+				2E5DDAB4296FC9B50027CEAC /* SettingsView.swift */,
+				2E5DDAB8296FE4BF0027CEAC /* BlockedTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -428,6 +437,7 @@
 				2E3BC6D4296E7AAA008F5679 /* SuggestionsVC.swift in Sources */,
 				2EF946B7296DD1BD00F1927A /* SignupVC.swift in Sources */,
 				2E0C089A294F16C90021C2D9 /* HomeVC.swift in Sources */,
+				2E5DDAB5296FC9B50027CEAC /* SettingsView.swift in Sources */,
 				2E0C0886294F15290021C2D9 /* AppDelegate.swift in Sources */,
 				2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */,
 				2E9D436A29636C7700B6474C /* OtherProfileHeaders.swift in Sources */,
@@ -449,6 +459,7 @@
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,
 				2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */,
 				2EF946B9296DE6F400F1927A /* PhoneVC.swift in Sources */,
+				2E5DDAB7296FE4520027CEAC /* BlockedVC.swift in Sources */,
 				2E9D436829635B7800B6474C /* OtherUserProfileVC.swift in Sources */,
 				2E02DB1D29650A3C00B375E4 /* DatabaseManager.swift in Sources */,
 				2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */,
@@ -463,6 +474,7 @@
 				2EF0A5672964A95500B2E799 /* TimerVC.swift in Sources */,
 				2E02DB222965F1E300B375E4 /* LandingVC.swift in Sources */,
 				2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */,
+				2E5DDAB9296FE4BF0027CEAC /* BlockedTableViewCell.swift in Sources */,
 				2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */,
 				2E3BC6CE296E50CE008F5679 /* FirstNameVC.swift in Sources */,
 				2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */,
@@ -613,8 +625,9 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Scribbly to access your photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -623,9 +636,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vinnie.Scribbly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -645,8 +661,9 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Scribbly to access your photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -655,9 +672,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vinnie.Scribbly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

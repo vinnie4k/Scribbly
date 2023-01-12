@@ -39,8 +39,6 @@ struct Constants {
     static let prompt_height = CGFloat(100)
     static let prompt_width = UIScreen.main.bounds.width    
     static let profile_button_radius = CGFloat(20)
-    static let search_button_width = CGFloat(40)
-    static let search_button_height = CGFloat(30)
     static let user_post_corner = CGFloat(15)
     static let user_post_top_padding = CGFloat(20)
     static let user_post_side_padding = CGFloat(15)
@@ -205,4 +203,7 @@ struct Constants {
     // MARK: - Settings Page
     static let settings_bot = CGFloat(60)
     static let settings_side_padding = CGFloat(30)
+    static let settings_top = CGFloat(40)
+    static let settings_stack_height = CGFloat(45)
+    static let settings_stack_corner = CGFloat(15)
 }

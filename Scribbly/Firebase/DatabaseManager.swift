@@ -119,6 +119,34 @@ extension DatabaseManager {
         })
     }
     
+    /// Get a list of User objects of the given user's blocked list
+    static func getBlocked(with userID: String, completion: @escaping ([User]) -> Void) {
+        DatabaseManager.database.child("users/\(userID)/blocked").observeSingleEvent(of: .value, with: { snapshot in
+            guard snapshot.exists() else {
+                print("getBlocked: The user does not have any users blocked.")
+                completion([])
+                return
+            }
+
+            guard let data = snapshot.value as? [String : String] else { return }
+            let arr = data.values.map({$0}) // Contains user IDs
+            var result: [User] = []
+            let group = DispatchGroup()
+
+            for userID in arr {
+                group.enter()
+                DatabaseManager.getOtherUserStartup(with: userID, completion: { user, _ in
+                    result.append(user)
+                    group.leave()
+                })
+            }
+            group.notify(queue: .main) {
+                completion(result)
+            }
+
+        }) { error in print(error.localizedDescription) }
+    }
+    
     // MARK: - Friends
     
     /// Remove a user from this user's friends list

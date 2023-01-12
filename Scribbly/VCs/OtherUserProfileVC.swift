@@ -82,7 +82,7 @@ class OtherUserProfileVC: UIViewController {
     private var updateMems: Bool = true
     private var memsData = [Month]()
     private var booksData = [Bookmarks]()
-    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
     weak var updateRequestsDelegate: UpdateRequestsDelegate?
     
     // MARK: - viewDidLoad, init, setupBackground, setupNavBar, and setupConstraints
@@ -234,7 +234,7 @@ class OtherUserProfileVC: UIViewController {
         }, completion: nil)
         drawViewLarge.subviews[1].removeFromSuperview()
         reloadMemsBooksItems()
-        updateFeedDelegate.updateFeed()
+        updateFeedDelegate?.updateFeed()
     }
 }
 

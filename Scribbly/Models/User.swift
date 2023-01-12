@@ -18,21 +18,21 @@ class User: Codable, Equatable, Identifiable {
     var lastName: String
     var pfp: String         // URL
     var accountStart: String // format: d MMM yyyy HH:mm:ss Z (ex: 5 Jan 2023 03:24:00 -0600)
-
+    
     var bio: String
     var friends: [String : String]?          // Array of user IDs
     var requests: [String : String]?         // Array of user IDs
     var blocked: [String : String]?          // Array of user IDs
     var posts: [String : String]?            // Array of post IDs
     var bookmarkedPosts: [String : String]?  // Array of post IDs
-
+    
     var todaysPost: String          // Post ID
     
     // MARK: - Equatable
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
-
+    
     // MARK: - Helper Functions
     func removeBookmarksFromUser(user: User) {
         let posts = getBookmarksFromUser(user: user)
@@ -41,7 +41,7 @@ class User: Codable, Equatable, Identifiable {
             post.removeBookmarkUser(user: self)
         }
     }
-
+    
     func getBookmarksFromUser(user: User) -> [Post] {
         if bookmarkedPosts == nil { return [] }
         var result: [Post] = []
@@ -53,7 +53,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return result
     }
-
+    
     func isBlocked(user: User) -> Bool {
         if let blocked = blocked {
             for userID in blocked.values.map({$0}) {
@@ -64,7 +64,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return false
     }
-
+    
     func hasRequested(user: User) -> Bool {
         if let requests = requests {
             for userID in requests.values.map({$0}) {
@@ -75,7 +75,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return false
     }
-
+    
     func isFriendsWith(user: User) -> Bool {
         if let friends = friends {
             for userID in friends.values.map({$0}) {
@@ -86,7 +86,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return false
     }
-
+    
     func updateFeed() -> [Post] {
         var result = [Post]()
         if let friends = friends {
@@ -97,10 +97,10 @@ class User: Codable, Equatable, Identifiable {
         }
         return result
     }
-
+    
     func getPostFromDate(selected_date: Date) -> Post? {
         guard let posts = posts else { return nil }
-//        let arr = Array(posts.values.map({$0}))
+        //        let arr = Array(posts.values.map({$0}))
         
         let arr = posts.values.map({$0})
         for postID in arr {
@@ -112,7 +112,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return nil
     }
-
+    
     /**
      Returns a list of the months from the start date to today's date in reverse order
      For example, if today is December 2022 and the start date is October 2022, monthsFromStart()
@@ -125,25 +125,25 @@ class User: Codable, Equatable, Identifiable {
         
         let calendar = Calendar(identifier: .gregorian)
         let firstOfMonth = CalendarHelper().firstOfMonth(date: accountStart)
-
+        
         let components = calendar.dateComponents(Set([.month]), from: firstOfMonth, to: Date())
-
+        
         var allDates: [String] = []
         let dateRangeFormatter = DateFormatter()
         dateRangeFormatter.dateFormat = "MMMM yyyy"
-
+        
         for i in 0 ... components.month! {
             guard let date = calendar.date(byAdding: .month, value: i, to: firstOfMonth) else {
-            continue
+                continue
             }
-
+            
             let formattedDate = dateRangeFormatter.string(from: date)
             allDates += [formattedDate]
         }
         allDates.reverse()
         return allDates
     }
-
+    
     func isBookmarked(post: Post) -> Bool {
         if let bookmarkedPosts = bookmarkedPosts {
             for postID in bookmarkedPosts.values.map({$0}) {
@@ -154,7 +154,7 @@ class User: Codable, Equatable, Identifiable {
         }
         return false
     }
-
+    
     // MARK: - Getters and Setters
     func unblockUser(user: User) {
         DatabaseManager.removeBlock(with: user.id, userID: self.id, completion: { [weak self] success in
@@ -166,7 +166,7 @@ class User: Codable, Equatable, Identifiable {
             }
         })
     }
-
+    
     func blockUser(user: User) {
         if blocked == nil {
             blocked = [:]
@@ -186,7 +186,7 @@ class User: Codable, Equatable, Identifiable {
         
         removeBookmarksFromUser(user: user)
     }
-
+    
     func removeRequest(user: User) {
         DatabaseManager.removeRequest(with: user.id, userID: self.id, completion: { [weak self] success in
             guard let `self` = self else { return }
@@ -197,7 +197,7 @@ class User: Codable, Equatable, Identifiable {
             }
         })
     }
-
+    
     func removeFriend(user: User) {
         DatabaseManager.removeFriend(with: user.id, userID: self.id, completion: { [weak self] success in
             guard let `self` = self else { return }
@@ -208,7 +208,7 @@ class User: Codable, Equatable, Identifiable {
             }
         })
     }
-
+    
     func addRequest(user: User) {
         if requests == nil {
             requests = [:]
@@ -221,7 +221,7 @@ class User: Codable, Equatable, Identifiable {
             }
         })
     }
-
+    
     func getRequests() -> [User] {
         if requests == nil { return [] }
         
@@ -231,19 +231,19 @@ class User: Codable, Equatable, Identifiable {
         }
         return accum
     }
-
+    
     func setPFP(image: String) {
         pfp = image
     }
-
+    
     func getLastName() -> String {
         return lastName
     }
-
+    
     func getFirstName() -> String {
         return firstName
     }
-
+    
     func addFriend(friend: User) {
         if friends == nil {
             friends = [:]
@@ -255,7 +255,7 @@ class User: Codable, Equatable, Identifiable {
             }
         })
     }
-
+    
     func getFriends() -> [User] {
         if friends == nil { return [] }
         
@@ -265,13 +265,22 @@ class User: Codable, Equatable, Identifiable {
         }
         return accum
     }
-
+    
     func getBio() -> String {
         return bio
     }
-
+    
     func getFullName() -> String {
         return firstName + " " + lastName
+    }
+    
+    func getBlocked() -> [User] {
+        if blocked == nil { return [] }
+        var accum: [User] = []
+        for userID in blocked!.values.map({$0}) {
+            accum.append(UserMap.map[userID]!)
+        }
+        return accum
     }
 
     func getBookmarks() -> [Post] {
