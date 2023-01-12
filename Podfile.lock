@@ -1,0 +1,20 @@
+PODS:
+  - CodableFirebase (0.2.1)
+  - RESegmentedControl (0.5.4)
+
+DEPENDENCIES:
+  - CodableFirebase (~> 0.2)
+  - RESegmentedControl
+
+SPEC REPOS:
+  trunk:
+    - CodableFirebase
+    - RESegmentedControl
+
+SPEC CHECKSUMS:
+  CodableFirebase: 0bf201991eeec35eb9fcd987d271ea463cf34a80
+  RESegmentedControl: 393063d6b6ffceb6aea85c00772977f3da2d5c53
+
+PODFILE CHECKSUM: c9da3f656ce3bf67e03137589e22940fd17f948b
+
+COCOAPODS: 1.11.3
