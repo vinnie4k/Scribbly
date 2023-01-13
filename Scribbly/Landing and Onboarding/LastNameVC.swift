@@ -11,13 +11,13 @@ import UIKit
 
 class LastNameVC: UIViewController, UITextFieldDelegate {
     // MARK: - Properties (view)
-    private let logo: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "scribbly"
-        lbl.textColor = .label
-        lbl.font = Constants.getFont(size: 24, weight: .semibold)
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+    private let logo: UIImageView = {
+        let img = UIImageView(image: UIImage(named: "scribbly_title"))
+        img.contentMode = .scaleAspectFit
+        img.layer.masksToBounds = true
+        img.clipsToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
     }()
     
     private lazy var textLabel: UILabel = {

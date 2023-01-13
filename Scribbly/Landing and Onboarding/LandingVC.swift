@@ -19,13 +19,13 @@ class LandingVC: UIViewController {
         return lbl
     }()
     
-    private let logoLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "scribbly"
-        lbl.font = Constants.getFont(size: 40, weight: .semibold)
-        lbl.textColor = .label
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+    private let logoLabel: UIImageView = {
+        let img = UIImageView(image: UIImage(named: "scribbly_logo"))
+        img.contentMode = .scaleAspectFit
+        img.layer.masksToBounds = true
+        img.clipsToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
     }()
     
     private let continueLabel: UILabel = {
@@ -141,6 +141,7 @@ class LandingVC: UIViewController {
             
             logoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            logoLabel.widthAnchor.constraint(equalToConstant: Constants.loading_logo_width),
             
             continueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             continueLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.login_bot - 10),

@@ -11,6 +11,9 @@ import UIKit
 
 // MARK: - Constants
 struct Constants {
+    // MARK: - Loading Logo
+    static let loading_logo_width = UIScreen.main.bounds.width * 0.5
+    
     // MARK: - Colors
     static let primary_light = UIColor.white
     static let primary_dark = UIColor(red: 0.071, green: 0.071, blue: 0.071, alpha: 1)

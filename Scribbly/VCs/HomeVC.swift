@@ -13,13 +13,13 @@ import FirebaseAuth
 // MARK: HomeVC
 class HomeVC: UIViewController {
     // MARK: - Properties (view)
-    private let logo: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "scribbly"
-        lbl.textColor = .label
-        lbl.font = Constants.getFont(size: 24, weight: .semibold)
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+    private let logo: UIImageView = {
+        let img = UIImageView(image: UIImage(named: "scribbly_title"))
+        img.contentMode = .scaleAspectFit
+        img.layer.masksToBounds = true
+        img.clipsToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
     }()
     
     private lazy var profileButton: UIButton = {
@@ -74,13 +74,13 @@ class HomeVC: UIViewController {
         return refresh
     }()
     
-    private let logoLoading: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "scribbly"
-        lbl.font = Constants.getFont(size: 40, weight: .semibold)
-        lbl.textColor = .label
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+    private let logoLoading: UIImageView = {
+        let img = UIImageView(image: UIImage(named: "scribbly_logo"))
+        img.contentMode = .scaleAspectFit
+        img.layer.masksToBounds = true
+        img.clipsToBounds = true
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
     }()
     
     private let spinner: UIActivityIndicatorView = {
@@ -264,6 +264,7 @@ class HomeVC: UIViewController {
         NSLayoutConstraint.activate([
             logoLoading.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoLoading.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            logoLoading.widthAnchor.constraint(equalToConstant: Constants.loading_logo_width),
             
             spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             spinner.topAnchor.constraint(equalTo: logoLoading.bottomAnchor, constant: 30)
