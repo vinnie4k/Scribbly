@@ -167,7 +167,7 @@ class ProfilePicVC: UIViewController {
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.login_side_padding),
             
             profileImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            profileImage.topAnchor.constraint(equalTo: descTextLabel.bottomAnchor, constant: 50),
+            profileImage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
             profileImage.widthAnchor.constraint(equalToConstant: Constants.onboard_pfp_radius * 2),
             profileImage.heightAnchor.constraint(equalToConstant: Constants.onboard_pfp_radius * 2),
             

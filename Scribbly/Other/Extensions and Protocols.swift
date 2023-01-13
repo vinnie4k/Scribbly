@@ -10,6 +10,11 @@
 import UIKit
 
 // MARK: - Protocols
+protocol ContactsDelegate: AnyObject {
+    func addToFollow(userID: String)
+    func removeFromFollow(userID: String)
+}
+
 protocol DismissTutorialDelegate: AnyObject {
     func dismissTutorial()
 }
@@ -271,6 +276,6 @@ class SeparatorView: UIView {
     }
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIView.noIntrinsicMetric, height:0.3)
+        return CGSize(width: UIView.noIntrinsicMetric, height:0.5)
     }
 }

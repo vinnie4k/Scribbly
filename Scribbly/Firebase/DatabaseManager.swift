@@ -10,11 +10,64 @@ import FirebaseDatabase
 import FirebaseAuth
 import CodableFirebase
 import UIKit
+import Contacts
 
 final class DatabaseManager {
-    
     static private let database = Database.database().reference()
-    
+}
+
+// MARK: - Other Helpers
+
+extension DatabaseManager {
+    /// Get a list of Users in the main user's contacts page
+    static func getContacts(completion: @escaping ([User]) -> Void) {
+        let group = DispatchGroup()
+        let store = CNContactStore()
+        let keys = [CNContactPhoneNumbersKey]
+        var numbers: [String] = []
+        var accum: [User] = []
+        
+        do {
+            try store.enumerateContacts(with: CNContactFetchRequest.init(keysToFetch: keys as [CNKeyDescriptor]), usingBlock: { contact, pointer in
+                numbers.append(contentsOf: contact.phoneNumbers.map({ $0.value.stringValue }))
+            })
+        } catch { print("Unable to fetch the user's contacts.")}
+        
+        for num in numbers {
+            group.enter()
+            DatabaseManager.database.child("phone_id_map/\(num)").observeSingleEvent(of: .value, with: { snapshot in
+                guard snapshot.exists() else { group.leave(); return }
+                guard let data = snapshot.value as? String else { group.leave(); return }
+                DatabaseManager.getOtherUserStartup(with: data, completion: { user, _ in
+                    accum.append(user)
+                    group.leave()
+                })
+            }) { error in print(error.localizedDescription) }
+        }
+        
+        group.notify(queue: .main) {
+            completion(accum)
+        }
+                
+//        let ref = DatabaseManager.database.child("phone_id_map")
+//        ref.observeSingleEvent(of: .value, with: { snapshot in
+//            let enumerator = snapshot.children
+//            while let snap = enumerator.nextObject() as? DataSnapshot {
+//                if numbers.firstIndex(of: snap.key) != nil {
+//                    // If there is a user with that phone number, then add the ID
+//                    guard let data = snap.value as? String else { return }
+//                    group.enter()
+//                    DatabaseManager.getOtherUserStartup(with: data, completion: { user, _ in
+//                        accum.append(user)
+//                        group.leave()
+//                    })
+//                }
+//            }
+//            group.notify(queue: .main) {
+//                completion(accum)
+//            }
+//        }) { error in print(error.localizedDescription) }
+    }
 }
 
 // MARK: - Prompt Helpers
@@ -861,8 +914,20 @@ extension DatabaseManager {
                     completion(false)
                     return
                 }
-                UserMap.map[user.id] = user     // Add to cache
-                completion(true)
+                AuthManager.currentPhoneNum(completion: { number in
+                    // Add to path: /phone_id_map
+                    if number != nil {
+                        DatabaseManager.database.child("phone_id_map/\(number!)").setValue(user.id, withCompletionBlock: { error, _ in
+                            guard error == nil else {
+                                print("Failed to write to phone_id_map/")
+                                completion(false)
+                                return
+                            }
+                            UserMap.map[user.id] = user     // Add to cache
+                            completion(true)
+                        })
+                    }
+                })
             })
         })
     }

@@ -190,7 +190,7 @@ struct Constants {
     static let login_bot = CGFloat(60)
     static let onboard_confirm_corner = CGFloat(8)
     static let onboard_confirm_height = CGFloat(60)
-    static let onboard_pfp_radius = CGFloat(75)
+    static let onboard_pfp_radius =  UIScreen.main.bounds.width / 5
     static let onboard_dots_bot = CGFloat(50)
     
     // MARK: - Tutorial View

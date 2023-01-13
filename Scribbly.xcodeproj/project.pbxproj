@@ -42,6 +42,7 @@
 		2E5DDAB5296FC9B50027CEAC /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB4296FC9B50027CEAC /* SettingsView.swift */; };
 		2E5DDAB7296FE4520027CEAC /* BlockedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */; };
 		2E5DDAB9296FE4BF0027CEAC /* BlockedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDAB8296FE4BF0027CEAC /* BlockedTableViewCell.swift */; };
+		2E5DDABB2970EA700027CEAC /* ContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5DDABA2970EA700027CEAC /* ContactsTableViewCell.swift */; };
 		2E5E617D296F4B0B007DAA16 /* UsernameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5E617C296F4B0B007DAA16 /* UsernameVC.swift */; };
 		2E68C0F42967CF9000CBEFFF /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E68C0F32967CF9000CBEFFF /* Mappings.swift */; };
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
@@ -103,6 +104,7 @@
 		2E5DDAB4296FC9B50027CEAC /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedVC.swift; sourceTree = "<group>"; };
 		2E5DDAB8296FE4BF0027CEAC /* BlockedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedTableViewCell.swift; sourceTree = "<group>"; };
+		2E5DDABA2970EA700027CEAC /* ContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewCell.swift; sourceTree = "<group>"; };
 		2E5E617C296F4B0B007DAA16 /* UsernameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameVC.swift; sourceTree = "<group>"; };
 		2E68C0F32967CF9000CBEFFF /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
 		2E70868C295B9E97003D6E87 /* MemsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsInfoView.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				2E3BC6D1296E66C4008F5679 /* ProfilePicVC.swift */,
 				2E3BC6D3296E7AAA008F5679 /* SuggestionsVC.swift */,
 				2E3BC6D5296E7EC4008F5679 /* TutorialView.swift */,
+				2E5DDABA2970EA700027CEAC /* ContactsTableViewCell.swift */,
 			);
 			path = "Landing and Onboarding";
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				2E02DB1F296518F900B375E4 /* StorageManager.swift in Sources */,
 				2E11443F2964D86C00054D51 /* UploadPostVC.swift in Sources */,
 				2E02DB2629664A3D00B375E4 /* SettingsVC.swift in Sources */,
+				2E5DDABB2970EA700027CEAC /* ContactsTableViewCell.swift in Sources */,
 				2ECBE2A22959131E00DFA64F /* ProfileHeaders.swift in Sources */,
 				2E9D436C29636F0F00B6474C /* OtherMemsCollectionViewCell.swift in Sources */,
 				2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */,

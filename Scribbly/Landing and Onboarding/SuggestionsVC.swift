@@ -107,11 +107,20 @@ class SuggestionsVC: UIViewController {
         return spin
     }()
     
+    private let tableView: UITableView = {
+        let tv = UITableView()
+        tv.separatorStyle = .none
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
+    }()
+    
     // MARK: - Properties (data)
     private var firstName: String
     private var lastName: String
     private var username: String
     private var pfp: UIImage?
+    private var contacts: [User]!
+    private var toAdd: [String] = []
     
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -120,12 +129,14 @@ class SuggestionsVC: UIViewController {
                         
         view.addSubview(textLabel)
         view.addSubview(descTextLabel)
+        view.addSubview(tableView)
         view.addSubview(stack)
         view.addSubview(pageView)
         view.addSubview(spinner)
-        
+                
         setupNavBar()
         setupConstraints()
+        setupData()
     }
     
     init(firstName: String, lastName: String, username: String, pfp: UIImage?) {
@@ -163,8 +174,31 @@ class SuggestionsVC: UIViewController {
             pageView.bottomAnchor.constraint(equalTo: stack.topAnchor, constant: -Constants.onboard_dots_bot),
             
             spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
+            tableView.bottomAnchor.constraint(equalTo: pageView.topAnchor, constant: -20),
+            tableView.topAnchor.constraint(equalTo: descTextLabel.bottomAnchor, constant: 20)
         ])
+    }
+    
+    // MARK: - Setup Data and configureTV
+    private func setupData() {
+        spinner.startAnimating()
+        DatabaseManager.getContacts(completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.contacts = users
+            self.configureTV()
+            self.tableView.reloadData()
+            self.spinner.stopAnimating()
+        })
+    }
+    
+    private func configureTV() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ContactsTableViewCell.self, forCellReuseIdentifier: ContactsTableViewCell.reuseIdentifier)
     }
     
     // MARK: - Button Helpers
@@ -210,11 +244,20 @@ class SuggestionsVC: UIViewController {
                     if success {
                         print("User was created successfully.")
                         
-                        let homeVC = HomeVC(initialPopup: true)
-                        let nav = UINavigationController(rootViewController: homeVC)
-                        nav.modalTransitionStyle = .crossDissolve
-                        nav.modalPresentationStyle = .fullScreen
-                        self.present(nav, animated: true)
+                        let group2 = DispatchGroup()
+                        for userID in self.toAdd {
+                            group2.enter()
+                            DatabaseManager.addRequest(with: user, userID: userID, completion: { _, _ in
+                                group2.leave()
+                            })
+                        }
+                        group2.notify(queue: .main) {
+                            let homeVC = HomeVC(initialPopup: true)
+                            let nav = UINavigationController(rootViewController: homeVC)
+                            nav.modalTransitionStyle = .crossDissolve
+                            nav.modalPresentationStyle = .fullScreen
+                            self.present(nav, animated: true)
+                        }
                         
                     } else {
                         let alert = UIAlertController(title: "Unable to create account", message: "Please try again", preferredStyle: .alert)
@@ -232,5 +275,40 @@ class SuggestionsVC: UIViewController {
         let alert = UIAlertController(title: "Error", message: "Unable to upload your profile picture. The default will be used for now.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
         present(alert, animated: true)
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension SuggestionsVC: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return contacts.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: ContactsTableViewCell.reuseIdentifier) as? ContactsTableViewCell {
+            cell.configure(user: contacts[indexPath.row])
+            cell.contactsDelegate = self
+            return cell
+        }
+        return UITableViewCell()
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension SuggestionsVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return Constants.friends_cell_height
+    }
+}
+
+// MARK: - Delegation
+extension SuggestionsVC: ContactsDelegate {
+    func addToFollow(userID: String) {
+        toAdd.append(userID)
+    }
+    
+    func removeFromFollow(userID: String) {
+        let index = Int(toAdd.firstIndex(of: userID)!)
+        toAdd.remove(at: index)
     }
 }

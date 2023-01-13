@@ -13,6 +13,16 @@ class AuthManager {
     static private let auth = Auth.auth()
     static private var verificationID: String?
     
+    /// Get the current user's phone number
+    static func currentPhoneNum(completion: @escaping (String?) -> Void) {
+        guard let phone = AuthManager.auth.currentUser?.phoneNumber else {
+            print("Error retrieving current user's phone number.")
+            completion(nil)
+            return
+        }
+        completion(phone)
+    }
+    
     /// Get the current user id
     static func currentUserID(completion: @escaping (String?) -> Void) {
         guard let userID = AuthManager.auth.currentUser?.uid else {
