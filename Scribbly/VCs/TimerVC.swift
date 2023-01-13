@@ -21,7 +21,7 @@ class TimerVC: UIViewController {
     
     private lazy var questionButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "questionmark.circle")
         config.baseForegroundColor = .label
@@ -254,6 +254,7 @@ class TimerVC: UIViewController {
     }
     
     @objc private func pushSettingsVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let settingsVC = SettingsVC(mainUser: mainUser)
         navigationController?.pushViewController(settingsVC, animated: true)
     }
@@ -263,6 +264,7 @@ class TimerVC: UIViewController {
     }
     
     @objc private func startTimer() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if !hasStart {
             hasStart = true
             runTimer()
@@ -287,6 +289,7 @@ class TimerVC: UIViewController {
     }
     
     @objc private func stopTimer() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         isFinished = true
         let uploadVC = UploadPostVC(mainUser: mainUser)
         uploadVC.dismissTimerDelegate = self

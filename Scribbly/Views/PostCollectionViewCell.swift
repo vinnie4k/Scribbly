@@ -271,6 +271,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc func bookmarkPost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.bookmarkButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
         }, completion: {(_ finished: Bool) -> Void in
@@ -297,6 +298,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func likePost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.likeButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
         }, completion: {(_ finished: Bool) -> Void in
@@ -324,6 +326,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func pushCommentVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }

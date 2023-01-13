@@ -115,6 +115,7 @@ class BlockedTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc private func blockAction() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if isBlocked {
             let unblock = UIAlertAction(title: "Unblock", style: .destructive) { (action) in
                 self.mainUser.unblockUser(user: self.user)

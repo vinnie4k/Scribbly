@@ -268,6 +268,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc private func followAction() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if isFollowed {
             // Already friends, have the option to unfollow
             let unfollow = UIAlertAction(title: "Unfollow", style: .destructive) { (action) in
@@ -346,6 +347,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     }
     
     @objc private func blockAction() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if isBlocked {
             let unblock = UIAlertAction(title: "Unblock", style: .destructive) { (action) in
                 self.mainUser.unblockUser(user: self.user)

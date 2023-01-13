@@ -113,6 +113,7 @@ class AddFriendsTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc func sendRequest() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if user.hasRequested(user: mainUser) {
             // Currently says "requested"
             // mainUser has already sent a request. Change to follow and remove the request.

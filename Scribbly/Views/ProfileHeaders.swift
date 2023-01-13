@@ -243,12 +243,14 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc func pushFriendsVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let friendsVC = FriendsVC(user: user)
         friendsVC.updateFeedDelegate = updateFeedDelegate
         parentVC.navigationController?.pushViewController(friendsVC, animated: true)
     }
     
     @objc func pushEditProfileVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let editProfileVC = EditProfileVC(mainUser: self.user)
         editProfileVC.updatePFPDelegate = updatePFPDelegate
         editProfileVC.updateProfileDelegate = self

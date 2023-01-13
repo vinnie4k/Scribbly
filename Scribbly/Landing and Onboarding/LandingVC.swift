@@ -123,7 +123,7 @@ class LandingVC: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(pushPhoneVC))
         view.addGestureRecognizer(tapGesture)
         view.isUserInteractionEnabled = true
-        
+    
         view.addSubview(welcomeToLabel)
         view.addSubview(logoLabel)
         view.addSubview(linesImage)

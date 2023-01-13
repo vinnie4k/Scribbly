@@ -302,6 +302,7 @@ class HomeVC: UIViewController {
     }
     
     @objc private func pushMainUserProfileVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let profileVC = MainUserProfileVC(mainUser: mainUser)
         profileVC.updateFeedDelegate = self
         profileVC.updatePFPDelegate = self
@@ -407,6 +408,7 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
     
     // MARK: - PostInfoDelegate
     func showPostInfo(post: Post) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let view = PostInfoView()
         view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false

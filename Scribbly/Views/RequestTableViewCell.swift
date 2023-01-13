@@ -114,6 +114,7 @@ class RequestTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc func acceptRequest() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if !isAccepted {
             mainUser.removeRequest(user: user)
             mainUser.addFriend(friend: user)

@@ -22,7 +22,7 @@ class SettingsVC: UIViewController {
     
     private lazy var backButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
@@ -151,6 +151,7 @@ class SettingsVC: UIViewController {
     }
     
     @objc private func popVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
     }
     

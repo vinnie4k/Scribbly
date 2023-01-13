@@ -335,6 +335,7 @@ class BooksButtonView: UIStackView {
     
     // MARK: - Button Helpers
     @objc func likePost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.likeButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
         }, completion: {(_ finished: Bool) -> Void in
@@ -356,11 +357,13 @@ class BooksButtonView: UIStackView {
     }
     
     @objc func pushCommentVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
     
     @objc func bookmarkPost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.bookmarkButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
         }, completion: {(_ finished: Bool) -> Void in

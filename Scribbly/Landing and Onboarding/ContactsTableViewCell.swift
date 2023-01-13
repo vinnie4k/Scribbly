@@ -110,6 +110,7 @@ class ContactsTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc private func sendRequest() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if isRequested {
             // Unsend request
             followButton.configuration?.title = "follow"

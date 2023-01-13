@@ -127,6 +127,7 @@ class FriendsTableViewCell: UITableViewCell {
     
     // MARK: - Button Helpers
     @objc func changeFollow() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if isFollowed {
             // Tapped on unfollow
             let unfollowAction = UIAlertAction(title: "Unfollow", style: .destructive, handler: { action in

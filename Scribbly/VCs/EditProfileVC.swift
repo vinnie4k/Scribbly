@@ -23,7 +23,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     private lazy var backButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
@@ -37,7 +37,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     private lazy var doneButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(confirmChanges), for: .touchUpInside)
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(named: "checkmark_dark")
         if traitCollection.userInterfaceStyle == .light {
@@ -313,6 +313,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     // MARK: - Button Helpers
     @objc private func popVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
     }
     

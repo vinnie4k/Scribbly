@@ -117,7 +117,7 @@ class HideShareView: UIStackView {
     private lazy var hideButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(hidePost), for: .touchUpInside)
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -128,7 +128,7 @@ class HideShareView: UIStackView {
 
     private let deleteButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -139,7 +139,7 @@ class HideShareView: UIStackView {
 
     private let shareButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -209,6 +209,7 @@ class HideShareView: UIStackView {
     
     // MARK: - Button Helpers
     @objc func hidePost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.hideButton.imageView?.transform = CGAffineTransformMakeScale(0.7, 0.7);
         }, completion: {(_ finished: Bool) -> Void in

@@ -23,7 +23,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     
     private lazy var backButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
@@ -298,6 +298,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     func sendReplyReply(comment: Comment, reply: Reply) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         // For delegation
         textField.becomeFirstResponder()
         textField.text = "@" + reply.getReplyUser().getUserName() + " "
@@ -306,6 +307,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
         
     func sendReplyComment(comment: Comment) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         // For delegation
         textField.becomeFirstResponder()
         textField.text = "@" + comment.getUser().getUserName() + " "
@@ -314,6 +316,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     @objc private func sendComment() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         spinner.startAnimating()
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
@@ -440,6 +443,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     }
     
     @objc private func popVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.navigationBar.layer.zPosition = 0
         navigationController?.popViewController(animated: true)
     }
@@ -696,6 +700,7 @@ extension CommentVC: EnlargeDrawingDelegate {
     
     // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
         outerView.clipsToBounds = false
         outerView.layer.shadowColor = UIColor.black.cgColor

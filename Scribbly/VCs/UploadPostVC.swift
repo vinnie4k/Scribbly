@@ -166,6 +166,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func postDrawing() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if hasUploaded {
             let postID = UUID().uuidString
             let fileName = "images/posts/\(postID).jpg"

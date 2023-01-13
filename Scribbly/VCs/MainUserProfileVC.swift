@@ -23,7 +23,7 @@ class MainUserProfileVC: UIViewController {
     
     private lazy var backButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
@@ -36,7 +36,7 @@ class MainUserProfileVC: UIViewController {
     
     private lazy var settingsButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         if (traitCollection.userInterfaceStyle == .dark) {
             config.image = UIImage(named: "settings_dark")
@@ -247,10 +247,12 @@ class MainUserProfileVC: UIViewController {
     
     // MARK: - Button Helpers
     @objc private func popVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
     }
     
     @objc private func pushSettingsVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let settingsVC = SettingsVC(mainUser: mainUser)
         navigationController?.pushViewController(settingsVC, animated: true)
     }

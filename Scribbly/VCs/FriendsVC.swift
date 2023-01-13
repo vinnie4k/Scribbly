@@ -21,7 +21,7 @@ class FriendsVC: UIViewController {
     
     private lazy var backButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "chevron.left")
         config.baseForegroundColor = .label
@@ -34,7 +34,7 @@ class FriendsVC: UIViewController {
     
     private lazy var addFriendsButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(systemName: "person.crop.circle.fill.badge.plus")
         config.baseForegroundColor = .label
@@ -175,10 +175,12 @@ class FriendsVC: UIViewController {
     }
     
     @objc private func popVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
     }
     
     @objc private func pushAddFriendsVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let addFriendsVC = AddFriendsVC(mainUser: user)
         addFriendsVC.updateRequestsDelegate = self
         navigationController?.pushViewController(addFriendsVC, animated: true)
