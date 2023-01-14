@@ -97,6 +97,14 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
         return btn
     }()
     
+    private let spinner: UIActivityIndicatorView = {
+        let spin = UIActivityIndicatorView(style: .medium)
+        spin.hidesWhenStopped = true
+        spin.color = .label
+        spin.translatesAutoresizingMaskIntoConstraints = false
+        return spin
+    }()
+    
     // MARK: - Properties (data)
     private var mainUser: User
     private var hasUploaded: Bool = false
@@ -114,6 +122,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
         view.addSubview(captionLabel)
         view.addSubview(captionTextField)
         view.addSubview(postButton)
+        view.addSubview(spinner)
         
         setupNavBar()
         setupConstraints()
@@ -150,7 +159,10 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
             
             postButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.timer_btn_bot),
             postButton.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.upload_side_padding),
-            postButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            postButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -166,6 +178,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func postDrawing() {
+        spinner.startAnimating()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         if hasUploaded {
             let postID = UUID().uuidString
@@ -190,8 +203,10 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
                             self.mainUser.todaysPost = post.id
                             self.navigationController?.popViewController(animated: false)
                             self.dismissTimerDelegate.dismissTimerVC()
+                            self.spinner.stopAnimating()
                         } else {
                             self.uploadError()
+                            self.spinner.stopAnimating()
                         }
                     })
                     print(downloadURL)
@@ -199,6 +214,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
                 case .failure(let error):
                     print("Storage manager error: \(error)")
                     self.uploadError()
+                    self.spinner.stopAnimating()
                 }
             })
         } else {

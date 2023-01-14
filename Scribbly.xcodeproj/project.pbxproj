@@ -48,6 +48,7 @@
 		2E70868D295B9E97003D6E87 /* MemsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E70868C295B9E97003D6E87 /* MemsInfoView.swift */; };
 		2E77F7DF294FAC2100D6E8D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7DE294FAC2100D6E8D0 /* Constants.swift */; };
 		2E77F7E1294FB27100D6E8D0 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E77F7E0294FB27100D6E8D0 /* PostCollectionViewCell.swift */; };
+		2E816B022971DBCA00B1ED5D /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 2E816B012971DBCA00B1ED5D /* FirebaseMessaging */; };
 		2E9D43622962574400B6474C /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D43612962574400B6474C /* FriendsTableViewCell.swift */; };
 		2E9D4364296294BA00B6474C /* RequestsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D4363296294BA00B6474C /* RequestsVC.swift */; };
 		2E9D43662962975200B6474C /* RequestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D43652962975200B6474C /* RequestTableViewCell.swift */; };
@@ -138,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E816B022971DBCA00B1ED5D /* FirebaseMessaging in Frameworks */,
 				2E02DB0F2964F47700B375E4 /* FirebaseAnalytics in Frameworks */,
 				2E02DB112964F47700B375E4 /* FirebaseAuth in Frameworks */,
 				2E02DB132964F47700B375E4 /* FirebaseDatabase in Frameworks */,
@@ -330,6 +332,7 @@
 				2E02DB142964F47700B375E4 /* FirebaseFirestore */,
 				2E02DB162964F47700B375E4 /* FirebaseFunctions */,
 				2E02DB182964F47700B375E4 /* FirebaseStorage */,
+				2E816B012971DBCA00B1ED5D /* FirebaseMessaging */,
 			);
 			productName = Scribbly;
 			productReference = 2E0C0882294F15290021C2D9 /* Scribbly.app */;
@@ -626,6 +629,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow Scribbly to access your camera.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Scribbly would like to access your contacts for suggestions";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Scribbly to access your photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -662,6 +666,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow Scribbly to access your camera.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Scribbly would like to access your contacts for suggestions";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Scribbly to access your photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -749,6 +754,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2E02DB0D2964F47700B375E4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		2E816B012971DBCA00B1ED5D /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2E02DB0D2964F47700B375E4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

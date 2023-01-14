@@ -19,6 +19,35 @@ final class DatabaseManager {
 // MARK: - Other Helpers
 
 extension DatabaseManager {
+    
+    /// Add fcm token to database
+    static func addToken(with token: String, userID: String, completion: @escaping (Bool) -> Void) {
+        let ref = DatabaseManager.database.child("userid_tokens_map/\(userID)")
+        ref.observeSingleEvent(of: .value, with: { snapshot in
+            let enumerator = snapshot.children
+            var found = false
+            while let snap = enumerator.nextObject() as? DataSnapshot, !found {
+                guard let data = snap.value as? String else { return }
+                if data == token {
+                    found = true
+                }
+            }
+            if !found {
+                ref.childByAutoId().setValue(token, withCompletionBlock: { error, _ in
+                    guard error == nil else {
+                        print("Unable to add the fcm token to the database.")
+                        completion(false)
+                        return
+                    }
+                    completion(true)
+                })
+            } else {
+                print("Token already exists.")
+                completion(false)
+            }
+        })
+    }
+    
     /// Get a list of Users in the main user's contacts page
     static func getContacts(completion: @escaping ([User]) -> Void) {
         let group = DispatchGroup()
