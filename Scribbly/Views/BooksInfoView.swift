@@ -220,7 +220,7 @@ class BooksButtonView: UIStackView {
     private lazy var likeButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(likePost), for: .touchUpInside)
-        var config = UIButton.Configuration.bordered()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -232,7 +232,7 @@ class BooksButtonView: UIStackView {
     private lazy var commentButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
-        var config = UIButton.Configuration.bordered()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -243,7 +243,7 @@ class BooksButtonView: UIStackView {
     
     private let shareButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.bordered()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -255,7 +255,7 @@ class BooksButtonView: UIStackView {
     private lazy var bookmarkButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(bookmarkPost), for: .touchUpInside)
-        var config = UIButton.Configuration.bordered()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)

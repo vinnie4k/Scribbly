@@ -137,7 +137,9 @@ extension DatabaseManager {
         for friend in friends {
             group.enter()
             DatabaseManager.getOtherUserStartup(with: friend.id, completion: { _, todaysPost in
-                posts.append(todaysPost)
+                if let todaysPost = todaysPost {
+                    posts.append(todaysPost)
+                }
                 group.leave()
             })
         }
@@ -488,7 +490,7 @@ extension DatabaseManager {
     }
     
     /// Get a User object and their Post for today. Stores user, profile picture, and today's post to cache.
-    static func getOtherUserStartup(with userID: String, completion: @escaping (User, Post) -> Void) {
+    static func getOtherUserStartup(with userID: String, completion: @escaping (User, Post?) -> Void) {
         DatabaseManager.database.child("users/\(userID)").observeSingleEvent(of: .value, with: { snapshot in
             guard let data = snapshot.value else { return }
             do {
@@ -503,6 +505,8 @@ extension DatabaseManager {
                         DatabaseManager.getPost(with: user.todaysPost, completion: { post in
                             completion(user, post)
                         })
+                    } else {
+                        completion(user, nil)
                     }
                 })
                 
@@ -551,7 +555,9 @@ extension DatabaseManager {
                     for friend in friends.values.map({$0}) {
                         group.enter()
                         DatabaseManager.getOtherUserStartup(with: friend, completion: { _, post in
-                            accum.append(post)
+                            if let post = post {
+                                accum.append(post)
+                            }
                             group.leave()
                         })
                     }

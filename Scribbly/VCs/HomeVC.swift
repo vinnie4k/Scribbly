@@ -123,7 +123,9 @@ class HomeVC: UIViewController {
         let format = DateFormatter()
         format.dateFormat = "M-d-yy"
         
-        DatabaseManager.getTodaysPrompt(with: format.string(from: Date()), completion: { [weak self] myPrompt in
+        let earlyDate = Calendar.current.date(byAdding: .hour, value: -12, to: Date())
+        
+        DatabaseManager.getTodaysPrompt(with: format.string(from: earlyDate!), completion: { [weak self] myPrompt in
             guard let `self` = self else { return }
             self.prompt = myPrompt
         })

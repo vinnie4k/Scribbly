@@ -318,7 +318,7 @@ class RedoDeleteView: UIStackView {
     // MARK: - Properties (view)
     private let redoButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -329,7 +329,7 @@ class RedoDeleteView: UIStackView {
     
     private let deleteButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -340,7 +340,7 @@ class RedoDeleteView: UIStackView {
     
     private let shareButton: UIButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
