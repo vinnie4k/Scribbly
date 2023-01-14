@@ -218,10 +218,18 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         view.addSubview(textInputView)
         view.addSubview(drawViewLarge)
         view.addSubview(spinner)
-    
-        setupCollectionView()
+        
         setupNavBar()
         setupConstraints()
+    
+        spinner.startAnimating()
+        DatabaseManager.getComments(with: post.id, completion: { [weak self] dict in
+            guard let `self` = self else { return }
+            self.post.comments = dict
+            self.comments = self.post.getComments()
+            self.setupCollectionView()
+            self.spinner.stopAnimating()
+        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {

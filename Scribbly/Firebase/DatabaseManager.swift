@@ -77,25 +77,6 @@ extension DatabaseManager {
         group.notify(queue: .main) {
             completion(accum)
         }
-                
-//        let ref = DatabaseManager.database.child("phone_id_map")
-//        ref.observeSingleEvent(of: .value, with: { snapshot in
-//            let enumerator = snapshot.children
-//            while let snap = enumerator.nextObject() as? DataSnapshot {
-//                if numbers.firstIndex(of: snap.key) != nil {
-//                    // If there is a user with that phone number, then add the ID
-//                    guard let data = snap.value as? String else { return }
-//                    group.enter()
-//                    DatabaseManager.getOtherUserStartup(with: data, completion: { user, _ in
-//                        accum.append(user)
-//                        group.leave()
-//                    })
-//                }
-//            }
-//            group.notify(queue: .main) {
-//                completion(accum)
-//            }
-//        }) { error in print(error.localizedDescription) }
     }
 }
 
@@ -656,14 +637,34 @@ extension DatabaseManager {
         DatabaseManager.database.child("posts/\(postID)/comments").observeSingleEvent(of: .value, with: { snapshot in
             var dict: [String:Comment] = [:]
             let enumerator = snapshot.children
+            let group = DispatchGroup()
             while let snap = enumerator.nextObject() as? DataSnapshot {
                 guard let data = snap.value else { return }
                 do {
                     let cmt = try FirebaseDecoder().decode(Comment.self, from: data)
                     dict[snap.key] = cmt
+                    
+                    // Add the comment users
+                    group.enter()
+                    DatabaseManager.getOtherUserStartup(with: cmt.user, completion: { _, _ in
+                        group.leave()
+                    })
+                    
+                    // Add the reply users
+                    if let replies = cmt.replies?.values.map({$0}) {
+                        for i in replies {
+                            group.enter()
+                            DatabaseManager.getOtherUserStartup(with: i.user, completion: { _, _ in
+                                group.leave()
+                            })
+                        }
+                    }
+                    
                 } catch let error { print("getComments: \(error)") }
             }
-            completion(dict)
+            group.notify(queue: .main) {
+                completion(dict)
+            }
             
         }) { error in print(error.localizedDescription) }
     }
