@@ -827,6 +827,73 @@ extension DatabaseManager {
     
     // MARK: - Post
     
+    /// Deletes the user's post
+    static func deletePost(with post: Post, userID: String, completion: @escaping (Bool) -> Void) {
+        let group = DispatchGroup()
+        
+        // Delete from todaysPost if it is from today
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        format.timeZone = TimeZone(abbreviation: "UTC")
+        
+        if Calendar.current.isDateInToday(format.date(from: post.time)!) {
+            group.enter()
+            DatabaseManager.database.child("users/\(userID)/todaysPost").setValue("", withCompletionBlock: { error, _ in
+                guard error == nil else {
+                    print("Unable to remove today's post")
+                    completion(false)
+                    return
+                }
+                group.leave()
+            })
+        }
+        
+        // Delete from users/posts
+        group.enter()
+        DatabaseManager.database.child("users/\(userID)/posts/").observeSingleEvent(of: .value, with: { snapshot in
+            let enumerator = snapshot.children
+            var found = false
+            while let snap = enumerator.nextObject() as? DataSnapshot, !found {
+                guard let data = snap.value as? String else { return }
+                if data == post.id {
+                    found = true
+                    DatabaseManager.database.child("users/\(userID)/posts/\(snap.key)").removeValue()
+                }
+            }
+            if !found {
+                print("Unable to remove the post from the users/\(userID)/posts")
+                completion(false)
+            }
+            group.leave()
+        }) { error in print(error.localizedDescription) }
+        
+        // Delete from posts/
+        group.enter()
+        DatabaseManager.database.child("posts/\(post.id)").removeValue(completionBlock: { error, _ in
+            guard error == nil else {
+                print("Unable to remove the post from posts/")
+                completion(false)
+                return
+            }
+            group.leave()
+        })
+        
+        // Delete from storage
+        group.enter()
+        StorageManager.removeImage(with: post.drawing, completion: { success in
+            if !success {
+                print("Unable to remove the image from storage.")
+                completion(false)
+                return
+            }
+            group.leave()
+        })
+        
+        group.notify(queue: .main) {
+            completion(true)
+        }
+    }
+    
     /// Update the stats for the given Post
     static func updatePostStats(with post: Post, completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()

@@ -86,7 +86,7 @@ class PostInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
         
         drawing.image = post.getDrawing()
         statsView.configure(post: post, mode: mode)
-        redoDeleteView.configure(post: post, mode: mode)
+        redoDeleteView.configure(post: post, mode: mode, parentVC: parentVC)
     }
     
     private func setupConstraints() {
@@ -353,8 +353,9 @@ class PostInfoStatsView: UIView {
 // MARK: RedoDeleteView
 class RedoDeleteView: UIStackView {
     // MARK: - Properties (view)
-    private let redoButton: UIButton = {
+    private lazy var redoButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(redoPost), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
@@ -364,16 +365,16 @@ class RedoDeleteView: UIStackView {
         return btn
     }()
     
-    private let deleteButton: UIButton = {
-        let btn = UIButton()
-        var config = UIButton.Configuration.plain()
-        config.buttonSize = .large
-        config.baseBackgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-        btn.configuration = config
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
+//    private let deleteButton: UIButton = {
+//        let btn = UIButton()
+//        var config = UIButton.Configuration.plain()
+//        config.buttonSize = .large
+//        config.baseBackgroundColor = .clear
+//        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+//        btn.configuration = config
+//        btn.translatesAutoresizingMaskIntoConstraints = false
+//        return btn
+//    }()
     
     private let shareButton: UIButton = {
         let btn = UIButton()
@@ -388,6 +389,7 @@ class RedoDeleteView: UIStackView {
     
     // MARK: - Properties (data)
     private var post: Post!
+    private weak var parentVC: UIViewController!
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -411,7 +413,7 @@ class RedoDeleteView: UIStackView {
         
         addSubview(customBlurEffectView)
         addArrangedSubview(redoButton)
-        addArrangedSubview(deleteButton)
+//        addArrangedSubview(deleteButton)
         addArrangedSubview(shareButton)
     }
     
@@ -419,19 +421,45 @@ class RedoDeleteView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle) {
+    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
         self.post = post
+        self.parentVC = parentVC
         
         redoButton.configuration?.image = UIImage(named: "redo_dark")
-        deleteButton.configuration?.image = UIImage(named: "delete_dark")
+//        deleteButton.configuration?.image = UIImage(named: "delete_dark")
         shareButton.configuration?.image = UIImage(named: "share_dark")
         backgroundColor = Constants.blur_dark
         
         if mode == .light {
             redoButton.configuration?.image = UIImage(named: "redo_light")
-            deleteButton.configuration?.image = UIImage(named: "delete_light")
+//            deleteButton.configuration?.image = UIImage(named: "delete_light")
             shareButton.configuration?.image = UIImage(named: "share_light")
             backgroundColor = Constants.blur_light
         }
+    }
+    
+    // MARK: - Button Helpers
+    @objc private func redoPost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let redoAction = UIAlertAction(title: "Redo", style: .destructive, handler: { [weak self] action in
+            guard let `self` = self else { return }
+            DatabaseManager.deletePost(with: self.post, userID: self.post.user, completion: { success in
+                if success {
+                    let homeVC = HomeVC(initialPopup: false)
+                    let nav = UINavigationController(rootViewController: homeVC)
+                    nav.modalPresentationStyle = .fullScreen
+                    self.parentVC.present(nav, animated: true)
+                } else {
+                    let alert = UIAlertController(title: "Unable to remove the post", message: "Please try again", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                    self.parentVC.present(alert, animated: true)
+                }
+            })
+        })
+        
+        let alert = UIAlertController(title: "Redo", message: "Are you sure you want to redo your post?", preferredStyle: .actionSheet)
+        alert.addAction(redoAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        parentVC.present(alert, animated: true)
     }
 }

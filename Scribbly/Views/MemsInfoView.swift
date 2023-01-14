@@ -85,7 +85,7 @@ class MemsInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
         
         drawing.image = post.getDrawing()
         statsView.configure(post: post, mode: mode)
-        hideShareView.configure(post: post, mode: mode)
+        hideShareView.configure(post: post, mode: mode, parentVC: parentVC)
     }
     
     private func setupConstraints() {
@@ -162,8 +162,9 @@ class HideShareView: UIStackView {
         return btn
     }()
 
-    private let deleteButton: UIButton = {
+    private lazy var deleteButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(deletePost), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
@@ -187,6 +188,7 @@ class HideShareView: UIStackView {
     // MARK: - Properties (data)
     private var post: Post!
     private var mode: UIUserInterfaceStyle!
+    private weak var parentVC: UIViewController!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -218,9 +220,10 @@ class HideShareView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle) {
+    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
         self.post = post
         self.mode = mode
+        self.parentVC = parentVC
         
         if post.isHidden() {
             hideButton.configuration?.image = UIImage(named: "hidden_dark")
@@ -267,6 +270,30 @@ class HideShareView: UIStackView {
                 hideButton.configuration?.image = UIImage(named: "hidden_light")
             }
         }
+    }
+    
+    @objc private func deletePost() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let redoAction = UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] action in
+            guard let `self` = self else { return }
+            DatabaseManager.deletePost(with: self.post, userID: self.post.user, completion: { success in
+                if success {
+                    let homeVC = HomeVC(initialPopup: false)
+                    let nav = UINavigationController(rootViewController: homeVC)
+                    nav.modalPresentationStyle = .fullScreen
+                    self.parentVC.present(nav, animated: true)
+                } else {
+                    let alert = UIAlertController(title: "Unable to remove the post", message: "Please try again", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))
+                    self.parentVC.present(alert, animated: true)
+                }
+            })
+        })
+        
+        let alert = UIAlertController(title: "Delete", message: "Are you sure you want to delete this post? This cannot be undone.", preferredStyle: .actionSheet)
+        alert.addAction(redoAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        parentVC.present(alert, animated: true)
     }
 }
 

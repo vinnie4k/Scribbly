@@ -16,6 +16,18 @@ final class StorageManager {
     
     public typealias UploadPictureCompletion = (Result<String, Error>) -> Void
     
+    /// Remove an image from the firebase storage
+    static func removeImage(with fileName: String, completion: @escaping (Bool) -> Void) {
+        StorageManager.storage.child(fileName).delete(completion: { error in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                completion(false)
+                return
+            }
+            completion(true)
+        })
+    }
+    
     /// Upload an image to the firebase storage and returns completion with a URL string to download
     static func uploadImage(with data: Data, fileName: String, completion: @escaping UploadPictureCompletion) {
         StorageManager.storage.child(fileName).putData(data, metadata: nil, completion: { metadata, error in
@@ -60,7 +72,7 @@ extension StorageManager {
     static func downloadImageFromURL(with downloadURL: String, completion: @escaping (UIImage?) -> Void) {
         let storageRef = StorageManager.storage.storage.reference(forURL: "gs://scribbly-dfd4c.appspot.com/\(downloadURL)")
         // TODO: CHANGE THIS BACK TO 1 * 1024 * 1024 when a resizing is found
-        storageRef.getData(maxSize: 5 * 1024 * 1024, completion: { data, error in
+        storageRef.getData(maxSize: 10 * 1024 * 1024, completion: { data, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
