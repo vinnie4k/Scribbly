@@ -144,7 +144,15 @@ class HomeVC: UIViewController {
                 DatabaseManager.getFeedData(with: self.mainUser.getFriends(), completion: { [weak self] posts in
                     guard let `self` = self else { return }
                     self.noFriendsLabel.isHidden = true
-                    self.posts = posts
+                    
+                    // Sort posts by date
+                    let format = DateFormatter()
+                    format.dateFormat = "d MMMM yyyy HH:mm:ss"
+
+                    self.posts = posts.sorted(by: {
+                        format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
+                    })
+                    
                     self.postCV.reloadData()
                     self.refreshControl.endRefreshing()
                 })
@@ -201,7 +209,14 @@ class HomeVC: UIViewController {
                         self.navigationController?.pushViewController(timerVC, animated: false)
                     }
                     
-                    self.posts = posts
+                    // Sort posts by date
+                    let format = DateFormatter()
+                    format.dateFormat = "d MMMM yyyy HH:mm:ss"
+
+                    self.posts = posts.sorted(by: {
+                        format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
+                    })
+                    
                     self.loadHomePage()
                 } else {
                     // Go to user account creation
