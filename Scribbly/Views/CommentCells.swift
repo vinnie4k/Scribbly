@@ -51,7 +51,7 @@ class DrawingHeaderView: UICollectionReusableView {
             drawing.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             drawing.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.comment_drawing_top_padding),
             drawing.widthAnchor.constraint(equalToConstant: Constants.comment_drawing_width),
-            drawing.heightAnchor.constraint(equalToConstant: Constants.comment_drawing_height),
+            drawing.heightAnchor.constraint(equalToConstant: Constants.comment_drawing_height)
         ])
     }
     

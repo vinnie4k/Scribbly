@@ -184,7 +184,10 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
             let postID = UUID().uuidString
             let fileName = "images/posts/\(postID).jpg"
             
-            guard let image = uploadImageView.image, let data = image.jpegData(compressionQuality: 0.3) else { return }
+            guard var image = uploadImageView.image else { return }
+            image = image.cropImageToSquare(image: image)!
+            
+            guard let data = image.jpegData(compressionQuality: 0.7) else { return }
             
             StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
                 guard let `self` = self else { return }

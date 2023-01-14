@@ -10,8 +10,25 @@
 import UIKit
 
 // MARK: MemsInfoView
-class MemsInfoView: UIView, ReloadStatsDelegate {
+class MemsInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
     // MARK: - Properties (view)
+    private lazy var zoomImg: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.minimumZoomScale = 1.0
+        scroll.maximumZoomScale = 6.0
+        scroll.delegate = self
+        scroll.frame = CGRectMake(0, 0, self.drawing.frame.width, self.drawing.frame.height)
+        scroll.alwaysBounceVertical = false
+        scroll.alwaysBounceHorizontal = false
+        scroll.showsVerticalScrollIndicator = false
+        scroll.showsHorizontalScrollIndicator = false
+        scroll.layer.cornerRadius = Constants.post_cell_drawing_corner
+        scroll.flashScrollIndicators()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.addSubview(drawing)
+        return scroll
+    }()
+    
     private lazy var drawing: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
@@ -50,7 +67,7 @@ class MemsInfoView: UIView, ReloadStatsDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubview(drawing)
+        addSubview(zoomImg)
         addSubview(statsView)
         addSubview(hideShareView)
 
@@ -73,9 +90,12 @@ class MemsInfoView: UIView, ReloadStatsDelegate {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            drawing.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             drawing.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             drawing.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            
+            zoomImg.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            zoomImg.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            zoomImg.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             
             statsView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
             statsView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
@@ -108,6 +128,22 @@ class MemsInfoView: UIView, ReloadStatsDelegate {
                 self.statsView.alpha = 1.0
             }, completion: nil)
         }
+    }
+    
+    // MARK: - Zoom-in Helpers
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return drawing
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        statsView.isHidden = true
+        hideShareView.isHidden = true
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        statsView.isHidden = false
+        hideShareView.isHidden = false
+        scrollView.setZoomScale(0, animated: true)
     }
 }
 

@@ -10,5 +10,6 @@ target 'Scribbly' do
   # Pods for Scribbly
   pod 'RESegmentedControl'
   pod 'CodableFirebase', '~> 0.2'
+  pod 'ImageScrollView'
 
 end

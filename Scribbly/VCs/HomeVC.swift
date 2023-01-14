@@ -12,6 +12,16 @@ import FirebaseAuth
 
 // MARK: HomeVC
 class HomeVC: UIViewController {
+    // MARK: - For zooming in
+    private let zoomImg = {
+        let img = UIImageView()
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.layer.cornerRadius = Constants.post_cell_drawing_corner
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+    
     // MARK: - Properties (view)
     private let logo: UIImageView = {
         let img = UIImageView(image: UIImage(named: "scribbly_title"))
@@ -388,7 +398,7 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Extension: Delegation
-extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, UpdatePFPDelegate {
+extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, UpdatePFPDelegate, UIScrollViewDelegate {
     // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
@@ -400,20 +410,33 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
         outerView.layer.shadowPath = UIBezierPath(roundedRect: outerView.bounds, cornerRadius: Constants.post_cell_drawing_corner).cgPath
         outerView.translatesAutoresizingMaskIntoConstraints = false
         
-        let img = UIImageView(image: drawing)
-        img.frame = outerView.bounds
-        img.contentMode = .scaleAspectFill
-        img.clipsToBounds = true
-        img.layer.cornerRadius = Constants.post_cell_drawing_corner
-        img.translatesAutoresizingMaskIntoConstraints = false
+        zoomImg.image = drawing
+        zoomImg.frame = outerView.bounds
         
-        outerView.addSubview(img)
+        let scroll = UIScrollView()
+        scroll.minimumZoomScale = 1.0
+        scroll.maximumZoomScale = 6.0
+        scroll.delegate = self
+        scroll.frame = CGRectMake(0, 0, zoomImg.frame.width, zoomImg.frame.height)
+        scroll.alwaysBounceVertical = false
+        scroll.alwaysBounceHorizontal = false
+        scroll.showsVerticalScrollIndicator = false
+        scroll.showsHorizontalScrollIndicator = false
+        scroll.layer.cornerRadius = Constants.post_cell_drawing_corner
+        scroll.flashScrollIndicators()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.addSubview(zoomImg)
+        
+        outerView.addSubview(scroll)
         
         drawViewLarge.addSubview(outerView)
         
         NSLayoutConstraint.activate([
-            img.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
-            img.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            zoomImg.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            zoomImg.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            
+            scroll.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
+            scroll.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding),
             
             outerView.centerYAnchor.constraint(equalTo: drawViewLarge.centerYAnchor),
             outerView.centerXAnchor.constraint(equalTo: drawViewLarge.centerXAnchor),
@@ -424,6 +447,15 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.drawViewLarge.alpha = 1.0
         }, completion: nil)
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return zoomImg
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        scrollView.setZoomScale(0, animated: true)
     }
     
     // MARK: - PostInfoDelegate

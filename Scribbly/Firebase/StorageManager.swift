@@ -60,7 +60,7 @@ extension StorageManager {
     static func downloadImageFromURL(with downloadURL: String, completion: @escaping (UIImage?) -> Void) {
         let storageRef = StorageManager.storage.storage.reference(forURL: "gs://scribbly-dfd4c.appspot.com/\(downloadURL)")
         // TODO: CHANGE THIS BACK TO 1 * 1024 * 1024 when a resizing is found
-        storageRef.getData(maxSize: 1 * 1024 * 1024, completion: { data, error in
+        storageRef.getData(maxSize: 5 * 1024 * 1024, completion: { data, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {

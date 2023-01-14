@@ -1,20 +1,24 @@
 PODS:
   - CodableFirebase (0.2.1)
+  - ImageScrollView (1.9.3)
   - RESegmentedControl (0.5.4)
 
 DEPENDENCIES:
   - CodableFirebase (~> 0.2)
+  - ImageScrollView
   - RESegmentedControl
 
 SPEC REPOS:
   trunk:
     - CodableFirebase
+    - ImageScrollView
     - RESegmentedControl
 
 SPEC CHECKSUMS:
   CodableFirebase: 0bf201991eeec35eb9fcd987d271ea463cf34a80
+  ImageScrollView: d3ce8371e0d44299b2b638410db45387e18aa83f
   RESegmentedControl: 393063d6b6ffceb6aea85c00772977f3da2d5c53
 
-PODFILE CHECKSUM: c9da3f656ce3bf67e03137589e22940fd17f948b
+PODFILE CHECKSUM: 5487fad16d58efabf9f13721eecac8aa3064701a
 
 COCOAPODS: 1.11.3
