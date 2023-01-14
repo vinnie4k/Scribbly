@@ -122,6 +122,7 @@ class HomeVC: UIViewController {
     private func getPrompt() {
         let format = DateFormatter()
         format.dateFormat = "M-d-yy"
+        format.timeZone = TimeZone(abbreviation: "UTC")
         
         let earlyDate = Calendar.current.date(byAdding: .hour, value: -12, to: Date())
         
@@ -148,6 +149,7 @@ class HomeVC: UIViewController {
                     // Sort posts by date
                     let format = DateFormatter()
                     format.dateFormat = "d MMMM yyyy HH:mm:ss"
+                    format.timeZone = TimeZone(abbreviation: "UTC")
 
                     self.posts = posts.sorted(by: {
                         format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
@@ -212,6 +214,7 @@ class HomeVC: UIViewController {
                     // Sort posts by date
                     let format = DateFormatter()
                     format.dateFormat = "d MMMM yyyy HH:mm:ss"
+                    format.timeZone = TimeZone(abbreviation: "UTC")
 
                     self.posts = posts.sorted(by: {
                         format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending

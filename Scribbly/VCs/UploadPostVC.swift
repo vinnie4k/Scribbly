@@ -193,6 +193,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
                     ImageMap.map[fileName] = image
                     let format = DateFormatter()
                     format.dateFormat = "d MMMM yyyy HH:mm:ss"
+                    format.timeZone = TimeZone(abbreviation: "UTC")
                     
                     let post = Post(id: postID, user: self.mainUser.id, drawing: fileName, caption: self.captionTextField.text!, time: format.string(from: Date()), comments: [:], likedUsers: [:], bookmarkedUsers: [:], hidden: false)
                     

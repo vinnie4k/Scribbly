@@ -43,6 +43,7 @@ class Post: Codable, Equatable, Identifiable {
     func getTime() -> Date {
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        format.timeZone = TimeZone(abbreviation: "UTC")
         return format.date(from: time)!
     }
 
@@ -142,6 +143,7 @@ class Post: Codable, Equatable, Identifiable {
         
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        format.timeZone = TimeZone(abbreviation: "UTC")
         
         return comments!.values.sorted(by: {
             format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
