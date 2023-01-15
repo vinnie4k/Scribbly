@@ -175,18 +175,21 @@ class CalendarHelper {
         // Example: 26 December 2022 04:20:00
         let date_formatter = DateFormatter()
         date_formatter.dateFormat = "d MMMM yyyy HH:mm:ss"
+        date_formatter.timeZone = TimeZone(abbreviation: "America/New_York")
         return date_formatter.string(from: date)
     }
     
     func getDateFromDayMonthYear(str: String) -> Date {
         let date_formatter = DateFormatter()
         date_formatter.dateFormat = "d MMMM yyyy"
+        date_formatter.timeZone = TimeZone(abbreviation: "America/New_York")
         return date_formatter.date(from: str)!
     }
     
     func monthYearString(date: Date) -> String {
         let date_formatter = DateFormatter()
         date_formatter.dateFormat = "MMMM yyyy"
+        date_formatter.timeZone = TimeZone(abbreviation: "America/New_York")
         return date_formatter.string(from: date)
     }
     

@@ -625,7 +625,7 @@
 				CODE_SIGN_ENTITLEMENTS = Scribbly/Scribbly.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1.11;
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;
@@ -666,7 +666,7 @@
 				CODE_SIGN_ENTITLEMENTS = Scribbly/Scribbly.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2;
+				CURRENT_PROJECT_VERSION = 1.11;
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;
