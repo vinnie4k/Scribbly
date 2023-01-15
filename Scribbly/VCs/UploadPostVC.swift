@@ -174,7 +174,22 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     
     // MARK: - Button Helpers
     @objc private func uploadAlert() {
-        checkCameraAccess()
+        let photoLibraryAlert = UIAlertAction(title: "Photo Library", style: .default) { (action) in
+            self.checkPhotosAccess()
+        }
+        
+        let cameraAlert = UIAlertAction(title: "Camera", style: .default) { (action) in
+            self.checkCameraAccess()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        let alert = UIAlertController(title: "Upload your artwork", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(photoLibraryAlert)
+        alert.addAction(cameraAlert)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true)
     }
     
     @objc private func postDrawing() {
@@ -237,7 +252,66 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
 }
 
 // MARK: - Extensions
-extension UploadPostVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension UploadPostVC: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // MARK: - Accessing Photo Library
+    @objc private func checkPhotosAccess() {
+        let authStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        switch authStatus {
+        case .authorized, .limited:
+            self.accessPhotos()
+        case .denied, .restricted:
+            self.accessDenied(title: "Photo library access denied", message: "Please enable in Settings > Privacy")
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization() { (status) -> Void in
+                switch status {
+                case .authorized, .limited:
+                    self.accessPhotos()
+                case .denied, .restricted:
+                    self.accessDenied(title: "Photo library access denied", message: "Please enable in Settings > Privacy")
+                case .notDetermined:
+                    print("This won't happen")
+                @unknown default:
+                    fatalError("Unknown")
+                }
+            }
+        @unknown default:
+            fatalError("Unknown")
+        }
+    }
+    
+    private func accessPhotos() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.livePhotos, .images])
+        configuration.preferredAssetRepresentationMode = .automatic
+        
+        DispatchQueue.main.async {
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.present(picker, animated: true)
+        }
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        guard !results.isEmpty else {
+            return
+        }
+        
+        let item = results[0].itemProvider
+        if item.canLoadObject(ofClass: UIImage.self) {
+            item.loadObject(ofClass: UIImage.self) { (image, error) in
+                DispatchQueue.main.async {
+                    if let image = image as? UIImage {
+                        self.uploadImageView.image = image
+                        self.reconfigureConstraints()
+                        self.hasUploaded = true
+                    }
+                }
+            }
+        }
+    }
+    
     // MARK: - Accessing Camera
     private func checkCameraAccess() {
         let authStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
