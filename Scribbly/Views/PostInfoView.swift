@@ -8,7 +8,6 @@
 // TODO: ALREADY REFACTORED
 
 import UIKit
-import ImageScrollView
 
 // MARK: PostInfoView
 class PostInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
