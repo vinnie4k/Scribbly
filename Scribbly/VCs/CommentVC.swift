@@ -338,7 +338,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         spinner.startAnimating()
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
-        format.timeZone = TimeZone(abbreviation: "America/New_York")
+        format.timeZone = TimeZone(identifier: "America/New_York")
 
         if let text = textField.text, !text.isEmpty {
             if prevComment != nil, prevReply != nil {
@@ -419,7 +419,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             } else {
                 let format = DateFormatter()
                 format.dateFormat = "d MMMM yyyy HH:mm:ss"
-                format.timeZone = TimeZone(abbreviation: "America/New_York")
+                format.timeZone = TimeZone(identifier: "America/New_York")
                 
                 let cmt = Comment(id: UUID().uuidString, post: post.id, user: mainUser.id, text: text, time: format.string(from: Date()), replies: [:])
                 DatabaseManager.addComment(with: cmt, completion: { [weak self] success, key in

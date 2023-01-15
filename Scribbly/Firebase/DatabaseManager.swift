@@ -845,7 +845,7 @@ extension DatabaseManager {
         // Delete from todaysPost if it is from today
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
-        format.timeZone = TimeZone(abbreviation: "America/New_York")
+        format.timeZone = TimeZone(identifier: "America/New_York")
         
         if Calendar.current.isDateInToday(format.date(from: post.time)!) {
             group.enter()

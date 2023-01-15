@@ -51,7 +51,7 @@ class Comment: Codable, Equatable, Identifiable {
         
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
-        format.timeZone = TimeZone(abbreviation: "America/New_York")
+        format.timeZone = TimeZone(identifier: "America/New_York")
         
         return replies!.values.sorted(by: {
             format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedAscending

@@ -213,7 +213,7 @@ class SuggestionsVC: UIViewController {
         var pfpURL = "images/pfp/scribbly_default_pfp.png"
         let format = DateFormatter()
         format.dateFormat = "d MMMM yyyy HH:mm:ss"
-        format.timeZone = TimeZone(abbreviation: "America/New_York")
+        format.timeZone = TimeZone(identifier: "America/New_York")
         
         AuthManager.currentUserID(completion: { [weak self] userID in
             guard let `self` = self, let userID = userID else { return }
