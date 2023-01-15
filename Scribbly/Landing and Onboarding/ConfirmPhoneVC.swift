@@ -200,6 +200,9 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
     }()
     
     // MARK: - Properties (data)
+    private var timer = Timer()
+    private var isRunning = false
+    private var seconds = 30
     private var number: String
     
     // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
@@ -318,7 +321,34 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
     }
     
     // MARK: - Button Helpers
+    private func runTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+        isRunning = true
+    }
+    
+    @objc private func updateTimer() {
+        seconds -= 1
+        if seconds == 0 {
+            timer.invalidate()
+            isRunning = false
+            let attrText = NSAttributedString(string: "send the code again", attributes: [.underlineStyle: 1])
+            resendLabelBot.attributedText = attrText
+            resendLabelBot.font = Constants.getFont(size: 14, weight: .medium)
+        } else {
+            let attrText = NSAttributedString(string: "send the code again in \(seconds)s", attributes: [.underlineStyle: 1])
+            resendLabelBot.attributedText = attrText
+            resendLabelBot.font = Constants.getFont(size: 14, weight: .medium)
+        }
+    }
+    
     @objc private func resendCode() {
-        AuthManager.startAuth(number: self.number, completion: { _ in })
+        if !isRunning {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            seconds = 30
+//            AuthManager.startAuth(number: self.number, completion: { _ in })
+            DispatchQueue.main.async {
+                self.runTimer()
+            }
+        }
     }
 }

@@ -28,8 +28,9 @@ class LandingVC: UIViewController {
         return img
     }()
     
-    private let continueLabel: UILabel = {
+    private lazy var continueLabel: UILabel = {
         let lbl = UILabel()
+        lbl.textAlignment = .center
         lbl.text = "tap anywhere to continue"
         lbl.font = Constants.getFont(size: 16, weight: .semibold)
         lbl.textColor = Constants.secondary_text
