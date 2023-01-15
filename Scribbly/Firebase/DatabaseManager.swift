@@ -58,7 +58,16 @@ extension DatabaseManager {
         
         do {
             try store.enumerateContacts(with: CNContactFetchRequest.init(keysToFetch: keys as [CNKeyDescriptor]), usingBlock: { contact, pointer in
-                numbers.append(contentsOf: contact.phoneNumbers.map({ $0.value.stringValue }))
+                
+                // Remove parentheses, dashes, and spaces
+                let numArr = contact.phoneNumbers.map({$0.value.stringValue})
+                for num in numArr {
+                    var newNum = num.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+                    if !newNum.hasPrefix("+1") {
+                        newNum = "+1" + newNum
+                    }
+                    numbers.append(newNum)
+                }
             })
         } catch { print("Unable to fetch the user's contacts.")}
         

@@ -163,7 +163,6 @@ class PhoneVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func nextPage() {
-        // TODO: IMPLEMENT THIS
         let number = "+1" + format(with: "XXXXXXXXXX", phone: phoneTextField.text!)
         AuthManager.startAuth(number: number, completion: { [weak self] success in
             guard let `self` = self else { return }
