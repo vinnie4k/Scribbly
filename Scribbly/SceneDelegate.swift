@@ -41,13 +41,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window = window
             
             UserDefaults.standard.addObserver(self, forKeyPath: "theme", options: [.new], context: nil)
-            let theme = UserDefaults.standard.value(forKey: "theme") as! String
-            if theme == Theme.system.rawValue {
-                self.window?.overrideUserInterfaceStyle = .unspecified
-            } else if theme == Theme.dark.rawValue {
-                self.window?.overrideUserInterfaceStyle = .dark
-            } else {
-                self.window?.overrideUserInterfaceStyle = .light
+            if let theme = UserDefaults.standard.value(forKey: "theme") as? String {
+                if theme == Theme.system.rawValue {
+                    self.window?.overrideUserInterfaceStyle = .unspecified
+                } else if theme == Theme.dark.rawValue {
+                    self.window?.overrideUserInterfaceStyle = .dark
+                } else {
+                    self.window?.overrideUserInterfaceStyle = .light
+                }
             }
             
             window.makeKeyAndVisible()
