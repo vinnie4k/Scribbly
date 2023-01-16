@@ -212,7 +212,7 @@ class AppearanceVC: UIViewController {
     
     // MARK: - Helper Functions
     private func configure() {
-        if UserDefaults.standard.value(forKey: "theme") as! String == Theme.system.rawValue {
+        if UserDefaults.standard.value(forKey: "theme") as? String == Theme.system.rawValue {
             systemSwitch.isOn = true
             if traitCollection.userInterfaceStyle == .dark {
                 lightButton.image = UIImage(systemName: "circle")
