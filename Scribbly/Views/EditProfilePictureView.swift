@@ -40,12 +40,9 @@ class EditProfilePictureView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(mode: UIUserInterfaceStyle, mainUser: User) {
+    func configure(mainUser: User) {
         profileImage.image = mainUser.getPFP()
-        pencilImage.image = UIImage(named: "pencil_dark")
-        if mode == .light {
-            pencilImage.image = UIImage(named: "pencil_light")
-        }
+        pencilImage.image = UIImage(named: "pencil")
     }
     
     private func setupConstraints() {

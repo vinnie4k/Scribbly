@@ -60,7 +60,6 @@ class PostInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
     
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
 
     // MARK: - init, configure, and setupConstraints
@@ -78,14 +77,13 @@ class PostInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(post: Post, parentVC: UIViewController) {
         self.post = post
-        self.mode = mode
         self.parentVC = parentVC
         
         drawing.image = post.getDrawing()
-        statsView.configure(post: post, mode: mode)
-        redoDeleteView.configure(post: post, mode: mode, parentVC: parentVC)
+        statsView.configure(post: post)
+        redoDeleteView.configure(post: post, parentVC: parentVC)
     }
     
     private func setupConstraints() {
@@ -184,7 +182,6 @@ class PostInfoStatsView: UIView {
     
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -213,22 +210,17 @@ class PostInfoStatsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle) {
+    func configure(post: Post) {
         self.post = post
-        self.mode = mode
         
         userPFP.setImage(post.getUser().getPFP(), for: .normal)
         displayName.text = post.getUser().getUserName()
         caption.text = post.getCaption()
+        backgroundColor = Constants.blur_color
         
-        backgroundColor = Constants.blur_dark
-        if mode == .light {
-            backgroundColor = Constants.blur_light
-        }
-        
-        createLikesView(likeCount: post.getLikeCount(), mode: mode)
-        createCommentView(commentCount: post.getCommentReplyCount(), mode: mode)
-        createBookmarkView(bookmarkCount: post.getBookmarkCount(), mode: mode)
+        createLikesView(likeCount: post.getLikeCount())
+        createCommentView(commentCount: post.getCommentReplyCount())
+        createBookmarkView(bookmarkCount: post.getBookmarkCount())
         
         createStackView()
     }
@@ -258,14 +250,11 @@ class PostInfoStatsView: UIView {
         for sub in commentView.subviews {
             sub.removeFromSuperview()
         }
-        createCommentView(commentCount: post.getCommentReplyCount(), mode: mode)
+        createCommentView(commentCount: post.getCommentReplyCount())
     }
     
-    private func createLikesView(likeCount: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "heart_dark_empty"))
-        if mode == .light {
-            img = UIImageView(image: UIImage(named: "heart_light_empty"))
-        }
+    private func createLikesView(likeCount: Int) {
+        var img = UIImageView(image: UIImage(named: "heart_empty"))
         
         let lbl = UILabel()
         lbl.text = String(likeCount)
@@ -286,11 +275,8 @@ class PostInfoStatsView: UIView {
         ])
     }
 
-    private func createCommentView(commentCount: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "comment_dark"))
-        if mode == .light {
-            img = UIImageView(image: UIImage(named: "comment_light"))
-        }
+    private func createCommentView(commentCount: Int) {
+        var img = UIImageView(image: UIImage(named: "comment"))
 
         let lbl = UILabel()
         lbl.text = String(commentCount)
@@ -311,11 +297,8 @@ class PostInfoStatsView: UIView {
         ])
     }
 
-    private func createBookmarkView(bookmarkCount: Int, mode: UIUserInterfaceStyle) {
-        var img = UIImageView(image: UIImage(named: "bookmark_dark_empty"))
-        if mode == .light {
-            img = UIImageView(image: UIImage(named: "bookmark_light_empty"))
-        }
+    private func createBookmarkView(bookmarkCount: Int) {
+        var img = UIImageView(image: UIImage(named: "bookmark_empty"))
 
         let lbl = UILabel()
         lbl.text = String(bookmarkCount)
@@ -420,21 +403,14 @@ class RedoDeleteView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(post: Post, parentVC: UIViewController) {
         self.post = post
         self.parentVC = parentVC
         
-        redoButton.configuration?.image = UIImage(named: "redo_dark")
+        redoButton.configuration?.image = UIImage(named: "redo")
 //        deleteButton.configuration?.image = UIImage(named: "delete_dark")
-        shareButton.configuration?.image = UIImage(named: "share_dark")
-        backgroundColor = Constants.blur_dark
-        
-        if mode == .light {
-            redoButton.configuration?.image = UIImage(named: "redo_light")
-//            deleteButton.configuration?.image = UIImage(named: "delete_light")
-            shareButton.configuration?.image = UIImage(named: "share_light")
-            backgroundColor = Constants.blur_light
-        }
+        shareButton.configuration?.image = UIImage(named: "share")
+        backgroundColor = Constants.blur_color
     }
     
     // MARK: - Button Helpers

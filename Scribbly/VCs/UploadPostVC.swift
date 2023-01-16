@@ -23,11 +23,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     private lazy var borderView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = Constants.upload_corner
-        view.backgroundColor = Constants.button_dark
-        
-        if traitCollection.userInterfaceStyle == .light {
-            view.backgroundColor = Constants.button_light
-        }
+        view.backgroundColor = Constants.button_color
         
         view.addSubview(uploadImageView)
         addConstr(lst: [
@@ -49,10 +45,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
         let img = UIImageView()
         img.clipsToBounds = true
         img.contentMode = .scaleAspectFill
-        img.image = UIImage(named: "upload_dark")
-        if traitCollection.userInterfaceStyle == .light {
-            img.image = UIImage(named: "upload_light")
-        }
+        img.image = UIImage(named: "upload")
         img.translatesAutoresizingMaskIntoConstraints = false
         return img
     }()
@@ -88,7 +81,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
         config.attributedTitle = text
         
         config.background.cornerRadius = Constants.landing_button_corner
-        config.baseBackgroundColor = Constants.button_dark
+        config.baseBackgroundColor = Constants.button_both_color
         config.buttonSize = .large
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)

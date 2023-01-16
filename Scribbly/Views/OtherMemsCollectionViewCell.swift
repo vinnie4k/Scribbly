@@ -35,7 +35,6 @@ class OtherMemsTinyPostView: UIView {
     // MARK: - Properties (data)
     private weak var parentVC: UIViewController!
     private var post: Post? = nil
-    private var mode: UIUserInterfaceStyle!
     weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
@@ -44,10 +43,7 @@ class OtherMemsTinyPostView: UIView {
         
         layer.cornerRadius = Constants.mems_cell_corner
         
-        backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.secondary_light
-        }
+        backgroundColor = Constants.secondary_color
         
         addSubview(drawing)
         addSubview(dateLabel)
@@ -59,9 +55,8 @@ class OtherMemsTinyPostView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post?, text: String, mode: UIUserInterfaceStyle) {
+    func configure(post: Post?, text: String) {
         self.post = post
-        self.mode = mode
         
         if post != nil {
             drawing.image = post!.getDrawing()
@@ -145,10 +140,7 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
         self.data = data
         self.user = user
         
-        backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.secondary_light
-        }
+        backgroundColor = Constants.secondary_color
         
         monthLabel.text = data[0].lowercased()
         stackGrid = createOuterStack(info: data, spacing: CGFloat(5))
@@ -211,17 +203,17 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
                 // if the user has this post hidden, then don't include it
                 if post != nil {
                     if post!.isHidden() {
-                        tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
+                        tinyView.configure(post: nil, text: text)
                     } else {
-                        tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                        tinyView.configure(post: post, text: text)
                         tinyView.postInfoDelegate = postInfoDelegate
                     }
                 } else {
                     // post == nil
-                    tinyView.configure(post: post, text: text, mode: traitCollection.userInterfaceStyle)
+                    tinyView.configure(post: post, text: text)
                 }
             } else {
-                tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
+                tinyView.configure(post: nil, text: text)
             }
 
             tinyView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 7 - 4).isActive = true

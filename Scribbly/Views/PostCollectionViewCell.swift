@@ -69,10 +69,7 @@ class PromptHeaderView: UICollectionReusableView {
         self.prompt.text = prompt
 
         if post == nil {
-            self.userPost.image = UIImage(named: "nopost_dark")
-            if traitCollection.userInterfaceStyle == .light {
-                self.userPost.image = UIImage(named: "nopost_light")
-            }
+            self.userPost.image = UIImage(named: "nopost")
         } else {
             self.userPost.image = post!.getDrawing()
         }
@@ -187,7 +184,6 @@ class PostCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (data)
     static let reuseIdentifier = "PostCollectionViewCellReuse"
     private var parentVC: UIViewController!
-    private var mode: UIUserInterfaceStyle!
     private var post: Post!
     private var mainUser: User!
     var enlargeDrawingDelegate: EnlargeDrawingDelegate!
@@ -207,13 +203,12 @@ class PostCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(mainUser: User, post: Post, parentVC: UIViewController, mode: UIUserInterfaceStyle) {
+    func configure(mainUser: User, post: Post, parentVC: UIViewController) {
         self.parentVC = parentVC
-        self.mode = mode
         self.post = post
         self.mainUser = mainUser
         
-        setMode(mode: mode)
+        setColors()
         
         captionView.configure(caption: post.caption, postUser: post.getUser(), mainUser: mainUser, parentVC: parentVC)
         drawing.image = ImageMap.map[post.drawing]
@@ -222,33 +217,21 @@ class PostCollectionViewCell: UICollectionViewCell {
             likeButton.configuration?.image = UIImage(named: "heart_filled")
         }
         if mainUser.isBookmarked(post: post) {
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_filled")
         }
         
         commentButton.addTarget(self, action: #selector(pushCommentVC), for: .touchUpInside)
     }
     
-    func setMode(mode: UIUserInterfaceStyle) {
-        if mode == .light {
-            drawing.layer.borderColor = Constants.secondary_light.cgColor
-            stack.backgroundColor = Constants.secondary_light
-            captionView.backgroundColor = Constants.blur_light
-            likeButton.configuration?.image = UIImage(named: "heart_light_empty")
-            commentButton.configuration?.image = UIImage(named: "comment_light")
-            shareButton.configuration?.image = UIImage(named: "share_light")
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
-        } else if mode == .dark {
-            drawing.layer.borderColor = Constants.primary_dark.cgColor
-            stack.backgroundColor = Constants.primary_dark
-            captionView.backgroundColor = Constants.blur_dark
-            likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
-            commentButton.configuration?.image = UIImage(named: "comment_dark")
-            shareButton.configuration?.image = UIImage(named: "share_dark")
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
-        }
+    func setColors() {
+        drawing.layer.borderColor = Constants.post_color.cgColor
+        stack.backgroundColor = Constants.post_color
+        captionView.backgroundColor = Constants.blur_color
+        
+        likeButton.configuration?.image = UIImage(named: "heart_empty")
+        commentButton.configuration?.image = UIImage(named: "comment")
+        shareButton.configuration?.image = UIImage(named: "share")
+        bookmarkButton.configuration?.image = UIImage(named: "bookmark_empty")
     }
     
     private func setupConstraints() {
@@ -283,17 +266,11 @@ class PostCollectionViewCell: UICollectionViewCell {
         if mainUser.isBookmarked(post: post) {
             mainUser.removeBookmarkPost(post: post)
             post.removeBookmarkUser(user: mainUser)
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_empty")
         } else {
             mainUser.addBookmarkPost(post: post)
             post.addBookmarkUser(user: mainUser)
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_filled")
         }
     }
     
@@ -309,10 +286,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         
         if (post.containsLikedUser(user: mainUser)) {
             post.removedLikedUsers(user: mainUser)
-            likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
-            if mode == .light {
-                likeButton.configuration?.image = UIImage(named: "heart_light_empty")
-            }
+            likeButton.configuration?.image = UIImage(named: "heart_empty")
         } else {
             post.addLikedUsers(user: mainUser)
             likeButton.configuration?.image = UIImage(named: "heart_filled")

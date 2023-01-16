@@ -15,15 +15,14 @@ struct Constants {
     static let loading_logo_width = UIScreen.main.bounds.width * 0.5
     
     // MARK: - Colors
-    static let primary_light = UIColor.white
-    static let primary_dark = UIColor(red: 0.071, green: 0.071, blue: 0.071, alpha: 1)
-    static let secondary_dark = UIColor.black
-    static let secondary_light = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
-    static let button_dark = UIColor(red: 0.171, green: 0.171, blue: 0.171, alpha: 1)
-    static let button_light = UIColor(red: 0.93, green: 0.93, blue: 0.93, alpha: 1)
-    static let blur_dark = primary_dark.withAlphaComponent(0.6)
-    static let blur_light = primary_light.withAlphaComponent(0.6)
+    static let primary_color = UIColor(named: "primary")!
+    static let secondary_color = UIColor(named: "secondary")!
+    static let button_color = UIColor(named: "button")
+    static let blur_color = UIColor(named: "blur")!
     static let secondary_text = UIColor(red: 0.663, green: 0.663, blue: 0.663, alpha: 1)
+    static let post_color = UIColor(named: "post")!
+    static let primary_black = UIColor(red: 0.071, green: 0.071, blue: 0.071, alpha: 1)
+    static let button_both_color = UIColor(red: 0.171, green: 0.171, blue: 0.171, alpha: 1)
     
     // MARK: - Fonts
     static func getFont(size: CGFloat, weight: UIFont.Weight) -> UIFont {
@@ -209,4 +208,5 @@ struct Constants {
     static let settings_top = CGFloat(40)
     static let settings_stack_height = CGFloat(45)
     static let settings_stack_corner = CGFloat(15)
+    static let settings_spacing = CGFloat(20)
 }

@@ -109,7 +109,7 @@ class TutorialView: UIView {
         config.attributedTitle = text
 
         config.background.cornerRadius = Constants.landing_button_corner
-        config.baseBackgroundColor = Constants.button_dark
+        config.baseBackgroundColor = Constants.button_both_color
         config.buttonSize = .large
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
@@ -125,10 +125,7 @@ class TutorialView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = Constants.primary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.primary_light
-        }
+        backgroundColor = Constants.primary_color
         
         layer.cornerRadius = Constants.tutorial_corner
 

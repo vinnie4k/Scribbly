@@ -38,11 +38,7 @@ class MainUserProfileVC: UIViewController {
         let btn = UIButton()
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
-        if (traitCollection.userInterfaceStyle == .dark) {
-            config.image = UIImage(named: "settings_dark")
-        } else if (traitCollection.userInterfaceStyle == .light) {
-            config.image = UIImage(named: "settings_light")
-        }
+        config.image = UIImage(named: "settings")
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -105,12 +101,8 @@ class MainUserProfileVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Constants.primary_dark
-        collectionView.backgroundColor = Constants.primary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            view.backgroundColor =  Constants.primary_light
-            collectionView.backgroundColor = Constants.primary_light
-        }
+        view.backgroundColor = Constants.primary_color
+        collectionView.backgroundColor = Constants.primary_color
         
         setupBackground()
         
@@ -141,13 +133,8 @@ class MainUserProfileVC: UIViewController {
         layer.startPoint = CGPoint(x: 0, y: 0)
         layer.endPoint = CGPoint(x: 0, y: 0.4)
         
-        layer.colors = [Constants.primary_dark.cgColor, Constants.primary_dark.cgColor, Constants.secondary_dark.cgColor]
-        view.backgroundColor = Constants.primary_dark
-        
-        if traitCollection.userInterfaceStyle == .light {
-            layer.colors = [Constants.primary_light.cgColor, Constants.primary_light.cgColor, Constants.secondary_light.cgColor]
-            view.backgroundColor = Constants.primary_light
-        }
+        layer.colors = [Constants.primary_color.cgColor, Constants.primary_color.cgColor, Constants.secondary_color.cgColor]
+        view.backgroundColor = Constants.primary_color
         
         layer.frame = collectionView.bounds
         collectionView.backgroundView = collectionViewBackgroundView
@@ -254,6 +241,7 @@ class MainUserProfileVC: UIViewController {
     @objc private func pushSettingsVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let settingsVC = SettingsVC(mainUser: mainUser)
+        settingsVC.resetBackgroundDelegate = self
         navigationController?.pushViewController(settingsVC, animated: true)
     }
     
@@ -371,7 +359,7 @@ extension MainUserProfileVC {
         switch item {
         case .profileHeaderCell:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileHeaderCell.reuseIdentifier, for: indexPath) as! ProfileHeaderCell
-            cell.configure(user: mainUser, mode: traitCollection.userInterfaceStyle, parentVC: self)
+            cell.configure(user: mainUser, parentVC: self)
             cell.updatePFPDelegate = updatePFPDelegate
             cell.updateFeedDelegate = updateFeedDelegate
             return cell
@@ -393,12 +381,12 @@ extension MainUserProfileVC {
         case MemsBookHeaderView.reuseIdentifier:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: MemsBookHeaderView.reuseIdentifier, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier, for: indexPath) as! MemsBookHeaderView
             header.switchViewDelegate = self
-            header.configure(mode: traitCollection.userInterfaceStyle, start: 1)
+            header.configure(start: 1)
             return header
         default:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MemsBookHeaderView.reuseIdentifier, for: indexPath) as! MemsBookHeaderView
             header.switchViewDelegate = self
-            header.configure(mode: traitCollection.userInterfaceStyle, start: 0)
+            header.configure(start: 0)
             return header
         }
     }
@@ -435,7 +423,7 @@ extension MainUserProfileVC {
 }
 
 // MARK: - Delegation and Other Extensions
-extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
+extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate, ResetBackgroundDelegate {
     // MARK: - PostInfoDelegate
     func showPostInfo(post: Post) {
         return  // Do nothing here
@@ -443,7 +431,7 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
     
     func showMemsInfo(post: Post) {
         let view = MemsInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
+        view.configure(post: post, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
 
         drawViewLarge.addSubview(view)
@@ -462,7 +450,7 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
     
     func showBooksInfo(post: Post) {
         let view = BooksInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self, mainUser: mainUser)
+        view.configure(post: post, parentVC: self, mainUser: mainUser)
         view.translatesAutoresizingMaskIntoConstraints = false
 
         drawViewLarge.addSubview(view)
@@ -515,5 +503,10 @@ extension MainUserProfileVC: PostInfoDelegate, SwitchViewDelegate {
             newSnapshot.appendItems(booksData.map({ Item.booksCell($0) }), toSection: .booksSection)
         }
         datasource.applySnapshotUsingReloadData(newSnapshot)
+    }
+    
+    // MARK: - ResetBackgroundDelegate
+    func resetBackground() {
+        setupBackground()
     }
 }

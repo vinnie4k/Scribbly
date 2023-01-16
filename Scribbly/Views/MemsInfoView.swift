@@ -60,7 +60,6 @@ class MemsInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
 
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
 
     // MARK: - init, configure, and setupConstraints
@@ -78,14 +77,13 @@ class MemsInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(post: Post, parentVC: UIViewController) {
         self.post = post
-        self.mode = mode
         self.parentVC = parentVC
         
         drawing.image = post.getDrawing()
-        statsView.configure(post: post, mode: mode)
-        hideShareView.configure(post: post, mode: mode, parentVC: parentVC)
+        statsView.configure(post: post)
+        hideShareView.configure(post: post, parentVC: parentVC)
     }
     
     private func setupConstraints() {
@@ -187,7 +185,6 @@ class HideShareView: UIStackView {
 
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
 
     // MARK: - init, configure, and setupConstraints
@@ -220,30 +217,18 @@ class HideShareView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(post: Post, parentVC: UIViewController) {
         self.post = post
-        self.mode = mode
         self.parentVC = parentVC
         
         if post.isHidden() {
-            hideButton.configuration?.image = UIImage(named: "hidden_dark")
+            hideButton.configuration?.image = UIImage(named: "hidden")
         } else {
-            hideButton.configuration?.image = UIImage(named: "shown_dark")
+            hideButton.configuration?.image = UIImage(named: "shown")
         }
-        deleteButton.configuration?.image = UIImage(named: "delete_dark")
-        shareButton.configuration?.image = UIImage(named: "share_dark")
-        backgroundColor = Constants.blur_dark
- 
-        if mode == .light {
-            if post.isHidden() {
-                hideButton.configuration?.image = UIImage(named: "hidden_light")
-            } else {
-                hideButton.configuration?.image = UIImage(named: "shown_light")
-            }
-            deleteButton.configuration?.image = UIImage(named: "delete_light")
-            shareButton.configuration?.image = UIImage(named: "share_light")
-            backgroundColor = Constants.blur_light
-        }
+        deleteButton.configuration?.image = UIImage(named: "delete")
+        shareButton.configuration?.image = UIImage(named: "share")
+        backgroundColor = Constants.blur_color
     }
     
     // MARK: - Button Helpers
@@ -259,16 +244,10 @@ class HideShareView: UIStackView {
 
         if post.isHidden() {
             post.setHidden(bool: false)
-            hideButton.configuration?.image = UIImage(named: "shown_dark")
-            if mode == .light {
-                hideButton.configuration?.image = UIImage(named: "shown_light")
-            }
+            hideButton.configuration?.image = UIImage(named: "shown")
         } else {
             post.setHidden(bool: true)
-            hideButton.configuration?.image = UIImage(named: "hidden_dark")
-            if (mode == .light) {
-                hideButton.configuration?.image = UIImage(named: "hidden_light")
-            }
+            hideButton.configuration?.image = UIImage(named: "hidden")
         }
     }
     

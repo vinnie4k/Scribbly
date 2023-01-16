@@ -43,6 +43,19 @@ class HomeVC: UIViewController {
         return btn
     }()
     
+    private lazy var addFriendsButton: UIButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.plain()
+        config.buttonSize = .large
+        config.image = UIImage(systemName: "person.crop.circle.fill.badge.plus")
+        config.baseForegroundColor = .label
+        config.baseBackgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        btn.configuration = config
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     private lazy var postCV: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -134,9 +147,7 @@ class HomeVC: UIViewController {
         format.dateFormat = "M-d-yy"
         format.timeZone = TimeZone(identifier: "America/New_York")
         
-        print(format.string(from: Date()))
         let earlyDate = Calendar.current.date(byAdding: .hour, value: -12, to: Date())
-        print(format.string(from: earlyDate!))
         
         DatabaseManager.getTodaysPrompt(with: format.string(from: earlyDate!), completion: { [weak self] myPrompt in
             guard let `self` = self else { return }
@@ -377,7 +388,7 @@ extension HomeVC: UICollectionViewDataSource {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.reuseIdentifier, for: indexPath) as?
             PostCollectionViewCell {
             let post = posts[indexPath.row]
-            cell.configure(mainUser: mainUser, post: post, parentVC: self, mode: traitCollection.userInterfaceStyle)
+            cell.configure(mainUser: mainUser, post: post, parentVC: self)
             cell.layer.cornerRadius = Constants.post_cell_corner
             cell.captionView.updateFeedDelegate = self
             cell.enlargeDrawingDelegate = self
@@ -464,7 +475,7 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
     func showPostInfo(post: Post) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let view = PostInfoView()
-        view.configure(post: post, mode: traitCollection.userInterfaceStyle, parentVC: self)
+        view.configure(post: post, parentVC: self)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         drawViewLarge.addSubview(view)

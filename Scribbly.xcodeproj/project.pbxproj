@@ -26,6 +26,7 @@
 		2E0C089D294F17A10021C2D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089C294F17A10021C2D9 /* User.swift */; };
 		2E0C089F294F1AA90021C2D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0C089E294F1AA90021C2D9 /* Post.swift */; };
 		2E11443F2964D86C00054D51 /* UploadPostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E11443E2964D86C00054D51 /* UploadPostVC.swift */; };
+		2E1B2B6C2974AF4F00EEF1D0 /* AppearanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1B2B6B2974AF4F00EEF1D0 /* AppearanceVC.swift */; };
 		2E2A67B429649C5000AE6DA2 /* AddFriendsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A67B329649C5000AE6DA2 /* AddFriendsVC.swift */; };
 		2E2A67B629649C9900AE6DA2 /* AddFriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A67B529649C9900AE6DA2 /* AddFriendsTableViewCell.swift */; };
 		2E311220295F85E3009D2752 /* BookmarksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */; };
@@ -89,6 +90,7 @@
 		2E0C089C294F17A10021C2D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E0C089E294F1AA90021C2D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		2E11443E2964D86C00054D51 /* UploadPostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostVC.swift; sourceTree = "<group>"; };
+		2E1B2B6B2974AF4F00EEF1D0 /* AppearanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceVC.swift; sourceTree = "<group>"; };
 		2E2A67B329649C5000AE6DA2 /* AddFriendsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsVC.swift; sourceTree = "<group>"; };
 		2E2A67B529649C9900AE6DA2 /* AddFriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendsTableViewCell.swift; sourceTree = "<group>"; };
 		2E31121F295F85E3009D2752 /* BookmarksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				2E11443E2964D86C00054D51 /* UploadPostVC.swift */,
 				2E02DB2529664A3D00B375E4 /* SettingsVC.swift */,
 				2E5DDAB6296FE4520027CEAC /* BlockedVC.swift */,
+				2E1B2B6B2974AF4F00EEF1D0 /* AppearanceVC.swift */,
 			);
 			path = VCs;
 			sourceTree = "<group>";
@@ -439,6 +442,7 @@
 				2E68C0F42967CF9000CBEFFF /* Mappings.swift in Sources */,
 				2ECBE29E2958204D00DFA64F /* PostInfoView.swift in Sources */,
 				2E0C089D294F17A10021C2D9 /* User.swift in Sources */,
+				2E1B2B6C2974AF4F00EEF1D0 /* AppearanceVC.swift in Sources */,
 				2E311222295FCCA6009D2752 /* BooksInfoView.swift in Sources */,
 				2E3BC6D4296E7AAA008F5679 /* SuggestionsVC.swift in Sources */,
 				2EF946B7296DD1BD00F1927A /* SignupVC.swift in Sources */,
@@ -625,7 +629,7 @@
 				CODE_SIGN_ENTITLEMENTS = Scribbly/Scribbly.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.12;
+				CURRENT_PROJECT_VERSION = 1.13;
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;
@@ -666,7 +670,7 @@
 				CODE_SIGN_ENTITLEMENTS = Scribbly/Scribbly.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.12;
+				CURRENT_PROJECT_VERSION = 1.13;
 				DEVELOPMENT_TEAM = V7HFE3Z97P;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Scribbly/Info.plist;

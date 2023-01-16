@@ -70,7 +70,6 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     // MARK: - Properties (data)
     private var user: User!
     private var mainUser: User!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
     private var change = [NSLayoutConstraint]()
     weak var updateProfileDelegate: UpdateProfileDelegate!
@@ -101,21 +100,14 @@ class OtherProfileHeaderCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(user: User, mainUser: User, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(user: User, mainUser: User, parentVC: UIViewController) {
         self.user = user
         self.mainUser = mainUser
-        self.mode = mode
         self.parentVC = parentVC
         
-        backgroundColor = Constants.primary_dark
-        followButton.configuration?.baseBackgroundColor = Constants.button_dark
-        blockButton.configuration?.baseBackgroundColor = Constants.button_dark
-            
-        if mode == .light {
-            backgroundColor = Constants.primary_light
-            followButton.configuration?.baseBackgroundColor = Constants.button_light
-            blockButton.configuration?.baseBackgroundColor = Constants.button_light
-        }
+        backgroundColor = Constants.primary_color
+        followButton.configuration?.baseBackgroundColor = Constants.button_color
+        blockButton.configuration?.baseBackgroundColor = Constants.button_color
        
         profileImage.image = user.getPFP()
         fullnameLabel.text = user.getFullName().lowercased()
@@ -191,13 +183,9 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     // MARK: - Helper Functions
     private func configureNotFollowing() {
         var text = AttributedString("follow")
-        followButton.configuration?.baseBackgroundColor = Constants.button_dark
+        followButton.configuration?.baseBackgroundColor = Constants.button_color
         followButton.configuration?.baseForegroundColor = .label
         followButton.configuration?.background.strokeWidth = 0
-            
-        if mode == .light {
-            followButton.configuration?.baseBackgroundColor = Constants.button_light
-        }
         
         // Not following but mainUser sent a request to the other user
         if isRequested {
@@ -236,7 +224,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     
     private func configureBlocked() {
         profileImage.image = nil
-        profileImage.backgroundColor = Constants.button_dark
+        profileImage.backgroundColor = Constants.button_color
         followButton.isHidden = true
 
         var text = AttributedString("unblock")
@@ -248,10 +236,6 @@ class OtherProfileHeaderCell: UICollectionViewCell {
             blockButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             blockButton.widthAnchor.constraint(equalToConstant: 2 * Constants.prof_btn_width),
         ])
-        
-        if mode == .light {
-            profileImage.backgroundColor = Constants.button_light
-        }
     }
     
     private func addConstr(lst: [NSLayoutConstraint]) {

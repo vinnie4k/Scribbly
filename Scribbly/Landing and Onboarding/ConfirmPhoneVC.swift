@@ -37,12 +37,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
         txtField.becomeFirstResponder()
-        
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no
@@ -57,12 +52,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.layer.cornerRadius = Constants.onboard_confirm_corner
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
-        
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no
@@ -77,12 +67,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.layer.cornerRadius = Constants.onboard_confirm_corner
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
-        
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no
@@ -97,12 +82,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.layer.cornerRadius = Constants.onboard_confirm_corner
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
-        
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no
@@ -117,12 +97,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.layer.cornerRadius = Constants.onboard_confirm_corner
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
-        
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no
@@ -137,12 +112,7 @@ class ConfirmPhoneVC: UIViewController, UITextFieldDelegate {
         txtField.layer.cornerRadius = Constants.onboard_confirm_corner
         txtField.textAlignment = .center
         txtField.keyboardType = .phonePad
-
-        txtField.backgroundColor = Constants.button_dark
-        if traitCollection.userInterfaceStyle == .light {
-            txtField.backgroundColor = Constants.button_light
-        }
-        
+        txtField.backgroundColor = Constants.button_color
         txtField.font = Constants.getFont(size: 32, weight: .medium)
         txtField.tintColor = .clear
         txtField.autocorrectionType = .no

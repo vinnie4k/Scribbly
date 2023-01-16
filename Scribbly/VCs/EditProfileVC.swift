@@ -39,10 +39,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
         btn.addTarget(self, action: #selector(confirmChanges), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
-        config.image = UIImage(named: "checkmark_dark")
-        if traitCollection.userInterfaceStyle == .light {
-            config.image = UIImage(named: "checkmark_light")
-        }
+        config.image = UIImage(named: "checkmark")
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
         btn.configuration = config
@@ -52,7 +49,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     private lazy var editProfilePictureView: EditProfilePictureView = {
         let view = EditProfilePictureView()
-        view.configure(mode: traitCollection.userInterfaceStyle, mainUser: mainUser)
+        view.configure(mainUser: mainUser)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(pfpAlert))

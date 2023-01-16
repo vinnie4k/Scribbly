@@ -62,7 +62,6 @@ class BooksInfoView: UIView, UIScrollViewDelegate {
     
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
     private var mainUser: User!
     
@@ -81,15 +80,14 @@ class BooksInfoView: UIView, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController, mainUser: User) {
+    func configure(post: Post, parentVC: UIViewController, mainUser: User) {
         self.post = post
-        self.mode = mode
         self.parentVC = parentVC
         self.mainUser = mainUser
     
         drawing.image = post.getDrawing()
-        captionView.configure(post: post, mode: mode, mainUser: mainUser, parentVC: parentVC)
-        booksButtonView.configure(post: post, mode: mode, parentVC: parentVC, mainUser: mainUser)
+        captionView.configure(post: post, mainUser: mainUser, parentVC: parentVC)
+        booksButtonView.configure(post: post, parentVC: parentVC, mainUser: mainUser)
     }
     
     private func setupConstraints() {
@@ -179,7 +177,6 @@ class BooksCaptionView: UIView {
     
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private var mainUser: User!
     private weak var parentVC: UIViewController!
     
@@ -209,9 +206,8 @@ class BooksCaptionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, mainUser: User, parentVC: UIViewController) {
+    func configure(post: Post, mainUser: User, parentVC: UIViewController) {
         self.post = post
-        self.mode = mode
         self.mainUser = mainUser
         self.parentVC = parentVC
         
@@ -219,10 +215,7 @@ class BooksCaptionView: UIView {
         displayName.text = post.getUser().getUserName()
         caption.text = post.getCaption()
         
-        backgroundColor = Constants.blur_dark
-        if mode == .light {
-            backgroundColor = Constants.blur_light
-        }
+        backgroundColor = Constants.blur_color
     }
     
     private func setupConstraints() {
@@ -301,7 +294,6 @@ class BooksButtonView: UIStackView {
     
     // MARK: - Properties (data)
     private var post: Post!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
     private var mainUser: User!
     
@@ -336,35 +328,23 @@ class BooksButtonView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post, mode: UIUserInterfaceStyle, parentVC: UIViewController, mainUser: User) {
+    func configure(post: Post, parentVC: UIViewController, mainUser: User) {
         self.post = post
-        self.mode = mode
         self.parentVC = parentVC
         self.mainUser = mainUser
         
-        likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
-        commentButton.configuration?.image = UIImage(named: "comment_dark")
-        shareButton.configuration?.image = UIImage(named: "share_dark")
-        bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
-        backgroundColor = Constants.blur_dark
-        
-        if mode == .light {
-            likeButton.configuration?.image = UIImage(named: "heart_light_empty")
-            commentButton.configuration?.image = UIImage(named: "comment_light")
-            shareButton.configuration?.image = UIImage(named: "share_light")
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
-            backgroundColor = Constants.blur_light
-        }
+        likeButton.configuration?.image = UIImage(named: "heart_empty")
+        commentButton.configuration?.image = UIImage(named: "comment")
+        shareButton.configuration?.image = UIImage(named: "share")
+        bookmarkButton.configuration?.image = UIImage(named: "bookmark_empty")
+        backgroundColor = Constants.blur_color
         
         if post.containsLikedUser(user: mainUser) {
             likeButton.configuration?.image = UIImage(named: "heart_filled")
         }
         
         if mainUser.isBookmarked(post: post) {
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_filled")
         }
     }
     
@@ -381,10 +361,7 @@ class BooksButtonView: UIStackView {
         
         if post.containsLikedUser(user: mainUser) {
             post.removedLikedUsers(user: mainUser)
-            likeButton.configuration?.image = UIImage(named: "heart_dark_empty")
-            if mode == .light {
-                likeButton.configuration?.image = UIImage(named: "heart_light_empty")
-            }
+            likeButton.configuration?.image = UIImage(named: "heart_empty")
         } else {
             post.addLikedUsers(user: mainUser)
             likeButton.configuration?.image = UIImage(named: "heart_filled")
@@ -410,17 +387,11 @@ class BooksButtonView: UIStackView {
         if mainUser.isBookmarked(post: post) {
             mainUser.removeBookmarkPost(post: post)
             post.removeBookmarkUser(user: mainUser)
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_empty")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_empty")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_empty")
         } else {
             mainUser.addBookmarkPost(post: post)
             post.addBookmarkUser(user: mainUser)
-            bookmarkButton.configuration?.image = UIImage(named: "bookmark_dark_filled")
-            if mode == .light {
-                bookmarkButton.configuration?.image = UIImage(named: "bookmark_light_filled")
-            }
+            bookmarkButton.configuration?.image = UIImage(named: "bookmark_filled")
         }
     }
 }

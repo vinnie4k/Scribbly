@@ -67,7 +67,7 @@ class UsernameVC: UIViewController, UITextFieldDelegate {
         config.background.cornerRadius = Constants.landing_button_corner
         config.buttonSize = .large
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = Constants.primary_dark
+        config.baseBackgroundColor = Constants.primary_black
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -206,7 +206,7 @@ class UsernameVC: UIViewController, UITextFieldDelegate {
             nextButton.configuration?.baseBackgroundColor = Constants.secondary_text
         } else {
             nextButton.isUserInteractionEnabled = true
-            nextButton.configuration?.baseBackgroundColor = Constants.button_dark
+            nextButton.configuration?.baseBackgroundColor = Constants.button_both_color
         }
     }
     

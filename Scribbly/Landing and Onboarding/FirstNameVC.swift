@@ -131,7 +131,7 @@ class FirstNameVC: UIViewController, UITextFieldDelegate {
             nextButton.configuration?.baseBackgroundColor = Constants.secondary_text
         } else {
             nextButton.isUserInteractionEnabled = true
-            nextButton.configuration?.baseBackgroundColor = Constants.button_dark
+            nextButton.configuration?.baseBackgroundColor = Constants.button_both_color
         }
     }
     

@@ -43,7 +43,6 @@ class MemsTinyPostView: UIView {
     // MARK: - Properties (data)
     private weak var parentVC: UIViewController!
     private var post: Post? = nil
-    private var mode: UIUserInterfaceStyle!
     weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
@@ -52,10 +51,7 @@ class MemsTinyPostView: UIView {
 
         layer.cornerRadius = Constants.mems_cell_corner
         
-        backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.secondary_light
-        }
+        backgroundColor = Constants.secondary_color
         
         addSubview(drawing)
         addSubview(dateLabel)
@@ -68,9 +64,8 @@ class MemsTinyPostView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post?, text: String, mode: UIUserInterfaceStyle) {
+    func configure(post: Post?, text: String) {
         self.post = post
-        self.mode = mode
 
         if post != nil {
             drawing.image = post!.getDrawing()
@@ -100,10 +95,7 @@ class MemsTinyPostView: UIView {
             if post!.isHidden() {
                 drawing.applyBlurEffect()
                 dateLabel.text = ""
-                hiddenImage.image = UIImage(named: "hidden_dark")
-                if mode == .light {
-                    hiddenImage.image = UIImage(named: "hidden_light")
-                }
+                hiddenImage.image = UIImage(named: "hidden")
             } else {
                 hiddenImage.image = nil
             }
@@ -158,10 +150,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            backgroundColor = Constants.secondary_light
-        }
+        backgroundColor = Constants.secondary_color
                 
         addSubview(monthLabel)
         addSubview(dayOfWeekStack)
@@ -235,10 +224,10 @@ class MemsCollectionViewCell: UICollectionViewCell {
             if (text != "") {
                 let date = CalendarHelper().getDateFromDayMonthYear(str: text + " " + data[0])
                 let post = self.user.getPostFromDate(selected_date: date)
-                tinyView.configure(post: post, text: text, mode: self.traitCollection.userInterfaceStyle)
+                tinyView.configure(post: post, text: text)
                 tinyView.postInfoDelegate = self.postInfoDelegate
             } else {
-                tinyView.configure(post: nil, text: text, mode: traitCollection.userInterfaceStyle)
+                tinyView.configure(post: nil, text: text)
             }
 
             tinyView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 7 - 4).isActive = true

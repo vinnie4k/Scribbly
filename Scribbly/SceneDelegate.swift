@@ -10,7 +10,25 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    // MARK: - Changing Light/Dark Mode
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        guard
+            let change = change,
+            object != nil,
+            keyPath == "theme",
+            let themeValue = change[.newKey] as? String,
+            let theme = Theme(rawValue: themeValue)?.uiInterfaceStyle
+        else { return }
 
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveLinear, animations: { [weak self] in
+            self?.window?.overrideUserInterfaceStyle = theme
+        }, completion: .none)
+    }
+    
+    deinit {
+        UserDefaults.standard.removeObserver(self, forKeyPath: "theme", context: nil)
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -21,6 +39,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let rootVC = HomeVC(initialPopup: false)
             window.rootViewController = UINavigationController(rootViewController: rootVC)
             self.window = window
+            
+            UserDefaults.standard.addObserver(self, forKeyPath: "theme", options: [.new], context: nil)
+            let theme = UserDefaults.standard.value(forKey: "theme") as! String
+            if theme == Theme.system.rawValue {
+                self.window?.overrideUserInterfaceStyle = .unspecified
+            } else if theme == Theme.dark.rawValue {
+                self.window?.overrideUserInterfaceStyle = .dark
+            } else {
+                self.window?.overrideUserInterfaceStyle = .light
+            }
+            
             window.makeKeyAndVisible()
         }
     }

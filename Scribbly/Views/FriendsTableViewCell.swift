@@ -41,7 +41,7 @@ class FriendsTableViewCell: UITableViewCell {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .mini
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = Constants.primary_dark
+        config.baseBackgroundColor = Constants.primary_black
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -232,14 +232,9 @@ class FollowRequestViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(requests: [User], mode: UIUserInterfaceStyle) {
-        leftProfileImage.backgroundColor = Constants.button_dark
-        rightProfileImage.backgroundColor = Constants.primary_dark
-        
-        if mode == .light {
-            leftProfileImage.backgroundColor = Constants.secondary_light
-            rightProfileImage.backgroundColor = Constants.secondary_text
-        }
+    func configure(requests: [User]) {
+        leftProfileImage.backgroundColor = UIColor(named: "left_profile")
+        rightProfileImage.backgroundColor = UIColor(named: "right_profile")
         
         if requests.count > 2 {
             leftProfileImage.image = requests[0].getPFP()

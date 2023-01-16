@@ -123,7 +123,7 @@ class PhoneVC: UIViewController, UITextFieldDelegate {
         textField.text = format(with: "(XXX) XXX-XXXX", phone: newString)
         
         if textField.text!.count == 14 {
-            nextButton.configuration?.baseBackgroundColor = Constants.button_dark
+            nextButton.configuration?.baseBackgroundColor = Constants.button_both_color
             nextButton.isUserInteractionEnabled = true
             textField.resignFirstResponder()
         } else {

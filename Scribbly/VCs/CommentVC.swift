@@ -82,16 +82,9 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private lazy var commentButton: UIButton = {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(sendComment), for: .touchUpInside)
-        var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.image = UIImage(named: "comment_send_gray")
-        if (traitCollection.userInterfaceStyle == .dark) {
-            config.image = UIImage(named: "comment_send_gray_dark")
-            config.baseBackgroundColor = Constants.button_dark
-        } else if (traitCollection.userInterfaceStyle == .light) {
-            config.image = UIImage(named: "comment_send_gray_light")
-            config.baseBackgroundColor = Constants.secondary_light
-        }
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.isUserInteractionEnabled = false
@@ -106,7 +99,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             UIColor(red: 0, green: 0, blue: 0, alpha: 0.9),
             .black], locations: [0,0.2,0.5,1])
         if (traitCollection.userInterfaceStyle == . light) {
-            gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.secondary_light], locations: [0,0.3,1])
+            gradient = GradientView(colors: [UIColor(red: 1, green: 1, blue: 1, alpha: 0.1),Constants.secondary_color], locations: [0,0.3,1])
         }
         gradient.translatesAutoresizingMaskIntoConstraints = false
         return gradient
@@ -212,10 +205,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bgColor = Constants.secondary_dark
-        if (traitCollection.userInterfaceStyle == .light) {
-            bgColor = Constants.secondary_light
-        }
+        bgColor = Constants.secondary_color
         
         view.backgroundColor = bgColor
         title = "comments"
@@ -447,18 +437,10 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     @objc private func changeSendButtonColor(sender: UITextField) {
         if let text = sender.text, !text.isEmpty {
             commentButton.isUserInteractionEnabled = true
-            if (traitCollection.userInterfaceStyle == .dark) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_white")
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_black")
-            }
+            commentButton.configuration?.image = UIImage(named: "comment_send")
         } else {
             commentButton.isUserInteractionEnabled = false
-            if (traitCollection.userInterfaceStyle == .dark) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_gray_dark")
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_gray_light")
-            }
+            commentButton.configuration?.image = UIImage(named: "comment_send_gray")
         }
     }
     
@@ -483,11 +465,8 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     
     private func changeCommentView(pop: Bool) {
         if (pop) { // Keyboard pops up
-            if (traitCollection.userInterfaceStyle == .dark) {
-                textInputView.backgroundColor = Constants.button_dark
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                textInputView.backgroundColor = Constants.secondary_light
-            }
+            textInputView.backgroundColor = UIColor(named: "comment_input")
+
             gradient.isHidden = true
             commentButton.isHidden = false
 
@@ -504,11 +483,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
             prevReply =  nil
             textField.text = ""
             commentButton.isUserInteractionEnabled = false
-            if (traitCollection.userInterfaceStyle == .dark) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_gray_dark")
-            } else if (traitCollection.userInterfaceStyle == .light) {
-                commentButton.configuration?.image = UIImage(named: "comment_send_gray_light")
-            }
+            commentButton.configuration?.image = UIImage(named: "comment_send_gray")
             
             textInputView.backgroundColor = .none
             commentButton.isHidden = true
@@ -573,11 +548,7 @@ extension CommentVC: UICollectionViewDataSource {
         
         if kind == UICollectionView.elementKindSectionHeader {
             if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CommentHeaderView.reuseIdentifier, for: indexPath) as? CommentHeaderView {
-                if (traitCollection.userInterfaceStyle == .light) {
-                    header.backgroundColor = Constants.primary_light
-                } else if (traitCollection.userInterfaceStyle == .dark) {
-                    header.backgroundColor = Constants.primary_dark
-                }
+                header.backgroundColor = Constants.primary_color
                 header.layer.cornerRadius = Constants.comment_cell_corner
                 let comment = comments[indexPath.section - 1]
                 header.configure(parentVC: self, comment: comment, mainUser: mainUser)
@@ -624,11 +595,7 @@ extension CommentVC: UICollectionViewDataSource {
             if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCollectionViewCell.reuseIdentifier, for: indexPath) as? CommentCollectionViewCell {
                 let comment = comments[indexPath.section - 1]
                 let rep = comment.getReplies()[indexPath.row]
-                if (traitCollection.userInterfaceStyle == .light) {
-                    cell.backgroundColor = Constants.primary_light
-                } else if (traitCollection.userInterfaceStyle == .dark) {
-                    cell.backgroundColor = Constants.primary_dark
-                }
+                cell.backgroundColor = Constants.primary_color
                 cell.layer.cornerRadius = Constants.comment_cell_corner
                 cell.configure(parentVC: self, comment: comment, reply: rep, mainUser: mainUser)
                 cell.replyDelegate = self

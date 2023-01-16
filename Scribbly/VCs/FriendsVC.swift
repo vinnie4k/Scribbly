@@ -220,7 +220,7 @@ extension FriendsVC {
         switch item {
         case .requestsSectionItem:
             let cell = tableView.dequeueReusableCell(withIdentifier: FollowRequestViewCell.reuseIdentifier, for: indexPath) as! FollowRequestViewCell
-            cell.configure(requests: requestsData, mode: traitCollection.userInterfaceStyle)
+            cell.configure(requests: requestsData)
             cell.selectionStyle = .none
             return cell
         case .friendsListItem (let friend):

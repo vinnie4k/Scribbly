@@ -43,7 +43,7 @@ class SettingsVC: UIViewController {
         config.attributedTitle = text
         
         config.background.cornerRadius = Constants.landing_button_corner
-        config.baseBackgroundColor = Constants.button_dark
+        config.baseBackgroundColor = Constants.button_both_color
         config.buttonSize = .large
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
@@ -52,7 +52,16 @@ class SettingsVC: UIViewController {
         return btn
     }()
     
-    private lazy var stack: UIStackView = {
+    private let essentialsLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "essentials"
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
+        lbl.textColor = Constants.secondary_text
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private lazy var essentialsStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.distribution = .equalSpacing
@@ -61,15 +70,45 @@ class SettingsVC: UIViewController {
         stack.layoutMargins = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 20)
         stack.isLayoutMarginsRelativeArrangement = true
         
-        stack.backgroundColor = Constants.primary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            stack.backgroundColor = Constants.primary_light
-        }
+        stack.backgroundColor = Constants.post_color
         
         let blockedUsers = SettingsView()
         blockedUsers.configure(image: UIImage(systemName: "x.circle")!, text: "blocked users")
         blockedUsers.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pushBlockVC)))
         blockedUsers.isUserInteractionEnabled = true
+        
+        let mode = SettingsView()
+        mode.configure(image: UIImage(systemName: "pencil.circle")!, text: "appearance")
+        mode.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pushAppearance)))
+        mode.isUserInteractionEnabled = true
+        
+        stack.addArrangedSubview(mode)
+        stack.addArrangedSubview(SeparatorView())
+        stack.addArrangedSubview(blockedUsers)
+        
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private let aboutLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "about"
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
+        lbl.textColor = Constants.secondary_text
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private lazy var aboutStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .equalSpacing
+        stack.spacing = 2
+        stack.layer.cornerRadius = Constants.settings_stack_corner
+        stack.layoutMargins = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 20)
+        stack.isLayoutMarginsRelativeArrangement = true
+        
+        stack.backgroundColor = Constants.post_color
         
         let help = SettingsView()
         help.configure(image: UIImage(systemName: "questionmark.circle")!, text: "help")
@@ -95,8 +134,6 @@ class SettingsVC: UIViewController {
         stack.addArrangedSubview(rate)
         stack.addArrangedSubview(SeparatorView())
         stack.addArrangedSubview(share)
-        stack.addArrangedSubview(SeparatorView())
-        stack.addArrangedSubview(blockedUsers)
         
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -104,6 +141,7 @@ class SettingsVC: UIViewController {
     
     // MARK: - Properties (data)
     private var mainUser: User!
+    weak var resetBackgroundDelegate: ResetBackgroundDelegate!
     
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -111,7 +149,10 @@ class SettingsVC: UIViewController {
         view.backgroundColor = .systemBackground
         
         view.addSubview(logoutButton)
-        view.addSubview(stack)
+        view.addSubview(essentialsLabel)
+        view.addSubview(essentialsStack)
+        view.addSubview(aboutLabel)
+        view.addSubview(aboutStack)
         
         setupNavBar()
         setupConstraints()
@@ -138,14 +179,32 @@ class SettingsVC: UIViewController {
             logoutButton.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 2 * Constants.settings_side_padding),
             logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.settings_top),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.settings_side_padding),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.settings_side_padding)
+            essentialsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.settings_top),
+            essentialsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.settings_side_padding + 10),
+            
+            essentialsStack.topAnchor.constraint(equalTo: essentialsLabel.bottomAnchor, constant: 5),
+            essentialsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.settings_side_padding),
+            essentialsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.settings_side_padding),
+            
+            aboutLabel.topAnchor.constraint(equalTo: essentialsStack.bottomAnchor, constant: Constants.settings_spacing),
+            aboutLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.settings_side_padding + 10),
+            
+            aboutStack.topAnchor.constraint(equalTo: aboutLabel.bottomAnchor, constant: 5),
+            aboutStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.settings_side_padding),
+            aboutStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.settings_side_padding)
         ])
     }
     
     // MARK: - Button Helpers
+    @objc private func pushAppearance() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let appearanceVC = AppearanceVC()
+        appearanceVC.resetBackgroundDelegate = resetBackgroundDelegate
+        navigationController?.pushViewController(appearanceVC, animated: true)
+    }
+    
     @objc private func pushBlockVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let blockVC = BlockedVC(mainUser: mainUser)
         navigationController?.pushViewController(blockVC, animated: true)
     }

@@ -67,7 +67,7 @@ class TimerVC: UIViewController {
         config.buttonSize = .large
         config.baseForegroundColor = .white
         config.background.cornerRadius = Constants.landing_button_corner
-        config.baseBackgroundColor = Constants.primary_dark
+        config.baseBackgroundColor = Constants.primary_black
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -83,7 +83,7 @@ class TimerVC: UIViewController {
         text.font = Constants.getFont(size: 16, weight: .bold)
         config.attributedTitle = text
         
-        config.baseBackgroundColor = Constants.button_dark
+        config.baseBackgroundColor = Constants.button_both_color
         config.buttonSize = .large
         config.background.cornerRadius = Constants.landing_button_corner
         config.baseForegroundColor = .white
@@ -145,11 +145,7 @@ class TimerVC: UIViewController {
     // MARK: - viewDidLoad, init, configure, setupNavBar, and setupConstraints
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = Constants.secondary_dark
-        if traitCollection.userInterfaceStyle == .light {
-            view.backgroundColor = Constants.secondary_light
-        }
+        view.backgroundColor = Constants.secondary_color
         
         view.addSubview(promptHeading)
         view.addSubview(prompt)

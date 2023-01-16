@@ -16,13 +16,13 @@ class MemsBookHeaderView: UICollectionReusableView {
     private lazy var segmentedControl: RESegmentedControl = {
         let control = RESegmentedControl(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Constants.mems_book_height))
         
-        var style = SegmentItemStyle(textColor: UIColor.white, tintColor: UIColor.white, selectedTextColor: UIColor.white, selectedTintColor: UIColor.white, backgroundColor: Constants.primary_dark, borderWidth: 0, borderColor: nil, font: UIFont.systemFont(ofSize: 10), selectedFont: UIFont.systemFont(ofSize: 10), imageHeight: Constants.mems_book_height - 23, imageRenderMode: .alwaysOriginal, spacing: 0, cornerRadius: 0, shadow: nil, separator: nil, axis: .horizontal)
+        var style = SegmentItemStyle(textColor: UIColor.label, tintColor: UIColor.label, selectedTextColor: UIColor.label, selectedTintColor: UIColor.label, backgroundColor: Constants.primary_color, borderWidth: 0, borderColor: nil, font: UIFont.systemFont(ofSize: 10), selectedFont: UIFont.systemFont(ofSize: 10), imageHeight: Constants.mems_book_height - 23, imageRenderMode: .alwaysOriginal, spacing: 0, cornerRadius: 0, shadow: nil, separator: nil, axis: .horizontal)
         
-        var selectedStyle = SegmentSelectedItemStyle(backgroundColor: UIColor.white, cornerRadius: 0, borderWidth: 0, borderColor: nil, size: .height(2.0, position: .bottom), offset: 0, shadow: nil)
+        var selectedStyle = SegmentSelectedItemStyle(backgroundColor: UIColor.label, cornerRadius: 0, borderWidth: 0, borderColor: nil, size: .height(2.0, position: .bottom), offset: 0, shadow: nil)
     
-        var segmentItems = [SegmentModel(imageName: "mems_dark"), SegmentModel(imageName: "bookmarks_dark")]
+        var segmentItems = [SegmentModel(imageName: "mems"), SegmentModel(imageName: "bookmark_empty")]
         
-        var preset = MaterialPreset(backgroundColor: Constants.primary_dark, tintColor: UIColor.white)
+        var preset = MaterialPreset(backgroundColor: Constants.primary_color, tintColor: UIColor.label)
         
         preset.segmentItemStyle = style
         preset.segmentSelectedItemStyle = selectedStyle
@@ -35,7 +35,6 @@ class MemsBookHeaderView: UICollectionReusableView {
     }()
     
     // MARK: - Properties (data)
-    private var mode: UIUserInterfaceStyle?
     weak var switchViewDelegate: SwitchViewDelegate?
     
     static let reuseIdentifier = "MemsBookHeaderViewReuseMems"
@@ -53,11 +52,7 @@ class MemsBookHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(mode: UIUserInterfaceStyle, start: Int) {
-        self.mode = mode
-        if mode == .light {
-            configureLightMode()
-        }
+    func configure(start: Int) {
         segmentedControl.selectedSegmentIndex = start
     }
     
@@ -80,22 +75,6 @@ class MemsBookHeaderView: UICollectionReusableView {
         default:
             switchViewDelegate?.switchView(pos: 0)
         }
-    }
-    
-    // MARK: - Helper Functions
-    private func configureLightMode() {
-        let style = SegmentItemStyle(textColor: UIColor.black, tintColor: UIColor.black, selectedTextColor: UIColor.black, selectedTintColor: UIColor.black, backgroundColor: Constants.primary_light, borderWidth: 0, borderColor: nil, font: UIFont.systemFont(ofSize: 10), selectedFont: UIFont.systemFont(ofSize: 10), imageHeight: Constants.mems_book_height - 23, imageRenderMode: .alwaysOriginal, spacing: 0, cornerRadius: 0, shadow: nil, separator: nil, axis: .horizontal)
-            
-        let selectedStyle = SegmentSelectedItemStyle(backgroundColor: UIColor.black, cornerRadius: 0, borderWidth: 0, borderColor: nil, size: .height(2.0, position: .bottom), offset: 0, shadow: nil)
-            
-        let segmentItems = [SegmentModel(imageName: "mems_light"), SegmentModel(imageName: "bookmarks_light")]
-            
-        var preset = MaterialPreset(backgroundColor: Constants.primary_light, tintColor: UIColor.black)
-        
-        preset.segmentItemStyle = style
-        preset.segmentSelectedItemStyle = selectedStyle
-        
-        segmentedControl.configure(segmentItems: segmentItems, preset: preset)
     }
 }
 
@@ -169,7 +148,6 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     // MARK: - Properties (data)
     private var user: User!
-    private var mode: UIUserInterfaceStyle!
     private weak var parentVC: UIViewController!
     weak var updatePFPDelegate: UpdatePFPDelegate!
     weak var updateFeedDelegate: UpdateFeedDelegate!
@@ -194,20 +172,13 @@ class ProfileHeaderCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(user: User, mode: UIUserInterfaceStyle, parentVC: UIViewController) {
+    func configure(user: User, parentVC: UIViewController) {
         self.user = user
-        self.mode = mode
         self.parentVC = parentVC
         
-        backgroundColor = Constants.primary_dark
-        friendsButton.configuration?.baseBackgroundColor = Constants.button_dark
-        editButton.configuration?.baseBackgroundColor = Constants.button_dark
-            
-        if mode == .light {
-            backgroundColor = Constants.primary_light
-            friendsButton.configuration?.baseBackgroundColor = Constants.button_light
-            editButton.configuration?.baseBackgroundColor = Constants.button_light
-        }
+        backgroundColor = Constants.primary_color
+        friendsButton.configuration?.baseBackgroundColor = Constants.button_color
+        editButton.configuration?.baseBackgroundColor = Constants.button_color
        
         profileImage.image = ImageMap.map[user.pfp]
         fullnameLabel.text = user.getFullName()

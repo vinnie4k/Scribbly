@@ -41,7 +41,7 @@ class AddFriendsTableViewCell: UITableViewCell {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .mini
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = Constants.primary_dark
+        config.baseBackgroundColor = Constants.primary_black
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false

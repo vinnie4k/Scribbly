@@ -54,7 +54,7 @@ class ProfilePicVC: UIViewController {
         config.background.cornerRadius = Constants.landing_button_corner
         config.buttonSize = .large
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = Constants.primary_dark
+        config.baseBackgroundColor = Constants.primary_black
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
         btn.configuration = config
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +71,7 @@ class ProfilePicVC: UIViewController {
         config.attributedTitle = text
         
         config.background.cornerRadius = Constants.landing_button_corner
-        config.baseBackgroundColor = Constants.button_dark
+        config.baseBackgroundColor = Constants.button_both_color
         config.buttonSize = .large
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10)
@@ -189,7 +189,7 @@ class ProfilePicVC: UIViewController {
             nextButton.configuration?.baseBackgroundColor = Constants.secondary_text
         } else {
             nextButton.isUserInteractionEnabled = true
-            nextButton.configuration?.baseBackgroundColor = Constants.button_dark
+            nextButton.configuration?.baseBackgroundColor = Constants.button_both_color
         }
     }
     

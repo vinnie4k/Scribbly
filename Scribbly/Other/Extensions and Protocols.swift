@@ -10,6 +10,10 @@
 import UIKit
 
 // MARK: - Protocols
+protocol ResetBackgroundDelegate: AnyObject {
+    func resetBackground()
+}
+
 protocol ContactsDelegate: AnyObject {
     func addToFollow(userID: String)
     func removeFromFollow(userID: String)
@@ -310,5 +314,21 @@ extension UIImage {
         }
 
         return nil
+    }
+}
+
+// MARK: - Change Modes
+enum Theme: String {
+    case light, dark, system
+
+    var uiInterfaceStyle: UIUserInterfaceStyle {
+        switch self {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        case .system:
+            return .unspecified
+        }
     }
 }
