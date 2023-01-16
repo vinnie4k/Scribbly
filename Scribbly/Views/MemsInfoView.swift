@@ -97,7 +97,7 @@ class MemsInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
             
             statsView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
             statsView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
-            statsView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
+//            statsView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
             statsView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
             
             hideShareView.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),

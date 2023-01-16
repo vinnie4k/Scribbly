@@ -101,7 +101,7 @@ class BooksInfoView: UIView, UIScrollViewDelegate {
             
             captionView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
             captionView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
-            captionView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height / 2),
+//            captionView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height / 2),
             captionView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
             
             booksButtonView.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
@@ -225,11 +225,13 @@ class BooksCaptionView: UIView {
             userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             
-            displayName.topAnchor.constraint(equalTo: userPFP.topAnchor),
+            displayName.topAnchor.constraint(equalTo: self.topAnchor, constant: 7),
             displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
             
             caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_info_caption_top),
-            caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left)
+            caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
+            caption.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_info_name_left),
+            caption.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -7)
         ])
     }
     

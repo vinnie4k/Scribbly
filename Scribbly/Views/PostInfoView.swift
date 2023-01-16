@@ -97,7 +97,7 @@ class PostInfoView: UIView, ReloadStatsDelegate, UIScrollViewDelegate {
 
             statsView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_info_stats_padding),
             statsView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_info_stats_padding),
-            statsView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
+//            statsView.heightAnchor.constraint(equalToConstant: Constants.post_info_stats_height),
             statsView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_info_stats_padding),
             
             redoDeleteView.topAnchor.constraint(equalTo: drawing.bottomAnchor, constant: Constants.post_info_redo_top),
@@ -232,15 +232,17 @@ class PostInfoStatsView: UIView {
             userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             
-            displayName.topAnchor.constraint(equalTo: userPFP.topAnchor, constant: 2),
+            displayName.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
             displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
             
             caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_info_caption_top),
             caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
+            caption.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_info_name_left),
 
             stack.topAnchor.constraint(equalTo: caption.bottomAnchor, constant: Constants.post_info_stack_top),
             stack.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             stack.widthAnchor.constraint(equalToConstant: Constants.post_info_stack_width),
+            stack.heightAnchor.constraint(equalToConstant: 40),
             stack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_pfp_top),
         ])
     }

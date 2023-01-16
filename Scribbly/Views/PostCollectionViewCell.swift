@@ -248,7 +248,7 @@ class PostCollectionViewCell: UICollectionViewCell {
             captionView.bottomAnchor.constraint(equalTo: drawing.bottomAnchor, constant: -Constants.post_cell_cap_view_bot),
             captionView.leadingAnchor.constraint(equalTo: drawing.leadingAnchor, constant: Constants.post_cell_cap_view_side),
             captionView.trailingAnchor.constraint(equalTo: drawing.trailingAnchor, constant: -Constants.post_cell_cap_view_side),
-            captionView.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height)
+//            captionView.heightAnchor.constraint(equalToConstant: Constants.post_cell_cap_view_height)
         ])
     }
     
@@ -385,11 +385,13 @@ class CaptionView: UIView {
             userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
             userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
             
-            displayName.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -8),
+            displayName.topAnchor.constraint(equalTo: self.topAnchor, constant: 7),
             displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),
             
             caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_cell_caption_top),
             caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),
+            caption.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_cell_name_side),
+            caption.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -7)
         ])
     }
     
