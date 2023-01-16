@@ -49,6 +49,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 } else {
                     self.window?.overrideUserInterfaceStyle = .light
                 }
+            } else {
+                UserDefaults.standard.set("theme", forKey: Theme.dark.rawValue)
+                self.window?.overrideUserInterfaceStyle = .dark
             }
             
             window.makeKeyAndVisible()
