@@ -23,7 +23,7 @@ class AddFriendsVC: UIViewController {
         let btn = UIButton()
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
-        config.image = UIImage(systemName: "chevron.left")
+        config.image = UIImage(systemName: "chevron.right")
         config.baseForegroundColor = .label
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -36,6 +36,7 @@ class AddFriendsVC: UIViewController {
         let tv = UITableView()
         tv.backgroundColor = .systemBackground
         tv.register(AddFriendsTableViewCell.self, forCellReuseIdentifier: AddFriendsTableViewCell.reuseIdentifier)
+        tv.register(FollowRequestViewCell.self, forCellReuseIdentifier: FollowRequestViewCell.reuseIdentifier)
         tv.sectionHeaderTopPadding = 0
         tv.separatorStyle = .none
         tv.delegate = self
@@ -71,9 +72,10 @@ class AddFriendsVC: UIViewController {
     // MARK: - Properties (data)
     private var datasource: Datasource!
     private var friendsData = [Friend]()
+    private var requestsData = [User]()
     private var mainUser: User
-    weak var updateRequestsDelegate: UpdateRequestsDelegate!
     weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate!
     var searchTask: DispatchWorkItem?
     
     // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
@@ -87,7 +89,9 @@ class AddFriendsVC: UIViewController {
         view.addSubview(spinner)
         
 //        setupGradient()
+        spinner.startAnimating()
         setupNavBar()
+        setupRequestsData()
         configureDatasource()
         setupConstraints()
     }
@@ -105,7 +109,7 @@ class AddFriendsVC: UIViewController {
     private func setupNavBar() {
         navigationItem.titleView = titleLabel
         backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
     private func setupConstraints() {
@@ -125,6 +129,22 @@ class AddFriendsVC: UIViewController {
     }
     
     // MARK: - Setup Data
+    private func setupRequestsData() {
+        requestsData = []
+        DatabaseManager.getRequests(with: mainUser.id, completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.requestsData = users.reversed()
+            
+            var oldSnapshot = self.datasource.snapshot()
+            oldSnapshot.deleteAllItems()
+            self.datasource.apply(oldSnapshot, animatingDifferences: false)
+            
+            self.createSnapshot()
+            self.refreshControl.endRefreshing()
+            self.spinner.stopAnimating()
+        })
+    }
+    
     func setupFriendsData(users: [User]) {
         friendsData = []
         for i in users {
@@ -137,7 +157,15 @@ class AddFriendsVC: UIViewController {
     // MARK: - Button Helpers
     @objc private func popVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        navigationController?.popViewController(animated: true)
+
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromRight
+        transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+        view.window!.layer.add(transition, forKey: kCATransition)
+        
+        navigationController?.dismiss(animated: false)
     }
     
     @objc private func refreshTV() {
@@ -157,10 +185,12 @@ extension AddFriendsVC {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     
     enum Section: Hashable {
+        case requestsSection
         case friendsListSection
     }
     
     enum Item: Hashable {
+        case requestsSectionItem
         case friendsListItem(Friend)
     }
     
@@ -179,10 +209,15 @@ extension AddFriendsVC {
     
     private func cell(tableView: UITableView, indexPath: IndexPath, item: Item) -> UITableViewCell {
         switch item {
+        case .requestsSectionItem:
+            let cell = tableView.dequeueReusableCell(withIdentifier: FollowRequestViewCell.reuseIdentifier, for: indexPath) as! FollowRequestViewCell
+            cell.configure(requests: requestsData)
+            cell.selectionStyle = .none
+            return cell
         case .friendsListItem(let friend):
             let cell = tableView.dequeueReusableCell(withIdentifier: AddFriendsTableViewCell.reuseIdentifier, for: indexPath) as! AddFriendsTableViewCell
             cell.configure(user: friend.user, mainUser: mainUser)
-            cell.updateRequestsDelegate = updateRequestsDelegate
+            cell.updateRequestsDelegate = self
             cell.selectionStyle = .none
             return cell
         }
@@ -195,8 +230,9 @@ extension AddFriendsVC {
     
     private func createSnapshot() {
         var snapshot = Snapshot()
-        snapshot.appendSections([Section.friendsListSection])
+        snapshot.appendSections([Section.requestsSection, Section.friendsListSection])
         snapshot.appendItems(friendsData.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
+        snapshot.appendItems([Item.requestsSectionItem], toSection: .requestsSection)
         
         datasource.apply(snapshot, animatingDifferences: false)
     }
@@ -209,16 +245,29 @@ extension AddFriendsVC: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let request = friendsData[indexPath.row].user
-        let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
-        profileVC.updateRequestsDelegate = updateRequestsDelegate
-        profileVC.updateFeedDelegate = updateFeedDelegate
-        navigationController?.pushViewController(profileVC, animated: true)
+        if indexPath.section == 0 && searchBar.text!.isEmpty {
+            let requestsVC = RequestsVC(mainUser: mainUser, requests: requestsData)
+            requestsVC.updateRequestsDelegate = self
+            requestsVC.updateFeedDelegate = updateFeedDelegate
+            navigationController?.pushViewController(requestsVC, animated: true)
+        } else {
+            let request = friendsData[indexPath.row].user
+            let profileVC = OtherUserProfileVC(user: request, mainUser: mainUser)
+            profileVC.updateRequestsDelegate = self
+            profileVC.updateFeedDelegate = updateFeedDelegate
+            navigationController?.pushViewController(profileVC, animated: true)
+        }
     }
 }
 
 // MARK: - Other Extensions
-extension AddFriendsVC: UISearchBarDelegate {
+extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
+    // MARK: - UpdateRequestsDelegate
+    func updateRequests() {
+        setupRequestsData()
+        updateRequestsDelegate.updateRequests()
+    }
+    
     // MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         // Cancel previous task if any
@@ -227,21 +276,31 @@ extension AddFriendsVC: UISearchBarDelegate {
         var oldSnapshot = self.datasource.snapshot()
         oldSnapshot.deleteAllItems()
         self.datasource.apply(oldSnapshot, animatingDifferences: false)
-        self.spinner.startAnimating()
         
-        // Replace previous task with a new one
-        let task = DispatchWorkItem { [weak self] in
-            guard let `self` = self else { return }
-            DatabaseManager.searchUsers(with: searchText.lowercased(), completion: { [weak self] users in
+        if searchText.isEmpty {
+            self.friendsData = []
+            createSnapshot()
+            self.spinner.stopAnimating()
+        } else {
+            self.spinner.startAnimating()
+            // Replace previous task with a new one
+            let task = DispatchWorkItem { [weak self] in
                 guard let `self` = self else { return }
-                self.setupFriendsData(users: users)
-                self.createSnapshot()
-                self.spinner.stopAnimating()
-            })
+                DatabaseManager.searchUsers(with: searchText.lowercased(), completion: { [weak self] users in
+                    guard let `self` = self else { return }
+                    self.setupFriendsData(users: users)
+                    self.spinner.stopAnimating()
+                    
+                    var snapshot = Snapshot()
+                    snapshot.appendSections([Section.friendsListSection])
+                    snapshot.appendItems(self.friendsData.map({ Item.friendsListItem($0) }), toSection: .friendsListSection)
+                    self.datasource.apply(snapshot, animatingDifferences: false)
+                })
+            }
+            
+            searchTask = task
+            // Execute task in 0.75 second, depends on network speed
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.75, execute: task)
         }
-        
-        searchTask = task
-        // Execute task in 0.75 second, depends on network speed
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.75, execute: task)
     }
 }

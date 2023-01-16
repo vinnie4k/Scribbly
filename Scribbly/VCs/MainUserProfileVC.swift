@@ -94,8 +94,8 @@ class MainUserProfileVC: UIViewController {
     private var booksData = [Bookmarks]()
     private var datasource: Datasource!
     private var updateMems: Bool = true
-    weak var updateFeedDelegate: UpdateFeedDelegate!
-    weak var updatePFPDelegate: UpdatePFPDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
+    weak var updatePFPDelegate: UpdatePFPDelegate?
     
     // MARK: - viewDidLoad, init, setupBackground, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -251,7 +251,7 @@ class MainUserProfileVC: UIViewController {
         }, completion: nil)
         drawViewLarge.subviews[1].removeFromSuperview()
         reloadMemsBooksItems()
-        updateFeedDelegate.updateFeed()
+        updateFeedDelegate?.updateFeed()
     }
 }
 

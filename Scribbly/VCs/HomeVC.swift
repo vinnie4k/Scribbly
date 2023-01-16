@@ -47,7 +47,6 @@ class HomeVC: UIViewController {
         let btn = UIButton()
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
-        config.image = UIImage(systemName: "person.crop.circle.fill.badge.plus")
         config.baseForegroundColor = .label
         config.baseBackgroundColor = .clear
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -178,6 +177,12 @@ class HomeVC: UIViewController {
                         format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
                     })
                     
+                    if self.mainUser.requests == nil || self.mainUser.requests?.count == 0 {
+                        self.addFriendsButton.configuration?.image = UIImage(named: "search")
+                    } else {
+                        self.addFriendsButton.configuration?.image = UIImage(named: "search_red")
+                    }
+                    
                     self.postCV.reloadData()
                     self.refreshControl.endRefreshing()
                 })
@@ -261,6 +266,13 @@ class HomeVC: UIViewController {
         if mainUser.friends != nil {
             noFriendsLabel.isHidden = true
         }
+        
+        if mainUser.requests == nil || mainUser.requests?.count == 0 {
+            addFriendsButton.configuration?.image = UIImage(named: "search")
+        } else {
+            addFriendsButton.configuration?.image = UIImage(named: "search_red")
+        }
+        
         setupGradient()
         setupNavBar()
         setupCollectionView()
@@ -320,6 +332,8 @@ class HomeVC: UIViewController {
     }
     
     private func setupNavBar() {
+        addFriendsButton.addTarget(self, action: #selector(pushAddFriendsVC), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addFriendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileButton)
         navigationItem.titleView = logo
         
@@ -337,6 +351,25 @@ class HomeVC: UIViewController {
     }
     
     // MARK: - Button Helpers
+    @objc private func pushAddFriendsVC() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromLeft
+        transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+        view.window!.layer.add(transition, forKey: kCATransition)
+        
+        let addFriendsVC = AddFriendsVC(mainUser: mainUser)
+        addFriendsVC.updateRequestsDelegate = self
+        let nav = UINavigationController(rootViewController: addFriendsVC)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: false, completion: nil)
+
+//        navigationController?.pushViewController(addFriendsVC, animated: true)
+    }
+    
     @objc private func reduceImage() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
             self.drawViewLarge.alpha = 0.0
@@ -411,7 +444,7 @@ extension HomeVC: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - Extension: Delegation
-extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, UpdatePFPDelegate, UIScrollViewDelegate {
+extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, UpdatePFPDelegate, UIScrollViewDelegate, UpdateRequestsDelegate {
     // MARK: - EnlargeDrawingDelegate
     func enlargeDrawing(drawing: UIImage) {
         let outerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding, height: UIScreen.main.bounds.width - 2 * Constants.enlarge_side_padding))
@@ -509,6 +542,15 @@ extension HomeVC: EnlargeDrawingDelegate, PostInfoDelegate, UpdateFeedDelegate, 
     func updatePFP() {
         guard let mainUser = mainUser else { return }
         self.profileButton.setImage(mainUser.getPFP(), for: .normal)
+    }
+    
+    // MARK: - UpdateRequestsDelegate
+    func updateRequests() {
+        if mainUser.requests == nil || mainUser.requests?.count == 0 {
+            addFriendsButton.configuration?.image = UIImage(named: "search")
+        } else {
+            addFriendsButton.configuration?.image = UIImage(named: "search_red")
+        }
     }
 }
 

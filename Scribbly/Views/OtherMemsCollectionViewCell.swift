@@ -55,10 +55,10 @@ class OtherMemsTinyPostView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(post: Post?, text: String) {
+    func configure(post: Post?, text: String, hideToday: Bool) {
         self.post = post
         
-        if post != nil {
+        if post != nil && !hideToday {
             drawing.image = post!.getDrawing()
         }
         dateLabel.text = text
@@ -117,6 +117,7 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (data)
     static let reuseIdentifier = "OtherMemsCollectionViewCellReuse"
     private var data: [String]!
+    private var hideToday: Bool!
     private var user: User!
     weak var postInfoDelegate: PostInfoDelegate?
     
@@ -136,9 +137,10 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(data: [String], user: User) {
+    func configure(data: [String], user: User, hideToday: Bool) {
         self.data = data
         self.user = user
+        self.hideToday = hideToday
         
         backgroundColor = Constants.secondary_color
         
@@ -203,17 +205,17 @@ class OtherMemsCollectionViewCell: UICollectionViewCell {
                 // if the user has this post hidden, then don't include it
                 if post != nil {
                     if post!.isHidden() {
-                        tinyView.configure(post: nil, text: text)
+                        tinyView.configure(post: nil, text: text, hideToday: hideToday)
                     } else {
-                        tinyView.configure(post: post, text: text)
+                        tinyView.configure(post: post, text: text, hideToday: hideToday)
                         tinyView.postInfoDelegate = postInfoDelegate
                     }
                 } else {
                     // post == nil
-                    tinyView.configure(post: post, text: text)
+                    tinyView.configure(post: post, text: text, hideToday: hideToday)
                 }
             } else {
-                tinyView.configure(post: nil, text: text)
+                tinyView.configure(post: nil, text: text, hideToday: hideToday)
             }
 
             tinyView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 7 - 4).isActive = true

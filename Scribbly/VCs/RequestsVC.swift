@@ -147,6 +147,7 @@ class RequestsVC: UIViewController {
     @objc private func popVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
+        self.updateRequestsDelegate.updateRequests()
     }
     
     @objc private func refreshTV() {
@@ -157,10 +158,6 @@ class RequestsVC: UIViewController {
             self.determineLabel()
             self.refreshControl.endRefreshing()
         })
-        
-//        DispatchQueue.main.async {
-//            self.updateRequestsDelegate.updateRequests()
-//        }
     }
 }
 

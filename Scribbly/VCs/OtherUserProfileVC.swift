@@ -349,7 +349,11 @@ extension OtherUserProfileVC {
         case .memsCell(let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OtherMemsCollectionViewCell.reuseIdentifier, for: indexPath) as! OtherMemsCollectionViewCell
             cell.postInfoDelegate = self    // Must do this before configuring
-            cell.configure(data: data.array, user: user)
+            if mainUser.todaysPost != "" {
+                cell.configure(data: data.array, user: user, hideToday: false)
+            } else {
+                cell.configure(data: data.array, user: user, hideToday: true)
+            }
             return cell
         case .booksCell(let data):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BookmarksCollectionViewCell.reuseIdentifier, for: indexPath) as! BookmarksCollectionViewCell

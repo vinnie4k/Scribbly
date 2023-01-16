@@ -32,19 +32,6 @@ class FriendsVC: UIViewController {
         return btn
     }()
     
-    private lazy var addFriendsButton: UIButton = {
-        let btn = UIButton()
-        var config = UIButton.Configuration.plain()
-        config.buttonSize = .large
-        config.image = UIImage(systemName: "person.crop.circle.fill.badge.plus")
-        config.baseForegroundColor = .label
-        config.baseBackgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-        btn.configuration = config
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
-    }()
-    
     private lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .grouped)
         tv.backgroundColor = .systemBackground
@@ -121,8 +108,6 @@ class FriendsVC: UIViewController {
         navigationItem.titleView = titleLabel
         backButton.addTarget(self, action: #selector(popVC), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        addFriendsButton.addTarget(self, action: #selector(pushAddFriendsVC), for: .touchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addFriendsButton)
     }
     
     private func setupConstraints() {
@@ -177,13 +162,6 @@ class FriendsVC: UIViewController {
     @objc private func popVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func pushAddFriendsVC() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        let addFriendsVC = AddFriendsVC(mainUser: user)
-        addFriendsVC.updateRequestsDelegate = self
-        navigationController?.pushViewController(addFriendsVC, animated: true)
     }
 }
 
@@ -251,7 +229,7 @@ extension FriendsVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.friends_cell_height
     }
-    
+        
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 1 {
             let label = UILabel()

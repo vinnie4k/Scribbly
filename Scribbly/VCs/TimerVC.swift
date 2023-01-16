@@ -34,7 +34,7 @@ class TimerVC: UIViewController {
     
     private lazy var profileButton: UIButton = {
         let btn = UIButton()
-        btn.addTarget(self, action: #selector(pushSettingsVC), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(pushMainUserProfileVC), for: .touchUpInside)
         btn.setImage(mainUser.getPFP(), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
         btn.layer.cornerRadius = 0.5 * 2 * Constants.profile_button_radius
@@ -249,10 +249,10 @@ class TimerVC: UIViewController {
         }, completion: nil)
     }
     
-    @objc private func pushSettingsVC() {
+    @objc private func pushMainUserProfileVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        let settingsVC = SettingsVC(mainUser: mainUser)
-        navigationController?.pushViewController(settingsVC, animated: true)
+        let profileVC = MainUserProfileVC(mainUser: mainUser)
+        navigationController?.pushViewController(profileVC, animated: true)
     }
     
     @objc private func popVC() {
