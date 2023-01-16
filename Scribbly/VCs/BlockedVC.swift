@@ -72,7 +72,7 @@ class BlockedVC: UIViewController, UITextFieldDelegate {
     private var blockedData = [Blocked]()
     private var mainUser: User
     private var filteredBlocks = [Blocked]()
-    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
     
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {

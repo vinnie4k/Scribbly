@@ -141,7 +141,7 @@ class SettingsVC: UIViewController {
     
     // MARK: - Properties (data)
     private var mainUser: User!
-    weak var resetBackgroundDelegate: ResetBackgroundDelegate!
+    weak var resetBackgroundDelegate: ResetBackgroundDelegate?
     
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {

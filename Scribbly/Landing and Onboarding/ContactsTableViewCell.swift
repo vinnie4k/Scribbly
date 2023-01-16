@@ -52,7 +52,7 @@ class ContactsTableViewCell: UITableViewCell {
     static let reuseIdentifier = "ContactsTableViewCellReuse"
     private var user: User!
     private var isRequested = false
-    weak var contactsDelegate: ContactsDelegate!
+    weak var contactsDelegate: ContactsDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -114,12 +114,12 @@ class ContactsTableViewCell: UITableViewCell {
         if isRequested {
             // Unsend request
             followButton.configuration?.title = "follow"
-            contactsDelegate.removeFromFollow(userID: user.id)
+            contactsDelegate?.removeFromFollow(userID: user.id)
             isRequested = false
         } else {
             // Send request
             followButton.configuration?.title = "requested"
-            contactsDelegate.addToFollow(userID: user.id)
+            contactsDelegate?.addToFollow(userID: user.id)
             isRequested = true
         }
     }

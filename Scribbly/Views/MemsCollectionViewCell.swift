@@ -144,7 +144,7 @@ class MemsCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "MemsCollectionViewCellReuse"
     private var data: [String]!
     private var user: User!
-    weak var postInfoDelegate: PostInfoDelegate!
+    weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

@@ -75,8 +75,8 @@ class RequestsVC: UIViewController {
     private var requestsData = [Request]()
     private var mainUser: User
     private var filteredRequests = [Request]()
-    weak var updateRequestsDelegate: UpdateRequestsDelegate!
-    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
+    weak var updateFeedDelegate: UpdateFeedDelegate?
     
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -147,7 +147,7 @@ class RequestsVC: UIViewController {
     @objc private func popVC() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
-        self.updateRequestsDelegate.updateRequests()
+        self.updateRequestsDelegate?.updateRequests()
     }
     
     @objc private func refreshTV() {

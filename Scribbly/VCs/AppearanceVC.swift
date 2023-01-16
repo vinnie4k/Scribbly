@@ -151,7 +151,7 @@ class AppearanceVC: UIViewController {
     
     // MARK: - Properties (data)
     private lazy var isDark: Bool = traitCollection.userInterfaceStyle == .dark
-    weak var resetBackgroundDelegate: ResetBackgroundDelegate!
+    weak var resetBackgroundDelegate: ResetBackgroundDelegate?
     
     // MARK: - viewDidLoad, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -255,7 +255,7 @@ class AppearanceVC: UIViewController {
             darkButton.tintColor = Constants.secondary_text
             lightButton.tintColor = .systemBlue
             UserDefaults.standard.setValue(Theme.light.rawValue, forKey: "theme")
-            resetBackgroundDelegate.resetBackground()
+            resetBackgroundDelegate?.resetBackground()
         }
     }
     
@@ -267,21 +267,21 @@ class AppearanceVC: UIViewController {
             lightButton.tintColor = Constants.secondary_text
             darkButton.tintColor = .systemBlue
             UserDefaults.standard.setValue(Theme.dark.rawValue, forKey: "theme")
-            resetBackgroundDelegate.resetBackground()
+            resetBackgroundDelegate?.resetBackground()
         }
     }
     
     @objc private func selectSystem() {
         if systemSwitch.isOn {
             UserDefaults.standard.setValue(Theme.system.rawValue, forKey: "theme")
-            resetBackgroundDelegate.resetBackground()
+            resetBackgroundDelegate?.resetBackground()
         } else {
             if traitCollection.userInterfaceStyle == .dark {
                 UserDefaults.standard.setValue(Theme.dark.rawValue, forKey: "theme")
             } else {
                 UserDefaults.standard.setValue(Theme.light.rawValue, forKey: "theme")
             }
-            resetBackgroundDelegate.resetBackground()
+            resetBackgroundDelegate?.resetBackground()
         }
         configure()
     }

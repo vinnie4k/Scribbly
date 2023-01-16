@@ -149,8 +149,8 @@ class ProfileHeaderCell: UICollectionViewCell {
     // MARK: - Properties (data)
     private var user: User!
     private weak var parentVC: UIViewController!
-    weak var updatePFPDelegate: UpdatePFPDelegate!
-    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updatePFPDelegate: UpdatePFPDelegate?
+    weak var updateFeedDelegate: UpdateFeedDelegate?
     
     static let reuseIdentifier = "ProfileHeaderViewReuse"
     

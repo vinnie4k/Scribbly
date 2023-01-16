@@ -165,8 +165,8 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
     
     // MARK: - Properties (data)
     private var mainUser: User
-    weak var updatePFPDelegate: UpdatePFPDelegate!
-    weak var updateProfileDelegate: UpdateProfileDelegate!
+    weak var updatePFPDelegate: UpdatePFPDelegate?
+    weak var updateProfileDelegate: UpdateProfileDelegate?
     
     // MARK: - viewDidLoad, viewWillAppear, init, and setupConstraints
     override func viewDidLoad() {
@@ -386,8 +386,8 @@ class EditProfileVC: UIViewController, UITextFieldDelegate {
             group.notify(queue: .main) { [weak self] in
                 guard let `self` = self else { return }
                 if good {
-                    self.updatePFPDelegate.updatePFP()
-                    self.updateProfileDelegate.updateProfile()
+                    self.updatePFPDelegate?.updatePFP()
+                    self.updateProfileDelegate?.updateProfile()
                     self.navigationController?.popViewController(animated: true)
                 } else if !userGood {
                     let alert = UIAlertController(title: "That username has been taken", message: nil, preferredStyle: .alert)
@@ -496,8 +496,8 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
                                 self.mainUser.pfp = fileName
                                 self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
                                 print(ImageMap.map)
-                                self.updatePFPDelegate.updatePFP()
-                                self.updateProfileDelegate.updateProfile()
+                                self.updatePFPDelegate?.updatePFP()
+                                self.updateProfileDelegate?.updateProfile()
                             case .failure(let error):
                                 print("Storage manager error: \(error)")
                                 self.uploadError()
@@ -559,8 +559,8 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
                     ImageMap.map[fileName] = image
                     self.mainUser.pfp = fileName
                     self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-                    self.updatePFPDelegate.updatePFP()
-                    self.updateProfileDelegate.updateProfile()
+                    self.updatePFPDelegate?.updatePFP()
+                    self.updateProfileDelegate?.updateProfile()
                 case .failure(let error):
                     print("Storage manager error: \(error)")
                     self.uploadError()
@@ -580,8 +580,8 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
                 self.mainUser.pfp = "images/pfp/scribbly_default_pfp.png"
                 ImageMap.map[self.mainUser.pfp] = UIImage(named: "default_pfp")
                 self.editProfilePictureView.profileImage.image = UIImage(named: "default_pfp")
-                self.updatePFPDelegate.updatePFP()
-                self.updateProfileDelegate.updateProfile()
+                self.updatePFPDelegate?.updatePFP()
+                self.updateProfileDelegate?.updateProfile()
             } else {
                 let alert = UIAlertController(title: "Error", message: "Unable to change your profile picture", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel))

@@ -52,7 +52,7 @@ class AddFriendsTableViewCell: UITableViewCell {
     static let reuseIdentifier = "AddFriendsTableViewCellReuse"
     private var mainUser: User!
     private weak var user: User!
-    weak var updateRequestsDelegate: UpdateRequestsDelegate!
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -119,7 +119,7 @@ class AddFriendsTableViewCell: UITableViewCell {
             // mainUser has already sent a request. Change to follow and remove the request.
             user.removeRequest(user: mainUser)
             followButton.configuration?.title = "follow"
-            updateRequestsDelegate.updateRequests()
+            updateRequestsDelegate?.updateRequests()
         } else if mainUser.hasRequested(user: user) {
             // Curently says "accept"
             // The other user has sent a request to mainUser. Change to accepted and remove the request.
@@ -130,7 +130,7 @@ class AddFriendsTableViewCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.followButton.configuration?.title = "accepted"
                 self.followButton.isUserInteractionEnabled = false
-                self.updateRequestsDelegate.updateRequests()
+                self.updateRequestsDelegate?.updateRequests()
             }
         } else {
             // Currently says "follow"
@@ -138,7 +138,7 @@ class AddFriendsTableViewCell: UITableViewCell {
             user.addRequest(user: mainUser)
             DispatchQueue.main.async {
                 self.followButton.configuration?.title = "requested"
-                self.updateRequestsDelegate.updateRequests()
+                self.updateRequestsDelegate?.updateRequests()
             }
         }
 

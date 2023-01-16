@@ -102,7 +102,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
     private var mainUser: User
     private var hasUploaded: Bool = false
     private var change: [NSLayoutConstraint] = []
-    weak var dismissTimerDelegate: DismissTimerDelegate!
+    weak var dismissTimerDelegate: DismissTimerDelegate?
 
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {
@@ -222,7 +222,7 @@ class UploadPostVC: UIViewController, UITextFieldDelegate {
                             self.mainUser.addPost(key: key, post: post)
                             self.mainUser.todaysPost = post.id
                             self.navigationController?.popViewController(animated: false)
-                            self.dismissTimerDelegate.dismissTimerVC()
+                            self.dismissTimerDelegate?.dismissTimerVC()
                             self.spinner.stopAnimating()
                         } else {
                             self.uploadError()

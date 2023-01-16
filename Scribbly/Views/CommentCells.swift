@@ -28,7 +28,7 @@ class DrawingHeaderView: UICollectionReusableView {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "DrawingHeaderViewReuse"
-    weak var enlargeDrawingDelegate: EnlargeDrawingDelegate!
+    weak var enlargeDrawingDelegate: EnlargeDrawingDelegate?
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -58,7 +58,7 @@ class DrawingHeaderView: UICollectionReusableView {
     // MARK: - Button Helpers
     @objc func enlargeImage() {
         if let drawing = drawing.image {
-            enlargeDrawingDelegate.enlargeDrawing(drawing: drawing)
+            enlargeDrawingDelegate?.enlargeDrawing(drawing: drawing)
         }
     }
 }
@@ -107,7 +107,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     private weak var parentVC: UIViewController!
     private var comment: Comment!
     private var mainUser: User!
-    weak var commentDelegate: CommentDelegate!
+    weak var commentDelegate: CommentDelegate?
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -183,7 +183,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),
                              attributes: .destructive) { action in
-                        self.commentDelegate.deleteComment(comment: self.comment)
+                        self.commentDelegate?.deleteComment(comment: self.comment)
                     }
                 return UIMenu(title: "", children: [copyAction, deleteAction])
             }
@@ -192,7 +192,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
     }
     
     @objc private func sendReply() {
-        commentDelegate.sendReplyComment(comment: comment)
+        commentDelegate?.sendReplyComment(comment: comment)
     }
     
     @objc private func pushProfileVC() {
@@ -247,7 +247,7 @@ class CommentCollectionViewCell: UICollectionViewCell {
     private var comment: Comment!
     private var reply: Reply!
     private var mainUser: User!
-    weak var replyDelegate: CommentDelegate!
+    weak var replyDelegate: CommentDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

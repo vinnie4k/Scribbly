@@ -72,7 +72,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
     private var mainUser: User!
     private weak var parentVC: UIViewController!
     private var change = [NSLayoutConstraint]()
-    weak var updateProfileDelegate: UpdateProfileDelegate!
+    weak var updateProfileDelegate: UpdateProfileDelegate?
     weak var updateRequestsDelegate: UpdateRequestsDelegate?
     
     private var isBlocked: Bool!
@@ -266,7 +266,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                     self.otherRequested = false
                     
                     self.configureNotFollowing()
-                    self.updateProfileDelegate.updateProfile()
+                    self.updateProfileDelegate?.updateProfile()
                     if self.updateRequestsDelegate != nil {
                         self.updateRequestsDelegate?.updateRequests()
                     }
@@ -288,7 +288,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.otherRequested = false
                 
                 self.configureNotFollowing()
-                self.updateProfileDelegate.updateProfile()
+                self.updateProfileDelegate?.updateProfile()
                 if self.updateRequestsDelegate != nil {
                     self.updateRequestsDelegate?.updateRequests()
                 }
@@ -306,7 +306,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.otherRequested = false
                 
                 self.configureFollowing()
-                self.updateProfileDelegate.updateProfile()
+                self.updateProfileDelegate?.updateProfile()
                 if self.updateRequestsDelegate != nil {
                     self.updateRequestsDelegate?.updateRequests()
                 }
@@ -322,7 +322,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                 self.isFollowed = false
                 
                 self.configureNotFollowing()
-                self.updateProfileDelegate.updateProfile()
+                self.updateProfileDelegate?.updateProfile()
                 if self.updateRequestsDelegate != nil {
                     self.updateRequestsDelegate?.updateRequests()
                 }
@@ -347,7 +347,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                     self.followButton.isHidden = false
                     
                     self.configureNotFollowing()
-                    self.updateProfileDelegate.updateProfile()
+                    self.updateProfileDelegate?.updateProfile()
                     if self.updateRequestsDelegate != nil {
                         self.updateRequestsDelegate?.updateRequests()
                     }
@@ -367,7 +367,7 @@ class OtherProfileHeaderCell: UICollectionViewCell {
                     self.isBlocked = true
                     
                     self.configureBlocked()
-                    self.updateProfileDelegate.updateProfile()
+                    self.updateProfileDelegate?.updateProfile()
                     if self.updateRequestsDelegate != nil {
                         self.updateRequestsDelegate?.updateRequests()
                     }

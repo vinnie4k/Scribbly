@@ -75,7 +75,7 @@ class FriendsVC: UIViewController {
     private var requestsData = [User]()
     private var user: User
     private var filteredFriends = [Friend]()
-    weak var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
 
     // MARK: - viewDidLoad, init, setupNavBar, and setupConstraints
     override func viewDidLoad() {

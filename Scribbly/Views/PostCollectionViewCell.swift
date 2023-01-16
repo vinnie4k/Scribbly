@@ -46,7 +46,7 @@ class PromptHeaderView: UICollectionReusableView {
     
     // MARK: - Properties (data)
     static let reuseIdentifier = "PromptHeaderViewReuse"
-    var postInfoDelegate: PostInfoDelegate?
+    weak var postInfoDelegate: PostInfoDelegate?
     private var post: Post!
 
     // MARK: - init, configure, and setupConstraints
@@ -93,7 +93,7 @@ class PromptHeaderView: UICollectionReusableView {
     // MARK: - Button Helpers
     @objc private func showStats() {
         if postInfoDelegate != nil {
-            postInfoDelegate!.showPostInfo(post: post!)
+            postInfoDelegate?.showPostInfo(post: post!)
         }
     }
 }
@@ -186,7 +186,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     private var parentVC: UIViewController!
     private var post: Post!
     private var mainUser: User!
-    var enlargeDrawingDelegate: EnlargeDrawingDelegate!
+    weak var enlargeDrawingDelegate: EnlargeDrawingDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -295,7 +295,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     
     @objc func enlargeImage() {
         if let drawing = drawing.image {
-            enlargeDrawingDelegate.enlargeDrawing(drawing: drawing)
+            enlargeDrawingDelegate?.enlargeDrawing(drawing: drawing)
         }
     }
     
@@ -340,7 +340,7 @@ class CaptionView: UIView {
     private var parentVC: UIViewController!
     private var postUser: User!
     private var mainUser: User!
-    var updateFeedDelegate: UpdateFeedDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
 
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {

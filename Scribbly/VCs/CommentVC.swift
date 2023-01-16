@@ -180,7 +180,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
     private var change: [NSLayoutConstraint]
     private var prevComment: Comment? = nil
     private var prevReply: Reply? = nil
-    weak var reloadStatsDelegate: ReloadStatsDelegate!
+    weak var reloadStatsDelegate: ReloadStatsDelegate?
     private var comments: [Comment]
     
     // MARK: - Backend Helpers

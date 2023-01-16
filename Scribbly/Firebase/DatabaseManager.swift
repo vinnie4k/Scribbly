@@ -574,6 +574,16 @@ extension DatabaseManager {
                     }
                 }
                 
+                // Add mainUser's bookmarks to cache
+                if let books = user.bookmarkedPosts {
+                    for book in books.values.map({$0}) {
+                        group.enter()
+                        DatabaseManager.getPost(with: book, completion: { _ in
+                            group.leave()
+                        })
+                    }
+                }
+                
                 group.notify(queue: .main) {
                     completion(user, accum)
                 }
@@ -731,7 +741,7 @@ extension DatabaseManager {
     }
     
     // MARK: - Bookmarks
-    
+        
     /// Remove a post from the given user's bookmarks
     static func removeBookmarkedPost(with postID: String, userID: String, completion: @escaping (Bool) -> Void) {
         let ref = DatabaseManager.database.child("users/\(userID)/bookmarkedPosts")

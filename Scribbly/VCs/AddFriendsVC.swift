@@ -74,8 +74,8 @@ class AddFriendsVC: UIViewController {
     private var friendsData = [Friend]()
     private var requestsData = [User]()
     private var mainUser: User
-    weak var updateFeedDelegate: UpdateFeedDelegate!
-    weak var updateRequestsDelegate: UpdateRequestsDelegate!
+    weak var updateFeedDelegate: UpdateFeedDelegate?
+    weak var updateRequestsDelegate: UpdateRequestsDelegate?
     var searchTask: DispatchWorkItem?
     
     // MARK: - viewDidLoad, viewWillAppear, init, setupNavBar, and setupConstraints
@@ -265,7 +265,7 @@ extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
     // MARK: - UpdateRequestsDelegate
     func updateRequests() {
         setupRequestsData()
-        updateRequestsDelegate.updateRequests()
+        updateRequestsDelegate?.updateRequests()
     }
     
     // MARK: - UISearchBarDelegate

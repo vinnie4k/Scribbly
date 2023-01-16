@@ -29,7 +29,7 @@ class BookmarksCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties (data)
     static let reuseIdentifier = "BookmarksCollectionViewCellReuse"
     private var post: Post!
-    weak var postInfoDelegate: PostInfoDelegate!
+    weak var postInfoDelegate: PostInfoDelegate?
     
     // MARK: - init, configure, and setupConstraints
     override init(frame: CGRect) {
@@ -46,7 +46,6 @@ class BookmarksCollectionViewCell: UICollectionViewCell {
     
     func configure(post: Post) {
         self.post = post
-        print(self.post.user)
         drawing.image = post.getDrawing()
     }
     
@@ -61,6 +60,6 @@ class BookmarksCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Button Helpers
     @objc func enlargePost() {
-        postInfoDelegate.showBooksInfo(post: post)
+        postInfoDelegate?.showBooksInfo(post: post)
     }
 }
