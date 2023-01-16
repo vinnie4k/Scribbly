@@ -1,2 +1,2 @@
 # Scribbly
-A fun social media app for drawing
+An app on a mission to make improving one's art skills a social and playful experience.
