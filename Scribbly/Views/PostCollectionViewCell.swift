@@ -304,6 +304,12 @@ class PostCollectionViewCell: UICollectionViewCell {
         let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
+    
+    // MARK: - Light/Dark Mode
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setColors()
+    }
 }
 
 // MARK: CaptionView

@@ -388,6 +388,14 @@ class HomeVC: UIViewController {
     @objc private func refreshFeed() {
         refreshHomePage()
     }
+    
+    // MARK: - Light/Dark Mode
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.userInterfaceStyle == .dark {
+            view.layer.mask = nil
+        }
+    }
 }
 
 // MARK: - Extension: UICollectionViewDataSource
