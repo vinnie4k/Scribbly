@@ -93,15 +93,7 @@ class AddFriendsVC: UIViewController {
         spinner.startAnimating()
         setupNavBar()
         
-        DatabaseManager.getContacts(completion: { [weak self] users in
-            guard let `self` = self else { return }
-            self.setupContactsData(users: users)
-            self.friendsData = self.contactsData
-            self.configureDatasource()
-            self.setupRequestsData()
-            self.spinner.stopAnimating()
-        })
-    
+        setupInitial()
         setupConstraints()
     }
     
@@ -137,6 +129,30 @@ class AddFriendsVC: UIViewController {
     }
     
     // MARK: - Setup Data
+    private func setupInitial() {
+        requestsData = []
+        DatabaseManager.getRequests(with: mainUser.id, completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.requestsData = users.reversed()
+            
+            DatabaseManager.getContacts(completion: { [weak self] users in
+                guard let `self` = self else { return }
+                self.configureDatasource()
+                self.setupContactsData(users: users)
+                self.friendsData = self.contactsData
+                
+                var oldSnapshot = self.datasource.snapshot()
+                oldSnapshot.deleteAllItems()
+                self.datasource.apply(oldSnapshot, animatingDifferences: false)
+                
+                self.createSnapshot()
+                self.refreshControl.endRefreshing()
+                
+                self.spinner.stopAnimating()
+            })
+        })
+    }
+    
     private func setupRequestsData() {
         requestsData = []
         DatabaseManager.getRequests(with: mainUser.id, completion: { [weak self] users in
