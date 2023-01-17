@@ -176,7 +176,9 @@ class PostCollectionViewCell: UICollectionViewCell {
     }()
     
     lazy var captionView: CaptionView = {
-        let view = CaptionView()        
+        let view = CaptionView()
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pushCommentVC)))
+        view.isUserInteractionEnabled = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

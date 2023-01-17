@@ -636,7 +636,7 @@ extension CommentVC: UICollectionViewDelegate {
                     UIPasteboard.general.string = rep.getText().string
                 }
             
-            if (rep.getReplyUser() === self.mainUser) {
+            if (rep.user == self.mainUser.id) {
                 let deleteAction =
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),
