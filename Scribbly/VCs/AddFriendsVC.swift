@@ -72,6 +72,7 @@ class AddFriendsVC: UIViewController {
     // MARK: - Properties (data)
     private var datasource: Datasource!
     private var friendsData = [Friend]()
+    private var contactsData = [Friend]()
     private var requestsData = [User]()
     private var mainUser: User
     weak var updateFeedDelegate: UpdateFeedDelegate?
@@ -87,19 +88,26 @@ class AddFriendsVC: UIViewController {
         view.addSubview(searchBar)
         view.addSubview(tableView)
         view.addSubview(spinner)
-        
+                
 //        setupGradient()
         spinner.startAnimating()
         setupNavBar()
-        setupRequestsData()
-        configureDatasource()
+        
+        DatabaseManager.getContacts(completion: { [weak self] users in
+            guard let `self` = self else { return }
+            self.setupContactsData(users: users)
+            self.friendsData = self.contactsData
+            self.configureDatasource()
+            self.setupRequestsData()
+            self.spinner.stopAnimating()
+        })
+    
         setupConstraints()
     }
     
     init(mainUser: User) {
         self.mainUser = mainUser
         super.init(nibName: nil, bundle: nil)
-        setupFriendsData(users: [])
     }
     
     required init?(coder: NSCoder) {
@@ -141,7 +149,6 @@ class AddFriendsVC: UIViewController {
             
             self.createSnapshot()
             self.refreshControl.endRefreshing()
-            self.spinner.stopAnimating()
         })
     }
     
@@ -150,6 +157,15 @@ class AddFriendsVC: UIViewController {
         for i in users {
             if i.id != mainUser.id && (!mainUser.isFriendsWith(user: i) || !i.isFriendsWith(user: mainUser)) && !mainUser.isBlocked(user: i) && !i.isBlocked(user: mainUser) {
                 friendsData.append(Friend(user: i))
+            }
+        }
+    }
+    
+    func setupContactsData(users: [User]) {
+        contactsData = []
+        for i in users {
+            if i.id != mainUser.id && (!mainUser.isFriendsWith(user: i) || !i.isFriendsWith(user: mainUser)) && !mainUser.isBlocked(user: i) && !i.isBlocked(user: mainUser) {
+                contactsData.append(Friend(user: i))
             }
         }
     }
@@ -172,9 +188,16 @@ class AddFriendsVC: UIViewController {
         DatabaseManager.getFriends(with: mainUser, completion: { [weak self] users in
             guard let `self` = self else { return }
             self.setupFriendsData(users: users)
-            self.createSnapshot()
-            self.refreshControl.endRefreshing()
+            DatabaseManager.getContacts(completion: { users in
+                self.setupContactsData(users: users)
+                self.friendsData = self.contactsData
+                self.setupRequestsData()
+            })
         })
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.endEditing(true)
     }
 }
 
@@ -244,6 +267,24 @@ extension AddFriendsVC: UITableViewDelegate {
         return Constants.friends_cell_height
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 1 {
+            let label = UILabel()
+            label.text = "suggestions based on your contacts"
+            label.font = Constants.getFont(size: 16, weight: .semibold)
+            label.textColor = Constants.secondary_text
+            return label
+        }
+        return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 1 {
+            return CGFloat(30)
+        }
+        return .zero
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 && searchBar.text!.isEmpty {
             let requestsVC = RequestsVC(mainUser: mainUser, requests: requestsData)
@@ -264,7 +305,7 @@ extension AddFriendsVC: UITableViewDelegate {
 extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
     // MARK: - UpdateRequestsDelegate
     func updateRequests() {
-        setupRequestsData()
+        refreshTV()
         updateRequestsDelegate?.updateRequests()
     }
     
@@ -278,7 +319,7 @@ extension AddFriendsVC: UISearchBarDelegate, UpdateRequestsDelegate {
         self.datasource.apply(oldSnapshot, animatingDifferences: false)
         
         if searchText.isEmpty {
-            self.friendsData = []
+            self.friendsData = self.contactsData
             createSnapshot()
             self.spinner.stopAnimating()
         } else {

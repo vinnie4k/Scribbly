@@ -111,7 +111,8 @@ class MainUserProfileVC: UIViewController {
         view.addSubview(spinner)
         
 //        setupGradient()
-        setupBooksData()
+        initialSetup()
+//        setupBooksData()
         setupMemsData()
         configureDatasource()
         setupNavBar()
@@ -167,9 +168,21 @@ class MainUserProfileVC: UIViewController {
     }
     
     // MARK: - Data Helper Functions
+    private func initialSetup() {
+        booksData = []
+        DatabaseManager.getBookmarks(with: mainUser, completion: { [weak self] success in
+            guard let `self` = self else { return }
+            if success {
+                for i in self.mainUser.getBookmarks() {
+                    self.booksData.insert(Bookmarks(post: i), at: 0)
+                }
+            }
+        })
+    }
+    
     private func setupBooksData() {
         booksData = []   // Must reset first
-        for i in mainUser.getBookmarks() {
+        for i in self.mainUser.getBookmarks() {
             self.booksData.insert(Bookmarks(post: i), at: 0)
         }
     }

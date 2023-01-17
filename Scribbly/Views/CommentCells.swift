@@ -178,7 +178,7 @@ class CommentHeaderView: UICollectionReusableView, UIContextMenuInteractionDeleg
                     UIPasteboard.general.string = self.comment?.getText()
                 }
                 
-            if self.comment.getUser() === self.mainUser {
+            if self.comment.user == self.mainUser.id {
                 let deleteAction =
                     UIAction(title: NSLocalizedString("Delete", comment: ""),
                              image: UIImage(systemName: "trash"),

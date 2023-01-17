@@ -163,6 +163,10 @@ class FriendsVC: UIViewController {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         navigationController?.popViewController(animated: true)
     }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.endEditing(true)
+    }
 }
 
 // MARK: - Extensions

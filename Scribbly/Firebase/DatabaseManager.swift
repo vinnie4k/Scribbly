@@ -511,10 +511,14 @@ extension DatabaseManager {
                 DatabaseManager.getImage(with: user.pfp, completion: { img in
                     ImageMap.map[user.pfp] = img  // add to cache
                     
-                    // Only load today's post
+                    // Only load today's post if it is not hidden
                     if user.todaysPost != "" {
                         DatabaseManager.getPost(with: user.todaysPost, completion: { post in
-                            completion(user, post)
+                            if post.hidden == false {
+                                completion(user, post)
+                            } else {
+                                completion(user, nil)
+                            }
                         })
                     } else {
                         completion(user, nil)
@@ -741,6 +745,36 @@ extension DatabaseManager {
     }
     
     // MARK: - Bookmarks
+    
+    /// Updates the user's bookmarks property
+    static func getBookmarks(with user: User, completion: @escaping (Bool) -> Void) {
+        let group = DispatchGroup()
+        let ref = DatabaseManager.database.child("users/\(user.id)/bookmarkedPosts")
+        ref.observeSingleEvent(of: .value, with: { snapshot in
+            guard snapshot.exists() else {
+                print("The user does not have any bookmarks.")
+                completion(true)
+                return
+            }
+            
+            guard var data = snapshot.value as? [String:String] else { return }
+            for bookKey in data.keys.map({$0}) {
+                let bookID = data[bookKey]
+                group.enter()
+                DatabaseManager.getPost(with: bookID!, completion: { post in
+                    if post.hidden {
+                        data.removeValue(forKey: bookKey)
+                    }
+                    group.leave()
+                })
+            }
+            group.notify(queue: .main) {
+                user.bookmarkedPosts = data
+                completion(true)
+            }
+            
+        }) { error in print(error.localizedDescription) }
+    }
         
     /// Remove a post from the given user's bookmarks
     static func removeBookmarkedPost(with postID: String, userID: String, completion: @escaping (Bool) -> Void) {

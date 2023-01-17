@@ -481,7 +481,7 @@ class CommentVC: UIViewController, UITextFieldDelegate, CommentDelegate {
         } else {
             prevComment = nil
             prevReply =  nil
-            textField.text = ""
+//            textField.text = ""
             commentButton.isUserInteractionEnabled = false
             commentButton.configuration?.image = UIImage(named: "comment_send_gray")
             
