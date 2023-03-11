@@ -139,8 +139,9 @@ class PostCollectionViewCell: UICollectionViewCell {
         return btn
     }()
     
-    private let shareButton: UIButton = {
+    private lazy var shareButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(sharePost), for: .touchUpInside)
         var config = UIButton.Configuration.bordered()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
@@ -255,6 +256,13 @@ class PostCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Button Helpers
+    @objc func sharePost() {
+        let img = post.getDrawing()
+        let activityController = UIActivityViewController(activityItems: [img], applicationActivities: nil)
+        activityController.excludedActivityTypes = [.postToTencentWeibo, .postToVimeo, .postToFlickr, .postToWeibo, .addToReadingList, .markupAsPDF]
+        parentVC.present(activityController, animated: true)
+    }
+    
     @objc func bookmarkPost() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
@@ -302,7 +310,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func pushCommentVC() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+//        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }
@@ -388,6 +396,8 @@ class CaptionView: UIView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+//            userPFP.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+//            userPFP.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
             userPFP.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             userPFP.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_cell_pfp_side),
             userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_cell_pfp_radius),
@@ -395,6 +405,7 @@ class CaptionView: UIView {
             
             displayName.topAnchor.constraint(equalTo: self.topAnchor, constant: 7),
             displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),
+            displayName.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_cell_name_side),
             
             caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_cell_caption_top),
             caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_cell_name_side),

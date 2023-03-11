@@ -114,19 +114,27 @@ class SettingsVC: UIViewController {
         help.configure(image: UIImage(systemName: "questionmark.circle")!, text: "help")
         
         let about = SettingsView()
-        about.configure(image: UIImage(systemName: "info.circle")!, text: "about")
+        about.configure(image: UIImage(systemName: "info.circle")!, text: "privacy policy")
+        about.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(privacyPolicyLink)))
+        about.isUserInteractionEnabled = true
         
         let contact = SettingsView()
         contact.configure(image: UIImage(systemName: "envelope.circle")!, text: "contact us")
+        contact.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(contactLink)))
+        contact.isUserInteractionEnabled = true
         
         let rate = SettingsView()
         rate.configure(image: UIImage(systemName: "star.circle")!, text: "rate scribbly")
+        rate.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(rateScribbly)))
+        rate.isUserInteractionEnabled = true
         
         let share = SettingsView()
         share.configure(image: UIImage(systemName: "square.and.arrow.up.circle")!, text: "share scribbly")
+        share.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareScribbly)))
+        share.isUserInteractionEnabled = true
         
-        stack.addArrangedSubview(help)
-        stack.addArrangedSubview(SeparatorView())
+//        stack.addArrangedSubview(help)
+//        stack.addArrangedSubview(SeparatorView())
         stack.addArrangedSubview(about)
         stack.addArrangedSubview(SeparatorView())
         stack.addArrangedSubview(contact)
@@ -196,6 +204,32 @@ class SettingsVC: UIViewController {
     }
     
     // MARK: - Button Helpers
+    @objc private func rateScribbly() {
+        
+    }
+    
+    @objc private func shareScribbly() {
+        if let url = URL(string: "https://apps.apple.com/us/app/scribbly/id1665397622") {
+//            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+            present(activityVC, animated: true)
+        }
+    }
+    
+    @objc private func contactLink() {
+        if let url = URL(string: "mailto:b.vinhan01@gmail.com") {
+//            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    @objc private func privacyPolicyLink() {
+        if let url = URL(string: "https://docs.google.com/document/d/e/2PACX-1vQmsD4HLpr8IIY5L90p_8muj6YewnqgoiXqYP21sACUNE-RIzCs4d6empNGoOipzO6osNydt9W70nVz/pub") {
+//            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            UIApplication.shared.open(url)
+        }
+    }
+    
     @objc private func pushAppearance() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let appearanceVC = AppearanceVC()

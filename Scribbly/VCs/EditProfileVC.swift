@@ -488,22 +488,24 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
                         guard let data = image.jpegData(compressionQuality: 0.3) else { return }
                         let fileName = "images/pfp/\(self.mainUser.id)_pfp.jpg"
                         self.spinner.startAnimating()
-                        StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
-                            guard let `self` = self else { return }
-                            switch result {
-                            case .success(_):
-                                ImageMap.map[fileName] = image
-                                self.mainUser.pfp = fileName
-                                self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-                                print(ImageMap.map)
-                                self.updatePFPDelegate?.updatePFP()
-                                self.updateProfileDelegate?.updateProfile()
-                            case .failure(let error):
-                                print("Storage manager error: \(error)")
-                                self.uploadError()
-                            }
-                            self.spinner.stopAnimating()
+                        DatabaseManager.setPFP(with: self.mainUser, fileName: fileName, completion: { _ in
+                            StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
+                                guard let `self` = self else { return }
+                                switch result {
+                                case .success(_):
+                                    ImageMap.map[fileName] = image
+                                    self.mainUser.pfp = fileName
+                                    self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+                                    self.updatePFPDelegate?.updatePFP()
+                                    self.updateProfileDelegate?.updateProfile()
+                                case .failure(let error):
+                                    print("Storage manager error: \(error)")
+                                    self.uploadError()
+                                }
+                                self.spinner.stopAnimating()
+                            })
                         })
+                        
                     }
                 }
             }
@@ -552,20 +554,22 @@ extension EditProfileVC: PHPickerViewControllerDelegate, UIImagePickerController
             guard let data = image.jpegData(compressionQuality: 0.3) else { return }
             let fileName = "images/pfp/\(self.mainUser.id)_pfp.jpg"
             self.spinner.startAnimating()
-            StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
-                guard let `self` = self else { return }
-                switch result {
-                case .success(_):
-                    ImageMap.map[fileName] = image
-                    self.mainUser.pfp = fileName
-                    self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
-                    self.updatePFPDelegate?.updatePFP()
-                    self.updateProfileDelegate?.updateProfile()
-                case .failure(let error):
-                    print("Storage manager error: \(error)")
-                    self.uploadError()
-                }
-                self.spinner.stopAnimating()
+            DatabaseManager.setPFP(with: mainUser, fileName: fileName, completion: { _ in
+                StorageManager.uploadImage(with: data, fileName: fileName, completion: { [weak self] result in
+                    guard let `self` = self else { return }
+                    switch result {
+                    case .success(_):
+                        ImageMap.map[fileName] = image
+                        self.mainUser.pfp = fileName
+                        self.editProfilePictureView.profileImage.image = self.mainUser.getPFP()
+                        self.updatePFPDelegate?.updatePFP()
+                        self.updateProfileDelegate?.updateProfile()
+                    case .failure(let error):
+                        print("Storage manager error: \(error)")
+                        self.uploadError()
+                    }
+                    self.spinner.stopAnimating()
+                })
             })
         }
         picker.dismiss(animated: true, completion: nil)

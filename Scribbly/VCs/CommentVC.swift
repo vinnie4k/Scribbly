@@ -679,10 +679,22 @@ extension CommentVC: EnlargeDrawingDelegate, UIScrollViewDelegate {
     
     @objc func keyboardWillShow(notification: Notification) {
         changeCommentView(pop: true)
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 && comments.count == 3 {
+                self.view.frame.origin.y -= keyboardSize.height / 2
+            } else if self.view.frame.origin.y == 0 && comments.count == 4 {
+                self.view.frame.origin.y -= keyboardSize.height / 1.3
+            } else if self.view.frame.origin.y == 0 && comments.count > 4 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
     }
     
     @objc func keyboardWillHide(notification: Notification) {
         changeCommentView(pop: false)
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     // MARK: - EnlargeDrawingDelegate and UIScrollViewDelegate

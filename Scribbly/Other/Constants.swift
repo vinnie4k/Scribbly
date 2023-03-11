@@ -73,11 +73,11 @@ struct Constants {
     static let post_cell_stack_corner = CGFloat(17)
     static let post_cell_pfp_side = CGFloat(10)
     static let post_cell_pfp_radius = CGFloat(15)
-    static let post_cell_caption_top = CGFloat(2)
+    static let post_cell_caption_top = CGFloat(4)
     static let post_cell_cap_view_bot = CGFloat(15)
     static let post_cell_cap_view_side = CGFloat(20)
     static let post_cell_cap_view_height = CGFloat(45)
-    static let post_cell_cap_view_corner = CGFloat(20)
+    static let post_cell_cap_view_corner = CGFloat(18)
     
     // MARK: - CommentViewController
     static let comment_drawing_height = UIScreen.main.bounds.width - 200   // KEEP THE UISCREEN.MAIN.BOUNDS STUFF

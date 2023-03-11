@@ -229,11 +229,13 @@ class PostInfoStatsView: UIView {
         NSLayoutConstraint.activate([
             userPFP.topAnchor.constraint(equalTo: self.topAnchor, constant: Constants.post_info_pfp_top),
             userPFP.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Constants.post_info_pfp_side),
+//            userPFP.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Constants.post_info_pfp_top),
             userPFP.widthAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             userPFP.heightAnchor.constraint(equalToConstant: 2 * Constants.post_info_pfp_radius),
             
             displayName.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
             displayName.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
+            displayName.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Constants.post_info_name_left),
             
             caption.topAnchor.constraint(equalTo: displayName.bottomAnchor, constant: Constants.post_info_caption_top),
             caption.leadingAnchor.constraint(equalTo: userPFP.trailingAnchor, constant: Constants.post_info_name_left),
@@ -360,8 +362,9 @@ class RedoDeleteView: UIStackView {
 //        return btn
 //    }()
     
-    private let shareButton: UIButton = {
+    private lazy var shareButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(sharePost), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
@@ -416,6 +419,13 @@ class RedoDeleteView: UIStackView {
     }
     
     // MARK: - Button Helpers
+    @objc func sharePost() {
+        let img = post.getDrawing()
+        let activityController = UIActivityViewController(activityItems: [img], applicationActivities: nil)
+        activityController.excludedActivityTypes = [.postToTencentWeibo, .postToVimeo, .postToFlickr, .postToWeibo, .addToReadingList, .markupAsPDF]
+        parentVC.present(activityController, animated: true)
+    }
+    
     @objc private func redoPost() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let redoAction = UIAlertAction(title: "Redo", style: .destructive, handler: { [weak self] action in

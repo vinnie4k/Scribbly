@@ -68,7 +68,9 @@ extension DatabaseManager {
                     if !newNum.hasPrefix("+1") {
                         newNum = "+1" + newNum
                     }
-                    numbers.append(newNum)
+                    if !numbers.contains(newNum) {
+                        numbers.append(newNum)
+                    }
                 }
             })
         } catch { print("Unable to fetch the user's contacts.")}
@@ -367,6 +369,18 @@ extension DatabaseManager {
     }
     
     // MARK: - User
+    
+    /// Change the profile picture of the user to the given filename
+    static func setPFP(with user: User, fileName: String, completion: @escaping (Bool) -> Void) {
+        DatabaseManager.database.child("users/\(user.id)/pfp").setValue(fileName, withCompletionBlock: { error, _ in
+            guard error == nil else {
+                print("Unable to change the profile picture.")
+                completion(false)
+                return
+            }
+            completion(true)
+        })
+    }
     
     /// Change the profile picture of the user to the default
     static func setDefaultPFP(with user: User, completion: @escaping (Bool) -> Void) {
@@ -764,8 +778,12 @@ extension DatabaseManager {
                 DatabaseManager.getPost(with: bookID!, completion: { post in
                     if post.hidden {
                         data.removeValue(forKey: bookKey)
+                        group.leave()
+                    } else {
+                        DatabaseManager.getOtherUserStartup(with: post.user, completion: { _,_ in
+                            group.leave()
+                        })
                     }
-                    group.leave()
                 })
             }
             group.notify(queue: .main) {

@@ -18,9 +18,9 @@ class Post: Codable, Equatable, Identifiable {
     var caption: String
     var time: String
     
-    var comments: [String:Comment]?          // Array of comment IDs
-    var likedUsers: [String:String]?          // Array of user IDs
-    var bookmarkedUsers: [String:String]?     // Array of user IDs
+    var comments: [String:Comment]?
+    var likedUsers: [String:String]?
+    var bookmarkedUsers: [String:String]?
     var hidden: Bool
     
     // MARK: - Equatable
@@ -146,7 +146,7 @@ class Post: Codable, Equatable, Identifiable {
         format.timeZone = TimeZone(identifier: "America/New_York")
         
         return comments!.values.sorted(by: {
-            format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
+            format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedAscending
         })
     }
 

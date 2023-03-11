@@ -20,11 +20,11 @@ class User: Codable, Equatable, Identifiable {
     var accountStart: String // format: d MMM yyyy HH:mm:ss Z (ex: 5 Jan 2023 03:24:00 -0600)
     
     var bio: String
-    var friends: [String : String]?          // Array of user IDs
-    var requests: [String : String]?         // Array of user IDs
-    var blocked: [String : String]?          // Array of user IDs
-    var posts: [String : String]?            // Array of post IDs
-    var bookmarkedPosts: [String : String]?  // Array of post IDs
+    var friends: [String : String]?
+    var requests: [String : String]?
+    var blocked: [String : String]?
+    var posts: [String : String]?
+    var bookmarkedPosts: [String : String]?
     
     var todaysPost: String          // Post ID
     
@@ -48,10 +48,17 @@ class User: Codable, Equatable, Identifiable {
         for postID in bookmarkedPosts!.values.map({$0}) {
             let post = PostMap.map[postID]
             if post?.user == user.id {
-                result.insert(post!, at: 0)
+                result.append(post!)
             }
         }
-        return result
+        
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        format.timeZone = TimeZone(identifier: "America/New_York")
+        
+        return result.sorted(by: {
+            format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
+        })
     }
     
     func isBlocked(user: User) -> Bool {
@@ -289,7 +296,15 @@ class User: Codable, Equatable, Identifiable {
         for postID in bookmarkedPosts!.values.map({$0}) {
             accum.append(PostMap.map[postID]!)
         }
-        return accum
+        
+        let format = DateFormatter()
+        format.dateFormat = "d MMMM yyyy HH:mm:ss"
+        format.timeZone = TimeZone(identifier: "America/New_York")
+        
+        return accum.sorted(by: {
+            format.date(from: $0.time)!.compare(format.date(from: $1.time)!) == .orderedDescending
+        })
+
     }
 
     func removeBookmarkPost(post: Post) {

@@ -17,7 +17,7 @@ class Comment: Codable, Equatable, Identifiable {
     var user: String        // User ID
     var text: String
     var time: String    // Format: 6 January 2023 19:53:10
-    var replies: [String:Reply]?  // Array of reply IDs
+    var replies: [String:Reply]?
     
     // MARK: - Equatable
     static func == (lhs: Comment, rhs: Comment) -> Bool {

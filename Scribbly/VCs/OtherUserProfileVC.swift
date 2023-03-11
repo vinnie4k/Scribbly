@@ -157,8 +157,8 @@ class OtherUserProfileVC: UIViewController {
         DatabaseManager.getBookmarks(with: mainUser, completion: { [weak self] success in
             guard let `self` = self else { return }
             if success {
-                for i in self.mainUser.getBookmarks() {
-                    self.booksData.insert(Bookmarks(post: i), at: 0)
+                for i in self.mainUser.getBookmarksFromUser(user: self.user) {
+                    self.booksData.append(Bookmarks(post: i))
                 }
             }
         })

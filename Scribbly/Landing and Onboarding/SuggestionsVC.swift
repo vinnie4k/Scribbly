@@ -79,6 +79,30 @@ class SuggestionsVC: UIViewController {
         return btn
     }()
     
+    private let policyLabelTop: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "by clicking \"finish\" you agree to scribbly's"
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
+        lbl.textColor = Constants.secondary_text
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    private lazy var policyLabelBot: UILabel = {
+        let lbl = UILabel()
+        let attrText = NSAttributedString(string: "Privacy Policy", attributes: [.underlineStyle: 1])
+        lbl.attributedText = attrText
+        lbl.font = Constants.getFont(size: 14, weight: .medium)
+        lbl.textColor = .label
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(privacyPolicyLink))
+        lbl.addGestureRecognizer(tapGesture)
+        lbl.isUserInteractionEnabled = true
+        
+        return lbl
+    }()
+    
     private lazy var stack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -133,6 +157,8 @@ class SuggestionsVC: UIViewController {
         view.addSubview(stack)
         view.addSubview(pageView)
         view.addSubview(spinner)
+        view.addSubview(policyLabelTop)
+        view.addSubview(policyLabelBot)
                 
         setupNavBar()
         setupConstraints()
@@ -179,7 +205,13 @@ class SuggestionsVC: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.friends_tv_side_padding),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.friends_tv_side_padding),
             tableView.bottomAnchor.constraint(equalTo: pageView.topAnchor, constant: -20),
-            tableView.topAnchor.constraint(equalTo: descTextLabel.bottomAnchor, constant: 20)
+            tableView.topAnchor.constraint(equalTo: descTextLabel.bottomAnchor, constant: 20),
+            
+            policyLabelBot.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -0.5 * Constants.login_bot - 2),
+            policyLabelBot.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            policyLabelTop.bottomAnchor.constraint(equalTo: policyLabelBot.topAnchor, constant: -5),
+            policyLabelTop.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -202,6 +234,13 @@ class SuggestionsVC: UIViewController {
     }
     
     // MARK: - Button Helpers
+    @objc private func privacyPolicyLink() {
+        if let url = URL(string: "https://docs.google.com/document/d/e/2PACX-1vQmsD4HLpr8IIY5L90p_8muj6YewnqgoiXqYP21sACUNE-RIzCs4d6empNGoOipzO6osNydt9W70nVz/pub") {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            UIApplication.shared.open(url)
+        }
+    }
+    
     @objc private func prevPage() {
         dismiss(animated: true)
     }

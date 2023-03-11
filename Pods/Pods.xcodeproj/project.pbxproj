@@ -1,0 +1,945 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0662A1F3135D9B4F4A0D04664FA31974 /* MaterialPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575B553E4F9A03A65712CFEC79B4FCFC /* MaterialPreset.swift */; };
+		0685282ADBEB42C4CB7D8CB14CD4214D /* iOS13Preset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCDF9BB019278CB79CE478D3D8AB41 /* iOS13Preset.swift */; };
+		1182B9014F5F760E6792B1FC9C7DFDBB /* RESegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9A2EFB27C9687F4F1C9B9EB8EE1BF3 /* RESegmentedControl.swift */; };
+		11FB52D1E208F456F86450F302167C05 /* iOS7Preset.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3385FEDA58D445E767FD78948C4DD87 /* iOS7Preset.swift */; };
+		162395B7C94D64DE58B2276463A32EDE /* SegmentGradientColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438D80E91235B55F05E84C5A3340AA0A /* SegmentGradientColor.swift */; };
+		17CC10E0C84DB0E27B8C2A376DD3B62D /* FirestoreEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754E9C590373378A4CFFF20347DC3DB9 /* FirestoreEncoder.swift */; };
+		1E4A19BE7BEFB1CE3FD5305741E5E140 /* UIView+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946DF5D12F9C19E38BCCE9F7FE1ACB00 /* UIView+Gradient.swift */; };
+		22DA77312FAD6FB0387ED13712F8E627 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
+		25FBF2EC14AE6955B597287ABB55FC73 /* ShadowStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563C074DA929C283F043B49EC8E9C0E6 /* ShadowStylable.swift */; };
+		27FA6AAD000434974C6F693396D87E91 /* FileManager+Save.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4982343CC79E1BE75DC5D8E184C2431 /* FileManager+Save.swift */; };
+		2B8FEBDC898DD10515D0029CE49350B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
+		30583EF73CD6248BF1A7F62B82A64C58 /* SegmentedControl+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF57E63C707BA8930EA46C15FEB75CA /* SegmentedControl+API.swift */; };
+		30709884999BD275285BEE4B93F44998 /* UIView+SementItemShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5DABE4ECA8589D369299E9B613F76E /* UIView+SementItemShadow.swift */; };
+		32E309293287D82AFE64BCB4648C3E82 /* BackgroundCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2814BC64F604D1E625DDFA15C0F204FE /* BackgroundCollectionViewCell.swift */; };
+		35378197D9A30D97A675719CCEBC05FB /* BootstapPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9866A58F2A6C0A2973184D541C341F0C /* BootstapPreset.swift */; };
+		3EAAEEA5B7BF43F07CF159E4792692DF /* SegmentCollectionViewCell.xib in Sources */ = {isa = PBXBuildFile; fileRef = 32A798DFEEF0D2CF7FFB44A2743B9454 /* SegmentCollectionViewCell.xib */; };
+		3FC2899F8B27DBC94D3F92170316F1CC /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F23EA8131A2D1D03E4DA9BD044ACCAF /* Encoder.swift */; };
+		43E22326C0645AA5C06CEC6FCFFB37D6 /* RESegmentedControl-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B77BB14D1A71E0B95AACFE222F20B3A /* RESegmentedControl-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		571AD449F065AD65FD3D9E69CF274639 /* SelectedSegmentSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B4E9BC56AAA43BEE3913C0EAAF22F9 /* SelectedSegmentSize.swift */; };
+		63C5B3D537EC67B6DF1A7C86B0BBBC13 /* SegmentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3BA64D58EE07358063B2BBFBCA763B /* SegmentModel.swift */; };
+		6EF2901CE45BA4E9659D8724E31E26C4 /* BackgroundCollectionViewCell.xib in Sources */ = {isa = PBXBuildFile; fileRef = 5BB318621591A6B1B4AEECF332F8E720 /* BackgroundCollectionViewCell.xib */; };
+		76FB58DAE3460C69BB32B2B20F7586BE /* SegmentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC6C27950CE6671F4CF790B0C7AACA1D /* SegmentCollectionViewCell.swift */; };
+		7815B0A6C5D5C055952EFF071D29EC23 /* SeporatorStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D23FCC53F2A331573C160A37E9240C /* SeporatorStylable.swift */; };
+		7824D163DC696E6063315AA3925DA1EC /* Pods-Scribbly-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E25E632F843C0A1DFCC1FE7DCF447DDD /* Pods-Scribbly-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D4E95C898A85BD6FE0BDECAC115F4E1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
+		8184F3B29B62A1EBD50FAB298F3F7D08 /* SeporatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40C15F9BDA41FDED99BB4E53995DCC9 /* SeporatorStyle.swift */; };
+		826E24CBDF6C5830F6E484B98DA090B5 /* URL+Filename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717F9D9A7BD9B3153C7FCC302D7A1487 /* URL+Filename.swift */; };
+		82DE8117A8BBFCF8006B210146944671 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B46E2771D0C7CC88B177FD281C7F04D /* Decoder.swift */; };
+		83D88C5CCF9628806BCC6E7A75621CDA /* Pods-Scribbly-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A4BF0F6AC59053A271C191F5B31DA2 /* Pods-Scribbly-dummy.m */; };
+		85C7B677D49ECD7EFF2013BCE03AC4C6 /* FirestoreDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA503AC3B486948E424DB328E91FEE39 /* FirestoreDecoder.swift */; };
+		9140B9171C0975EEB1B2817684FFA573 /* Bundle+Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E64119298D1D5D34D15C7346844099 /* Bundle+Current.swift */; };
+		9666A33352A76C48FBD8CA6F65595699 /* FirebaseDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08355E2FA8FCADDB9413D84E72C3BF8 /* FirebaseDecoder.swift */; };
+		A235399ACE98D68574E2CB5371EAB3A4 /* SegmentedControlPresettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC72A384D13E67DF946AE3BBBA363770 /* SegmentedControlPresettable.swift */; };
+		A55E62D6F16EE6D61C3464B5D890DBEF /* SegmentItemShadowStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F14861FCD823596E7BE701E4790AEB /* SegmentItemShadowStyle.swift */; };
+		B0D0C18E2A077CB521A3B7A00B3119A7 /* CodableFirebase-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 26D7518427AAEA01109636D40363EFE2 /* CodableFirebase-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B5FF39D11D08850BE05DF3FB0AC9C629 /* SegmentContentWidthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD5F4F8FD979A066B65C02F348AAD84 /* SegmentContentWidthType.swift */; };
+		C15860C57016AB25300F90E6B1643A30 /* SegmentItemStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1B6449777D7D137C2A9ADD032F222 /* SegmentItemStylable.swift */; };
+		C1A652C389D6A623DF96A99B1DD5D840 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994273A07CF72A802B857A725F86553D /* ImageDownloader.swift */; };
+		C287B08EF352A817D7FFAA7D3559496F /* Data+HexEncodedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7A060FEDC30A5CFD89E1409F935050 /* Data+HexEncodedString.swift */; };
+		D2E3ED73CC9F454B0D22A9A1D0BA1D45 /* SegmentItemStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72467629CC0EB13B6F4CBD6081FDAD02 /* SegmentItemStyle.swift */; };
+		D3A6BFE5DCCBDE8A9F5C18069C4BE106 /* Bundle+Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F548FA8BE758987F0FD859A2CEA1E5 /* Bundle+Module.swift */; };
+		DB7716CB30CC11F6BBCBAF6B5D7C30A6 /* SegmentSelectedItemStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD3ECEF1672BF5EF1AA0FC7EC44CFD9 /* SegmentSelectedItemStylable.swift */; };
+		DC1223D41E0730D6161703303B2655B0 /* FirebaseEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23013605B1F2A2C737D7ECF916F1336 /* FirebaseEncoder.swift */; };
+		DD191E08C27FCA446BDBFBBA7CDE4458 /* SegmentStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3311A45DF816C003B8C7E944A062D5 /* SegmentStylable.swift */; };
+		E3DF18A2B7C362634DBC833E3ACCBA88 /* SegmentedControlSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C75B915B157C8476405AC8CAD2BEB /* SegmentedControlSize.swift */; };
+		E49AFEE71C88840AF0DF41B742FBC973 /* RESegmentedControl-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BE442A1C12BFA6AC7617C3F3DDCFF9 /* RESegmentedControl-dummy.m */; };
+		E4B6FA9A293DB81F302012BC4DC984C4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */; };
+		ECC05A43A78E3F58A241E92371B9B12C /* CodableFirebase-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E0AA4C79554D8A2C32B6710ECEEE31 /* CodableFirebase-dummy.m */; };
+		EEA935A380B96FD766BCFE256E0DA1AA /* SegmentSelectedItemStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC277484F473CCF93062BB9E7EA25D22 /* SegmentSelectedItemStyle.swift */; };
+		F66C26A0DF9F92914DE2A63347937352 /* SegmentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6070D362BFDEC91284AD1AD3963B85 /* SegmentStyle.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		153858193942EB0D1CE3FC1E86A2EBD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E348382FA7E1F8A639AFBFF3F8C4FC04;
+			remoteInfo = CodableFirebase;
+		};
+		B9DF471A96FA108FB6C17BC4956EF1E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ADE9DED381AD2FA4F422A595F208BB63;
+			remoteInfo = RESegmentedControl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		08CCDF9BB019278CB79CE478D3D8AB41 /* iOS13Preset.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iOS13Preset.swift; path = Sources/RESegmentedControl/Classes/Presets/iOS13Preset.swift; sourceTree = "<group>"; };
+		0C5C6AC5609B3B1B8567CCACDCFBC0D0 /* RESegmentedControl-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RESegmentedControl-prefix.pch"; sourceTree = "<group>"; };
+		0E9A2EFB27C9687F4F1C9B9EB8EE1BF3 /* RESegmentedControl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RESegmentedControl.swift; path = Sources/RESegmentedControl/Classes/RESegmentedControl.swift; sourceTree = "<group>"; };
+		163C75B915B157C8476405AC8CAD2BEB /* SegmentedControlSize.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentedControlSize.swift; path = Sources/RESegmentedControl/Classes/Models/SegmentedControlSize.swift; sourceTree = "<group>"; };
+		16F1B6449777D7D137C2A9ADD032F222 /* SegmentItemStylable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentItemStylable.swift; path = Sources/RESegmentedControl/Classes/Stylables/SegmentItemStylable.swift; sourceTree = "<group>"; };
+		179465953C6956A05D3B22576DF2000D /* CodableFirebase.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = CodableFirebase.modulemap; sourceTree = "<group>"; };
+		1BF80E53BB75C28D0DA7820467E89219 /* Pods-Scribbly-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Scribbly-frameworks.sh"; sourceTree = "<group>"; };
+		1BFFC48A1CB28D3F007CCC1487A4C5EF /* RESegmentedControl.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = RESegmentedControl.modulemap; sourceTree = "<group>"; };
+		24C6529E5CDC9CF99F9382FBE0D26C01 /* Pods-Scribbly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Scribbly.release.xcconfig"; sourceTree = "<group>"; };
+		26D7518427AAEA01109636D40363EFE2 /* CodableFirebase-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CodableFirebase-umbrella.h"; sourceTree = "<group>"; };
+		2814BC64F604D1E625DDFA15C0F204FE /* BackgroundCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BackgroundCollectionViewCell.swift; path = Sources/RESegmentedControl/Classes/Cells/BackgroundCollectionViewCell.swift; sourceTree = "<group>"; };
+		32A798DFEEF0D2CF7FFB44A2743B9454 /* SegmentCollectionViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = SegmentCollectionViewCell.xib; path = Sources/RESegmentedControl/Resources/SegmentCollectionViewCell.xib; sourceTree = "<group>"; };
+		37BE442A1C12BFA6AC7617C3F3DDCFF9 /* RESegmentedControl-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RESegmentedControl-dummy.m"; sourceTree = "<group>"; };
+		3A33B4FFB094E926084F26609116B929 /* Pods-Scribbly.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Scribbly.modulemap"; sourceTree = "<group>"; };
+		3AD3ECEF1672BF5EF1AA0FC7EC44CFD9 /* SegmentSelectedItemStylable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentSelectedItemStylable.swift; path = Sources/RESegmentedControl/Classes/Stylables/SegmentSelectedItemStylable.swift; sourceTree = "<group>"; };
+		3B77BB14D1A71E0B95AACFE222F20B3A /* RESegmentedControl-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RESegmentedControl-umbrella.h"; sourceTree = "<group>"; };
+		3F23EA8131A2D1D03E4DA9BD044ACCAF /* Encoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Encoder.swift; path = CodableFirebase/Encoder.swift; sourceTree = "<group>"; };
+		438D80E91235B55F05E84C5A3340AA0A /* SegmentGradientColor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentGradientColor.swift; path = Sources/RESegmentedControl/Classes/Models/SegmentGradientColor.swift; sourceTree = "<group>"; };
+		4A94FC58A21534580DADDEF0DD4CCDB9 /* CodableFirebase */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CodableFirebase; path = CodableFirebase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CD5F4F8FD979A066B65C02F348AAD84 /* SegmentContentWidthType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentContentWidthType.swift; path = Sources/RESegmentedControl/Classes/Models/SegmentContentWidthType.swift; sourceTree = "<group>"; };
+		563C074DA929C283F043B49EC8E9C0E6 /* ShadowStylable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ShadowStylable.swift; path = Sources/RESegmentedControl/Classes/Stylables/ShadowStylable.swift; sourceTree = "<group>"; };
+		575B553E4F9A03A65712CFEC79B4FCFC /* MaterialPreset.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MaterialPreset.swift; path = Sources/RESegmentedControl/Classes/Presets/MaterialPreset.swift; sourceTree = "<group>"; };
+		5BB318621591A6B1B4AEECF332F8E720 /* BackgroundCollectionViewCell.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = BackgroundCollectionViewCell.xib; path = Sources/RESegmentedControl/Resources/BackgroundCollectionViewCell.xib; sourceTree = "<group>"; };
+		66726EF8E74EE7F5EE3BDB943FEB8F05 /* CodableFirebase-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "CodableFirebase-Info.plist"; sourceTree = "<group>"; };
+		6B3311A45DF816C003B8C7E944A062D5 /* SegmentStylable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentStylable.swift; path = Sources/RESegmentedControl/Classes/Stylables/SegmentStylable.swift; sourceTree = "<group>"; };
+		6B46E2771D0C7CC88B177FD281C7F04D /* Decoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Decoder.swift; path = CodableFirebase/Decoder.swift; sourceTree = "<group>"; };
+		6C7A060FEDC30A5CFD89E1409F935050 /* Data+HexEncodedString.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+HexEncodedString.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/Data+HexEncodedString.swift"; sourceTree = "<group>"; };
+		70B4E9BC56AAA43BEE3913C0EAAF22F9 /* SelectedSegmentSize.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectedSegmentSize.swift; path = Sources/RESegmentedControl/Classes/Models/SelectedSegmentSize.swift; sourceTree = "<group>"; };
+		717F9D9A7BD9B3153C7FCC302D7A1487 /* URL+Filename.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URL+Filename.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/URL+Filename.swift"; sourceTree = "<group>"; };
+		72467629CC0EB13B6F4CBD6081FDAD02 /* SegmentItemStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentItemStyle.swift; path = Sources/RESegmentedControl/Classes/Styles/SegmentItemStyle.swift; sourceTree = "<group>"; };
+		754E9C590373378A4CFFF20347DC3DB9 /* FirestoreEncoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirestoreEncoder.swift; path = CodableFirebase/FirestoreEncoder.swift; sourceTree = "<group>"; };
+		75F5B20568068562868D461411A432ED /* RESegmentedControl-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "RESegmentedControl-Info.plist"; sourceTree = "<group>"; };
+		7A5DABE4ECA8589D369299E9B613F76E /* UIView+SementItemShadow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIView+SementItemShadow.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/UIView+SementItemShadow.swift"; sourceTree = "<group>"; };
+		7EAA817298593E2D76A2A16260D093B7 /* Pods-Scribbly */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Scribbly"; path = Pods_Scribbly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D3BA64D58EE07358063B2BBFBCA763B /* SegmentModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentModel.swift; path = Sources/RESegmentedControl/Classes/Models/SegmentModel.swift; sourceTree = "<group>"; };
+		8F92950F692CE64B4B95031CC9F058CC /* RESegmentedControl.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RESegmentedControl.release.xcconfig; sourceTree = "<group>"; };
+		946DF5D12F9C19E38BCCE9F7FE1ACB00 /* UIView+Gradient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIView+Gradient.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/UIView+Gradient.swift"; sourceTree = "<group>"; };
+		96D23FCC53F2A331573C160A37E9240C /* SeporatorStylable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SeporatorStylable.swift; path = Sources/RESegmentedControl/Classes/Stylables/SeporatorStylable.swift; sourceTree = "<group>"; };
+		9866A58F2A6C0A2973184D541C341F0C /* BootstapPreset.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BootstapPreset.swift; path = Sources/RESegmentedControl/Classes/Presets/BootstapPreset.swift; sourceTree = "<group>"; };
+		994273A07CF72A802B857A725F86553D /* ImageDownloader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ImageDownloader.swift; path = Sources/RESegmentedControl/Classes/Network/ImageDownloader.swift; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A409E5BDBCECDC8F08706229658F5CF5 /* Pods-Scribbly-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Scribbly-acknowledgements.markdown"; sourceTree = "<group>"; };
+		A40C15F9BDA41FDED99BB4E53995DCC9 /* SeporatorStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SeporatorStyle.swift; path = Sources/RESegmentedControl/Classes/Styles/SeporatorStyle.swift; sourceTree = "<group>"; };
+		A54B15F935B7D95344C9964AFB95A64B /* CodableFirebase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CodableFirebase.debug.xcconfig; sourceTree = "<group>"; };
+		A8E0AA4C79554D8A2C32B6710ECEEE31 /* CodableFirebase-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "CodableFirebase-dummy.m"; sourceTree = "<group>"; };
+		AC277484F473CCF93062BB9E7EA25D22 /* SegmentSelectedItemStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentSelectedItemStyle.swift; path = Sources/RESegmentedControl/Classes/Styles/SegmentSelectedItemStyle.swift; sourceTree = "<group>"; };
+		AE1E23F5B37268E57FE704C59851F0BF /* RESegmentedControl.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RESegmentedControl.debug.xcconfig; sourceTree = "<group>"; };
+		B08355E2FA8FCADDB9413D84E72C3BF8 /* FirebaseDecoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirebaseDecoder.swift; path = CodableFirebase/FirebaseDecoder.swift; sourceTree = "<group>"; };
+		B4982343CC79E1BE75DC5D8E184C2431 /* FileManager+Save.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+Save.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/FileManager+Save.swift"; sourceTree = "<group>"; };
+		B82CCC81CD3CDC762AE6B504927BF446 /* Pods-Scribbly-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Scribbly-acknowledgements.plist"; sourceTree = "<group>"; };
+		BB2D1A22C7D1A16E26092C0DF394D5D7 /* Pods-Scribbly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Scribbly.debug.xcconfig"; sourceTree = "<group>"; };
+		C23013605B1F2A2C737D7ECF916F1336 /* FirebaseEncoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirebaseEncoder.swift; path = CodableFirebase/FirebaseEncoder.swift; sourceTree = "<group>"; };
+		CA503AC3B486948E424DB328E91FEE39 /* FirestoreDecoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirestoreDecoder.swift; path = CodableFirebase/FirestoreDecoder.swift; sourceTree = "<group>"; };
+		CB6070D362BFDEC91284AD1AD3963B85 /* SegmentStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentStyle.swift; path = Sources/RESegmentedControl/Classes/Styles/SegmentStyle.swift; sourceTree = "<group>"; };
+		CC72A384D13E67DF946AE3BBBA363770 /* SegmentedControlPresettable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentedControlPresettable.swift; path = Sources/RESegmentedControl/Classes/Stylables/SegmentedControlPresettable.swift; sourceTree = "<group>"; };
+		D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		DEF57E63C707BA8930EA46C15FEB75CA /* SegmentedControl+API.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "SegmentedControl+API.swift"; path = "Sources/RESegmentedControl/Classes/SegmentedControl+API.swift"; sourceTree = "<group>"; };
+		E065DDF3A0CF3B97952EF2B31FD7556B /* Pods-Scribbly-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Scribbly-Info.plist"; sourceTree = "<group>"; };
+		E25E632F843C0A1DFCC1FE7DCF447DDD /* Pods-Scribbly-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Scribbly-umbrella.h"; sourceTree = "<group>"; };
+		E29F5D1D83436901322BF460FB2453AE /* CodableFirebase-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CodableFirebase-prefix.pch"; sourceTree = "<group>"; };
+		E2A4BF0F6AC59053A271C191F5B31DA2 /* Pods-Scribbly-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Scribbly-dummy.m"; sourceTree = "<group>"; };
+		E7F14861FCD823596E7BE701E4790AEB /* SegmentItemShadowStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentItemShadowStyle.swift; path = Sources/RESegmentedControl/Classes/Styles/SegmentItemShadowStyle.swift; sourceTree = "<group>"; };
+		E8B44D88FDB75E21E37B8365156F281A /* CodableFirebase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CodableFirebase.release.xcconfig; sourceTree = "<group>"; };
+		E8E64119298D1D5D34D15C7346844099 /* Bundle+Current.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Bundle+Current.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/Bundle+Current.swift"; sourceTree = "<group>"; };
+		EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		F3385FEDA58D445E767FD78948C4DD87 /* iOS7Preset.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iOS7Preset.swift; path = Sources/RESegmentedControl/Classes/Presets/iOS7Preset.swift; sourceTree = "<group>"; };
+		F6177DE5A2A95C674C1E7FACCEBC4988 /* RESegmentedControl */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = RESegmentedControl; path = RESegmentedControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9F548FA8BE758987F0FD859A2CEA1E5 /* Bundle+Module.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Bundle+Module.swift"; path = "Sources/RESegmentedControl/Classes/Extensions/Bundle+Module.swift"; sourceTree = "<group>"; };
+		FC6C27950CE6671F4CF790B0C7AACA1D /* SegmentCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SegmentCollectionViewCell.swift; path = Sources/RESegmentedControl/Classes/Cells/SegmentCollectionViewCell.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4E26D29FF592A351A4FF838698D0564A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DA77312FAD6FB0387ED13712F8E627 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		659FF5A3CEC4C64CB2CDD35858E03ED6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D4E95C898A85BD6FE0BDECAC115F4E1 /* Foundation.framework in Frameworks */,
+				E4B6FA9A293DB81F302012BC4DC984C4 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6EF1F00CF99F7824EDD9A0EC81B953D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B8FEBDC898DD10515D0029CE49350B5 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1628BF05B4CAFDCC3549A101F5A10A17 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				59DA5C1F72E1D5BABC43EACBA672C3BA /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1EDFDF12A37490D53ABCF0244AD67794 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F9A390CBA5DC05ABB5E95B68957FF1B0 /* CodableFirebase */,
+				D141D5BF694DF6BA49F43CE9740C8621 /* RESegmentedControl */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		35D624550D0073AA57FE16805A53CB4D /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				FD5DC490C6338FE13DB563E5E531C2AA /* Pods-Scribbly */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		59DA5C1F72E1D5BABC43EACBA672C3BA /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */,
+				D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		8A194DB58E4228F8552C8429A44E3537 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				179465953C6956A05D3B22576DF2000D /* CodableFirebase.modulemap */,
+				A8E0AA4C79554D8A2C32B6710ECEEE31 /* CodableFirebase-dummy.m */,
+				66726EF8E74EE7F5EE3BDB943FEB8F05 /* CodableFirebase-Info.plist */,
+				E29F5D1D83436901322BF460FB2453AE /* CodableFirebase-prefix.pch */,
+				26D7518427AAEA01109636D40363EFE2 /* CodableFirebase-umbrella.h */,
+				A54B15F935B7D95344C9964AFB95A64B /* CodableFirebase.debug.xcconfig */,
+				E8B44D88FDB75E21E37B8365156F281A /* CodableFirebase.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/CodableFirebase";
+			sourceTree = "<group>";
+		};
+		C24C42BB10165F19F82AFE95681AE758 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A94FC58A21534580DADDEF0DD4CCDB9 /* CodableFirebase */,
+				7EAA817298593E2D76A2A16260D093B7 /* Pods-Scribbly */,
+				F6177DE5A2A95C674C1E7FACCEBC4988 /* RESegmentedControl */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				1628BF05B4CAFDCC3549A101F5A10A17 /* Frameworks */,
+				1EDFDF12A37490D53ABCF0244AD67794 /* Pods */,
+				C24C42BB10165F19F82AFE95681AE758 /* Products */,
+				35D624550D0073AA57FE16805A53CB4D /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		D141D5BF694DF6BA49F43CE9740C8621 /* RESegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				2814BC64F604D1E625DDFA15C0F204FE /* BackgroundCollectionViewCell.swift */,
+				5BB318621591A6B1B4AEECF332F8E720 /* BackgroundCollectionViewCell.xib */,
+				9866A58F2A6C0A2973184D541C341F0C /* BootstapPreset.swift */,
+				E8E64119298D1D5D34D15C7346844099 /* Bundle+Current.swift */,
+				F9F548FA8BE758987F0FD859A2CEA1E5 /* Bundle+Module.swift */,
+				6C7A060FEDC30A5CFD89E1409F935050 /* Data+HexEncodedString.swift */,
+				B4982343CC79E1BE75DC5D8E184C2431 /* FileManager+Save.swift */,
+				994273A07CF72A802B857A725F86553D /* ImageDownloader.swift */,
+				08CCDF9BB019278CB79CE478D3D8AB41 /* iOS13Preset.swift */,
+				F3385FEDA58D445E767FD78948C4DD87 /* iOS7Preset.swift */,
+				575B553E4F9A03A65712CFEC79B4FCFC /* MaterialPreset.swift */,
+				0E9A2EFB27C9687F4F1C9B9EB8EE1BF3 /* RESegmentedControl.swift */,
+				FC6C27950CE6671F4CF790B0C7AACA1D /* SegmentCollectionViewCell.swift */,
+				32A798DFEEF0D2CF7FFB44A2743B9454 /* SegmentCollectionViewCell.xib */,
+				4CD5F4F8FD979A066B65C02F348AAD84 /* SegmentContentWidthType.swift */,
+				DEF57E63C707BA8930EA46C15FEB75CA /* SegmentedControl+API.swift */,
+				CC72A384D13E67DF946AE3BBBA363770 /* SegmentedControlPresettable.swift */,
+				163C75B915B157C8476405AC8CAD2BEB /* SegmentedControlSize.swift */,
+				438D80E91235B55F05E84C5A3340AA0A /* SegmentGradientColor.swift */,
+				E7F14861FCD823596E7BE701E4790AEB /* SegmentItemShadowStyle.swift */,
+				16F1B6449777D7D137C2A9ADD032F222 /* SegmentItemStylable.swift */,
+				72467629CC0EB13B6F4CBD6081FDAD02 /* SegmentItemStyle.swift */,
+				8D3BA64D58EE07358063B2BBFBCA763B /* SegmentModel.swift */,
+				3AD3ECEF1672BF5EF1AA0FC7EC44CFD9 /* SegmentSelectedItemStylable.swift */,
+				AC277484F473CCF93062BB9E7EA25D22 /* SegmentSelectedItemStyle.swift */,
+				6B3311A45DF816C003B8C7E944A062D5 /* SegmentStylable.swift */,
+				CB6070D362BFDEC91284AD1AD3963B85 /* SegmentStyle.swift */,
+				70B4E9BC56AAA43BEE3913C0EAAF22F9 /* SelectedSegmentSize.swift */,
+				96D23FCC53F2A331573C160A37E9240C /* SeporatorStylable.swift */,
+				A40C15F9BDA41FDED99BB4E53995DCC9 /* SeporatorStyle.swift */,
+				563C074DA929C283F043B49EC8E9C0E6 /* ShadowStylable.swift */,
+				946DF5D12F9C19E38BCCE9F7FE1ACB00 /* UIView+Gradient.swift */,
+				7A5DABE4ECA8589D369299E9B613F76E /* UIView+SementItemShadow.swift */,
+				717F9D9A7BD9B3153C7FCC302D7A1487 /* URL+Filename.swift */,
+				E92077496A412A0B7468881D0DE35EF2 /* Support Files */,
+			);
+			name = RESegmentedControl;
+			path = RESegmentedControl;
+			sourceTree = "<group>";
+		};
+		E92077496A412A0B7468881D0DE35EF2 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				1BFFC48A1CB28D3F007CCC1487A4C5EF /* RESegmentedControl.modulemap */,
+				37BE442A1C12BFA6AC7617C3F3DDCFF9 /* RESegmentedControl-dummy.m */,
+				75F5B20568068562868D461411A432ED /* RESegmentedControl-Info.plist */,
+				0C5C6AC5609B3B1B8567CCACDCFBC0D0 /* RESegmentedControl-prefix.pch */,
+				3B77BB14D1A71E0B95AACFE222F20B3A /* RESegmentedControl-umbrella.h */,
+				AE1E23F5B37268E57FE704C59851F0BF /* RESegmentedControl.debug.xcconfig */,
+				8F92950F692CE64B4B95031CC9F058CC /* RESegmentedControl.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/RESegmentedControl";
+			sourceTree = "<group>";
+		};
+		F9A390CBA5DC05ABB5E95B68957FF1B0 /* CodableFirebase */ = {
+			isa = PBXGroup;
+			children = (
+				6B46E2771D0C7CC88B177FD281C7F04D /* Decoder.swift */,
+				3F23EA8131A2D1D03E4DA9BD044ACCAF /* Encoder.swift */,
+				B08355E2FA8FCADDB9413D84E72C3BF8 /* FirebaseDecoder.swift */,
+				C23013605B1F2A2C737D7ECF916F1336 /* FirebaseEncoder.swift */,
+				CA503AC3B486948E424DB328E91FEE39 /* FirestoreDecoder.swift */,
+				754E9C590373378A4CFFF20347DC3DB9 /* FirestoreEncoder.swift */,
+				8A194DB58E4228F8552C8429A44E3537 /* Support Files */,
+			);
+			name = CodableFirebase;
+			path = CodableFirebase;
+			sourceTree = "<group>";
+		};
+		FD5DC490C6338FE13DB563E5E531C2AA /* Pods-Scribbly */ = {
+			isa = PBXGroup;
+			children = (
+				3A33B4FFB094E926084F26609116B929 /* Pods-Scribbly.modulemap */,
+				A409E5BDBCECDC8F08706229658F5CF5 /* Pods-Scribbly-acknowledgements.markdown */,
+				B82CCC81CD3CDC762AE6B504927BF446 /* Pods-Scribbly-acknowledgements.plist */,
+				E2A4BF0F6AC59053A271C191F5B31DA2 /* Pods-Scribbly-dummy.m */,
+				1BF80E53BB75C28D0DA7820467E89219 /* Pods-Scribbly-frameworks.sh */,
+				E065DDF3A0CF3B97952EF2B31FD7556B /* Pods-Scribbly-Info.plist */,
+				E25E632F843C0A1DFCC1FE7DCF447DDD /* Pods-Scribbly-umbrella.h */,
+				BB2D1A22C7D1A16E26092C0DF394D5D7 /* Pods-Scribbly.debug.xcconfig */,
+				24C6529E5CDC9CF99F9382FBE0D26C01 /* Pods-Scribbly.release.xcconfig */,
+			);
+			name = "Pods-Scribbly";
+			path = "Target Support Files/Pods-Scribbly";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7F1AB70057584410E6AF608F07EE4528 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7824D163DC696E6063315AA3925DA1EC /* Pods-Scribbly-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4BB1F23A2B4F51E07C374219E7CC26F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0D0C18E2A077CB521A3B7A00B3119A7 /* CodableFirebase-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD56EC060FDBCCEBCF71721678621291 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43E22326C0645AA5C06CEC6FCFFB37D6 /* RESegmentedControl-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6DF9DA6BDF0A8EB9617B6A414684E579 /* Pods-Scribbly */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89E177AFFE7808CD6023BB9CFA1D2FD0 /* Build configuration list for PBXNativeTarget "Pods-Scribbly" */;
+			buildPhases = (
+				7F1AB70057584410E6AF608F07EE4528 /* Headers */,
+				FEAED30D8D548E8BC3BDA62E7062A523 /* Sources */,
+				6EF1F00CF99F7824EDD9A0EC81B953D5 /* Frameworks */,
+				F23DC2CD50F68BBB5D65CFBCD0B18FBA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F83C99CA21713B62C426463334E9BCDF /* PBXTargetDependency */,
+				55D6C4CFB614A59498920C25B78B13A9 /* PBXTargetDependency */,
+			);
+			name = "Pods-Scribbly";
+			productName = Pods_Scribbly;
+			productReference = 7EAA817298593E2D76A2A16260D093B7 /* Pods-Scribbly */;
+			productType = "com.apple.product-type.framework";
+		};
+		ADE9DED381AD2FA4F422A595F208BB63 /* RESegmentedControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B57E40D5A595AED1B88D1F86F092D40 /* Build configuration list for PBXNativeTarget "RESegmentedControl" */;
+			buildPhases = (
+				BD56EC060FDBCCEBCF71721678621291 /* Headers */,
+				D2149A6C892499B84EA18566E73E0FEC /* Sources */,
+				659FF5A3CEC4C64CB2CDD35858E03ED6 /* Frameworks */,
+				C00100BCBAE9DEB7DE3456975B9ECD04 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RESegmentedControl;
+			productName = RESegmentedControl;
+			productReference = F6177DE5A2A95C674C1E7FACCEBC4988 /* RESegmentedControl */;
+			productType = "com.apple.product-type.framework";
+		};
+		E348382FA7E1F8A639AFBFF3F8C4FC04 /* CodableFirebase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E678CFE41C46DC7A943744D419D35091 /* Build configuration list for PBXNativeTarget "CodableFirebase" */;
+			buildPhases = (
+				B4BB1F23A2B4F51E07C374219E7CC26F /* Headers */,
+				BFE02291322A8BD13E06140CB1A867EC /* Sources */,
+				4E26D29FF592A351A4FF838698D0564A /* Frameworks */,
+				9FABBA90479555F942DF02BC252DE9A2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodableFirebase;
+			productName = CodableFirebase;
+			productReference = 4A94FC58A21534580DADDEF0DD4CCDB9 /* CodableFirebase */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			productRefGroup = C24C42BB10165F19F82AFE95681AE758 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E348382FA7E1F8A639AFBFF3F8C4FC04 /* CodableFirebase */,
+				6DF9DA6BDF0A8EB9617B6A414684E579 /* Pods-Scribbly */,
+				ADE9DED381AD2FA4F422A595F208BB63 /* RESegmentedControl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9FABBA90479555F942DF02BC252DE9A2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C00100BCBAE9DEB7DE3456975B9ECD04 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F23DC2CD50F68BBB5D65CFBCD0B18FBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BFE02291322A8BD13E06140CB1A867EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECC05A43A78E3F58A241E92371B9B12C /* CodableFirebase-dummy.m in Sources */,
+				82DE8117A8BBFCF8006B210146944671 /* Decoder.swift in Sources */,
+				3FC2899F8B27DBC94D3F92170316F1CC /* Encoder.swift in Sources */,
+				9666A33352A76C48FBD8CA6F65595699 /* FirebaseDecoder.swift in Sources */,
+				DC1223D41E0730D6161703303B2655B0 /* FirebaseEncoder.swift in Sources */,
+				85C7B677D49ECD7EFF2013BCE03AC4C6 /* FirestoreDecoder.swift in Sources */,
+				17CC10E0C84DB0E27B8C2A376DD3B62D /* FirestoreEncoder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2149A6C892499B84EA18566E73E0FEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32E309293287D82AFE64BCB4648C3E82 /* BackgroundCollectionViewCell.swift in Sources */,
+				6EF2901CE45BA4E9659D8724E31E26C4 /* BackgroundCollectionViewCell.xib in Sources */,
+				35378197D9A30D97A675719CCEBC05FB /* BootstapPreset.swift in Sources */,
+				9140B9171C0975EEB1B2817684FFA573 /* Bundle+Current.swift in Sources */,
+				D3A6BFE5DCCBDE8A9F5C18069C4BE106 /* Bundle+Module.swift in Sources */,
+				C287B08EF352A817D7FFAA7D3559496F /* Data+HexEncodedString.swift in Sources */,
+				27FA6AAD000434974C6F693396D87E91 /* FileManager+Save.swift in Sources */,
+				C1A652C389D6A623DF96A99B1DD5D840 /* ImageDownloader.swift in Sources */,
+				0685282ADBEB42C4CB7D8CB14CD4214D /* iOS13Preset.swift in Sources */,
+				11FB52D1E208F456F86450F302167C05 /* iOS7Preset.swift in Sources */,
+				0662A1F3135D9B4F4A0D04664FA31974 /* MaterialPreset.swift in Sources */,
+				1182B9014F5F760E6792B1FC9C7DFDBB /* RESegmentedControl.swift in Sources */,
+				E49AFEE71C88840AF0DF41B742FBC973 /* RESegmentedControl-dummy.m in Sources */,
+				76FB58DAE3460C69BB32B2B20F7586BE /* SegmentCollectionViewCell.swift in Sources */,
+				3EAAEEA5B7BF43F07CF159E4792692DF /* SegmentCollectionViewCell.xib in Sources */,
+				B5FF39D11D08850BE05DF3FB0AC9C629 /* SegmentContentWidthType.swift in Sources */,
+				30583EF73CD6248BF1A7F62B82A64C58 /* SegmentedControl+API.swift in Sources */,
+				A235399ACE98D68574E2CB5371EAB3A4 /* SegmentedControlPresettable.swift in Sources */,
+				E3DF18A2B7C362634DBC833E3ACCBA88 /* SegmentedControlSize.swift in Sources */,
+				162395B7C94D64DE58B2276463A32EDE /* SegmentGradientColor.swift in Sources */,
+				A55E62D6F16EE6D61C3464B5D890DBEF /* SegmentItemShadowStyle.swift in Sources */,
+				C15860C57016AB25300F90E6B1643A30 /* SegmentItemStylable.swift in Sources */,
+				D2E3ED73CC9F454B0D22A9A1D0BA1D45 /* SegmentItemStyle.swift in Sources */,
+				63C5B3D537EC67B6DF1A7C86B0BBBC13 /* SegmentModel.swift in Sources */,
+				DB7716CB30CC11F6BBCBAF6B5D7C30A6 /* SegmentSelectedItemStylable.swift in Sources */,
+				EEA935A380B96FD766BCFE256E0DA1AA /* SegmentSelectedItemStyle.swift in Sources */,
+				DD191E08C27FCA446BDBFBBA7CDE4458 /* SegmentStylable.swift in Sources */,
+				F66C26A0DF9F92914DE2A63347937352 /* SegmentStyle.swift in Sources */,
+				571AD449F065AD65FD3D9E69CF274639 /* SelectedSegmentSize.swift in Sources */,
+				7815B0A6C5D5C055952EFF071D29EC23 /* SeporatorStylable.swift in Sources */,
+				8184F3B29B62A1EBD50FAB298F3F7D08 /* SeporatorStyle.swift in Sources */,
+				25FBF2EC14AE6955B597287ABB55FC73 /* ShadowStylable.swift in Sources */,
+				1E4A19BE7BEFB1CE3FD5305741E5E140 /* UIView+Gradient.swift in Sources */,
+				30709884999BD275285BEE4B93F44998 /* UIView+SementItemShadow.swift in Sources */,
+				826E24CBDF6C5830F6E484B98DA090B5 /* URL+Filename.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEAED30D8D548E8BC3BDA62E7062A523 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83D88C5CCF9628806BCC6E7A75621CDA /* Pods-Scribbly-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		55D6C4CFB614A59498920C25B78B13A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RESegmentedControl;
+			target = ADE9DED381AD2FA4F422A595F208BB63 /* RESegmentedControl */;
+			targetProxy = B9DF471A96FA108FB6C17BC4956EF1E7 /* PBXContainerItemProxy */;
+		};
+		F83C99CA21713B62C426463334E9BCDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CodableFirebase;
+			target = E348382FA7E1F8A639AFBFF3F8C4FC04 /* CodableFirebase */;
+			targetProxy = 153858193942EB0D1CE3FC1E86A2EBD5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		25008268C61852E4E3C59D4840B24505 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE1E23F5B37268E57FE704C59851F0BF /* RESegmentedControl.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/RESegmentedControl/RESegmentedControl-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/RESegmentedControl/RESegmentedControl-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/RESegmentedControl/RESegmentedControl.modulemap";
+				PRODUCT_MODULE_NAME = RESegmentedControl;
+				PRODUCT_NAME = RESegmentedControl;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		30E0B9EFD9A5C45D0D351231E81B30B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		50B02B56003E9DAABEC95939156369DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F92950F692CE64B4B95031CC9F058CC /* RESegmentedControl.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/RESegmentedControl/RESegmentedControl-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/RESegmentedControl/RESegmentedControl-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/RESegmentedControl/RESegmentedControl.modulemap";
+				PRODUCT_MODULE_NAME = RESegmentedControl;
+				PRODUCT_NAME = RESegmentedControl;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		878E5554A8CA4550BCDC9A5482EDFE70 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 24C6529E5CDC9CF99F9382FBE0D26C01 /* Pods-Scribbly.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Scribbly/Pods-Scribbly-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Scribbly/Pods-Scribbly.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		A5F4C77148465FCA6296621940F24BA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB2D1A22C7D1A16E26092C0DF394D5D7 /* Pods-Scribbly.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Scribbly/Pods-Scribbly-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Scribbly/Pods-Scribbly.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		BC797AB1D5D94EBE6E44E33216D8FF6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8B44D88FDB75E21E37B8365156F281A /* CodableFirebase.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CodableFirebase/CodableFirebase-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CodableFirebase/CodableFirebase-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CodableFirebase/CodableFirebase.modulemap";
+				PRODUCT_MODULE_NAME = CodableFirebase;
+				PRODUCT_NAME = CodableFirebase;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CC37103064E5B9675ADA21526E6A75C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A54B15F935B7D95344C9964AFB95A64B /* CodableFirebase.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CodableFirebase/CodableFirebase-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CodableFirebase/CodableFirebase-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CodableFirebase/CodableFirebase.modulemap";
+				PRODUCT_MODULE_NAME = CodableFirebase;
+				PRODUCT_NAME = CodableFirebase;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		F4FF6A0D1970CA9705974E3CB2134802 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3B57E40D5A595AED1B88D1F86F092D40 /* Build configuration list for PBXNativeTarget "RESegmentedControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25008268C61852E4E3C59D4840B24505 /* Debug */,
+				50B02B56003E9DAABEC95939156369DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4FF6A0D1970CA9705974E3CB2134802 /* Debug */,
+				30E0B9EFD9A5C45D0D351231E81B30B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		89E177AFFE7808CD6023BB9CFA1D2FD0 /* Build configuration list for PBXNativeTarget "Pods-Scribbly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A5F4C77148465FCA6296621940F24BA8 /* Debug */,
+				878E5554A8CA4550BCDC9A5482EDFE70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E678CFE41C46DC7A943744D419D35091 /* Build configuration list for PBXNativeTarget "CodableFirebase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC37103064E5B9675ADA21526E6A75C7 /* Debug */,
+				BC797AB1D5D94EBE6E44E33216D8FF6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}

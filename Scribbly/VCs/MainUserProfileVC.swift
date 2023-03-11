@@ -174,7 +174,7 @@ class MainUserProfileVC: UIViewController {
             guard let `self` = self else { return }
             if success {
                 for i in self.mainUser.getBookmarks() {
-                    self.booksData.insert(Bookmarks(post: i), at: 0)
+                    self.booksData.append(Bookmarks(post: i))
                 }
             }
         })
@@ -183,7 +183,7 @@ class MainUserProfileVC: UIViewController {
     private func setupBooksData() {
         booksData = []   // Must reset first
         for i in self.mainUser.getBookmarks() {
-            self.booksData.insert(Bookmarks(post: i), at: 0)
+            self.booksData.append(Bookmarks(post: i))
         }
     }
     

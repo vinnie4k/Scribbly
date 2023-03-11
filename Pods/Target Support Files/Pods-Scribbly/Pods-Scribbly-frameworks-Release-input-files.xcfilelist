@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-Scribbly/Pods-Scribbly-frameworks.sh
+${BUILT_PRODUCTS_DIR}/CodableFirebase/CodableFirebase.framework
+${BUILT_PRODUCTS_DIR}/RESegmentedControl/RESegmentedControl.framework

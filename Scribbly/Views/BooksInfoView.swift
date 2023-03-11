@@ -271,8 +271,9 @@ class BooksButtonView: UIStackView {
         return btn
     }()
     
-    private let shareButton: UIButton = {
+    private lazy var shareButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(sharePost), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .medium
         config.baseBackgroundColor = UIColor(white: 1, alpha: 0)
@@ -351,6 +352,13 @@ class BooksButtonView: UIStackView {
     }
     
     // MARK: - Button Helpers
+    @objc func sharePost() {
+        let img = post.getDrawing()
+        let activityController = UIActivityViewController(activityItems: [img], applicationActivities: nil)
+        activityController.excludedActivityTypes = [.postToTencentWeibo, .postToVimeo, .postToFlickr, .postToWeibo, .addToReadingList, .markupAsPDF]
+        parentVC.present(activityController, animated: true)
+    }
+    
     @objc func likePost() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
@@ -371,7 +379,7 @@ class BooksButtonView: UIStackView {
     }
     
     @objc func pushCommentVC() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+//        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let commentVC = CommentVC(post: post, mainUser: mainUser)
         parentVC.navigationController?.pushViewController(commentVC, animated: true)
     }

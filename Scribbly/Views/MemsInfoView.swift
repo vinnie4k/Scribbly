@@ -172,8 +172,9 @@ class HideShareView: UIStackView {
         return btn
     }()
 
-    private let shareButton: UIButton = {
+    private lazy var shareButton: UIButton = {
         let btn = UIButton()
+        btn.addTarget(self, action: #selector(sharePost), for: .touchUpInside)
         var config = UIButton.Configuration.plain()
         config.buttonSize = .large
         config.baseBackgroundColor = .clear
@@ -232,6 +233,13 @@ class HideShareView: UIStackView {
     }
     
     // MARK: - Button Helpers
+    @objc func sharePost() {
+        let img = post.getDrawing()
+        let activityController = UIActivityViewController(activityItems: [img], applicationActivities: nil)
+        activityController.excludedActivityTypes = [.postToTencentWeibo, .postToVimeo, .postToFlickr, .postToWeibo, .addToReadingList, .markupAsPDF]
+        parentVC.present(activityController, animated: true)
+    }
+    
     @objc func hidePost() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
