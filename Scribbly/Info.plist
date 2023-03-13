@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Scribbly needs to access your photo library in order to upload and share your artwork with your friends.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Scribbly needs to access your camera in order to capture and share your artwork with your friends.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Scribbly uses your contacts to provide you with suggestions for friends and help expand your network.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.vinnie.Scribbly</string>
