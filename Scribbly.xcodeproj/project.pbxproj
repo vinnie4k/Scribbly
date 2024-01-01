@@ -62,7 +62,6 @@
 		2ECBE2A42959560E00DFA64F /* MemsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */; };
 		2ED4F1152953669B00E66E5F /* Comment and Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1142953669B00E66E5F /* Comment and Reply.swift */; };
 		2ED4F1172953711A00E66E5F /* CommentCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED4F1162953711A00E66E5F /* CommentCells.swift */; };
-		2EE3BA6A296FB8A000ACB16D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EE3BA69296FB8A000ACB16D /* GoogleService-Info.plist */; };
 		2EED0C862952D09F009BA4CE /* CommentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EED0C852952D09F009BA4CE /* CommentVC.swift */; };
 		2EF0A5672964A95500B2E799 /* TimerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF0A5662964A95500B2E799 /* TimerVC.swift */; };
 		2EF946B7296DD1BD00F1927A /* SignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF946B6296DD1BD00F1927A /* SignupVC.swift */; };
@@ -125,14 +124,12 @@
 		2ECBE2A32959560E00DFA64F /* MemsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemsCollectionViewCell.swift; sourceTree = "<group>"; };
 		2ED4F1142953669B00E66E5F /* Comment and Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comment and Reply.swift"; sourceTree = "<group>"; };
 		2ED4F1162953711A00E66E5F /* CommentCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCells.swift; sourceTree = "<group>"; };
-		2EE3BA69296FB8A000ACB16D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2EED0C852952D09F009BA4CE /* CommentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentVC.swift; sourceTree = "<group>"; };
 		2EF0A5662964A95500B2E799 /* TimerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerVC.swift; sourceTree = "<group>"; };
 		2EF946B6296DD1BD00F1927A /* SignupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupVC.swift; sourceTree = "<group>"; };
 		2EF946B8296DE6F400F1927A /* PhoneVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneVC.swift; sourceTree = "<group>"; };
 		2EF946BA296E02DB00F1927A /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		2EF946BC296E0A3200F1927A /* ConfirmPhoneVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmPhoneVC.swift; sourceTree = "<group>"; };
-		2EF946BE296E0C3800F1927A /* Scribbly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Scribbly.entitlements; sourceTree = "<group>"; };
 		7C9DD0E0C765B1513ED1E38F /* Pods_Scribbly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Scribbly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -203,10 +200,8 @@
 		2E0C0884294F15290021C2D9 /* Scribbly */ = {
 			isa = PBXGroup;
 			children = (
-				2EF946BE296E0C3800F1927A /* Scribbly.entitlements */,
 				2E0C0890294F152A0021C2D9 /* LaunchScreen.storyboard */,
 				2E0C088E294F152A0021C2D9 /* Assets.xcassets */,
-				2EE3BA69296FB8A000ACB16D /* GoogleService-Info.plist */,
 				2E0C0893294F152A0021C2D9 /* Info.plist */,
 				2E0C0885294F15290021C2D9 /* AppDelegate.swift */,
 				2E0C0887294F15290021C2D9 /* SceneDelegate.swift */,
@@ -383,7 +378,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E0C0892294F152A0021C2D9 /* LaunchScreen.storyboard in Resources */,
-				2EE3BA6A296FB8A000ACB16D /* GoogleService-Info.plist in Resources */,
 				2E0C088F294F152A0021C2D9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
